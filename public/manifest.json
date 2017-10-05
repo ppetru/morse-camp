@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Morse Dojo",
+  "name": "Morse Dojo",
   "icons": [
     {
       "src": "favicon.ico",
