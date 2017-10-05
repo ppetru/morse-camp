@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
 import Button from 'react-md/lib/Buttons/Button';
+import SelectField from 'react-md/lib/SelectFields';
 import TextField from 'react-md/lib/TextFields';
 
 import MorsePlayer from './MorsePlayer';
+import Texts from './Texts';
 
 class Speller extends Component {
   state = {
@@ -44,18 +46,28 @@ class Speller extends Component {
     window.speechSynthesis.resume();
   }
 
-  handleChange = (value, event) => {
+  handleTextChange = (value, event) => {
     this.setState({ text: value });
+  }
+
+  handleSelectChange = (value, index, event, details) => {
+    this.setState({ text: Texts[value] });
   }
 
   render() {
     return (
       <div className="App">
+        <SelectField
+          id="canned"
+          label="Canned text"
+          menuItems={['', ...Object.keys(Texts)]}
+          onChange={this.handleSelectChange}
+        />
         <TextField
           id="text"
           label="Input text"
           value={this.state.text}
-          onChange={this.handleChange}
+          onChange={this.handleTextChange}
         />
         <Button
           raised
