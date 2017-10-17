@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Button from 'react-md/lib/Buttons/Button';
 import SelectField from 'react-md/lib/SelectFields';
 import TextField from 'react-md/lib/TextFields';
+import meSpeak from 'mespeak';
 
 import MorsePlayer from './MorsePlayer';
 import Texts from './Texts';
@@ -11,6 +12,12 @@ class Speller extends Component {
   state = {
     text: "hi",
   };
+
+  constructor(props) {
+    super(props);
+    meSpeak.loadConfig(require('mespeak/src/mespeak_config.json'));
+    meSpeak.loadVoice(require('mespeak/voices/en/en.json'));
+  }
 
   sanitizeText(text) {
     let result = "";
@@ -23,14 +30,16 @@ class Speller extends Component {
   }
 
   speak = (text) => {
-    let msg = new SpeechSynthesisUtterance(text[0]);
+    let msg = text[0];
     let rest = text.slice(1);
+    var callback = null;
     if (rest) {
-      msg.onend = event => {
+      callback = result => {
+        console.log(result);
         this.speak(rest);
       }
     }
-    window.speechSynthesis.speak(msg);
+    meSpeak.speak(msg, {}, callback);
   }
 
   startSpeaking = () => {
