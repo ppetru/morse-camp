@@ -1,119 +1,237 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 
 class MorsePlayer extends Component {
-  static get codeTable() {
-    return {
-      "A": ".-",
-      "B": "-...",
-      "C": "-.-.",
-      "D": "-..",
-      "E": ".",
-      "F": "..-.",
-      "G": "--.",
-      "H": "....",
-      "I": "..",
-      "J": ".---",
-      "K": "-.-",
-      "L": ".-..",
-      "M": "--",
-      "N": "-.",
-      "O": "---",
-      "P": ".--.",
-      "Q": "--.-",
-      "R": ".-.",
-      "S": "...",
-      "T": "-",
-      "U": "..-",
-      "V": "...-",
-      "W": ".--",
-      "X": "-..-",
-      "Y": "-.--",
-      "Z": "--..",
 
-      "1": ".----",
-      "2": "..---",
-      "3": "...--",
-      "4": "....-",
-      "5": ".....",
-      "6": "-....",
-      "7": "--...",
-      "8": "---..",
-      "9": "----.",
-      "0": "-----",
+  speed = (wpm) => {
+		// 1200ms per dit is 1WPM
+		this.ditLength = 1200/wpm;
+	}
 
-      ".": ".-.-.-",
-      ",": "--..--",
-      "=": "-...-",
-      "?": "..--..",
+  play = (message) => {
+		// Use already saved message if no new message is given
+		message = message || this.message;
+
+		// nothing to do?
+		if (message === '') {
+			for (let i=0;i<this.messageCallbacks.length;i++)
+				this.messageCallbacks[i]();
+			return;
+		}
+
+		// already playing?
+		if (this.playing) return;
+		this.playing = true;
+
+		// Fetch next character from message string:
+		var character = message[0];
+		this.message = message.slice(1);
+		// TODO respect <KA> <SOS>
+
+		// Lookup morse code for next character
+		if (!this.morseCodes[character]) {
+			console.log("Character '"+character+"' unknown.");
+			character = " ";
+		}
+		// Send next character as plain text back to visualisation or anything:
+		for (let i=0;i<this.characterCallbacks.length;i++)
+			this.characterCallbacks[i](character);
+		character = this.morseCodes[character];
+
+
+		var lengthSum=0;
+    console.log(this.context);
+    console.log(this.context.currentTime);
+    console.log(this.gainNode);
+		var now = this.context.currentTime;
+		// set ramp time to 2 periods
+		var rampTime = 1/this.oscillatorNode.frequency.value*2;
+		for(let i=0;i<character.length;i++) {
+			// iterate dits and dahs
+			if (character[i]==='·') {
+				console.log(now, (lengthSum+1), this.ditLength/1000);
+				this.gainNode.gain.linearRampToValueAtTime(
+					0, now + (lengthSum+1)*this.ditLength/1000);
+				this.gainNode.gain.linearRampToValueAtTime(
+					this.volume, now + (lengthSum+1)*this.ditLength/1000 +
+					rampTime);
+
+				this.gainNode.gain.linearRampToValueAtTime(
+					this.volume, now + (lengthSum+2)*this.ditLength/1000);
+				this.gainNode.gain.linearRampToValueAtTime(
+					0, now + (lengthSum+2)*this.ditLength/1000 +
+					rampTime);
+
+				lengthSum+=2;
+			} else if (character[i]==='−') {
+				this.gainNode.gain.linearRampToValueAtTime(
+					0, now + (lengthSum+1)*this.ditLength/1000);
+				this.gainNode.gain.linearRampToValueAtTime(
+					this.volume, now + (lengthSum+1)*this.ditLength/1000 +
+					rampTime);
+
+				this.gainNode.gain.linearRampToValueAtTime(
+					this.volume, now + (lengthSum+4)*this.ditLength/1000);
+				this.gainNode.gain.linearRampToValueAtTime(
+					0, now + (lengthSum+4)*this.ditLength/1000 +
+					rampTime);
+
+				lengthSum+=4;
+			} else if (character[i]===' ') {
+				lengthSum+=3; // plus 2 for last character and 2 for this added below = 7
+			}
+		}
+    window.setTimeout(() => {
+			this.playing = false;
+			this.play();
+		}, (lengthSum+2+this.farnsworth)*this.ditLength);
+		// two additional dits pause sum up to three dits between characters
+
+	} // play
+
+  componentDidMount() {
+
+    this.speed(this.props.speed);
+
+    // Volume 1 = 100%, more leads to harmonics due to overmodulation
+    this.volume = 1;
+
+    // extra pause after every character (dit-length)
+    // default = 0, use 2 or 3 for training
+    this.farnsworth = 0;
+
+    // methods to call at beginning of each character
+    this.characterCallbacks = [];
+
+    // methods to call at successful end of playing message
+    this.messageCallbacks = [];
+
+    // already playing a message?
+    this.playing = false;
+
+    // Message to play next
+    this.message = '';
+
+    this.morseCodes = {
+      // third column: greek
+      // fourth column: cyrillic
+      'A':'·−',   'a':'·−',   'Α':'·−',   'А':'·−',
+      'B':'−···', 'b':'−···', 'Β':'−···', 'Б':'−···',
+      'C':'−·−·', 'c':'−·−·', 'Θ':'−·−·', 'Ц':'−·−·',
+      'D':'−··',  'd':'−··',  'Δ':'−··',  'Д':'−··',
+      'E':'·',    'e':'·',    'Ε':'·',    'Е':'·',
+      'F':'··−·', 'f':'··−·', 'Φ':'··−·',
+      'G':'−−·',  'g':'−−·',  'Γ':'−−·',  'Г':'−−·',
+      'H':'····', 'h':'····', 'Η':'····', 'Х':'····',
+      'I':'··',   'i':'··',               'И':'··',
+      'J':'·−−−', 'j':'·−−−',             'Й':'·−−−',
+      'K':'−·−',  'k':'−·−',              'К':'−·−', // invitation to transmit
+      'L':'·−··', 'l':'·−··',
+      'M':'−−',   'm':'−−',
+      'N':'−·',   'n':'−·',
+      'O':'−−−',  'o':'−−−',
+      'P':'·−−·', 'p':'·−−·',
+      'Q':'−−·−', 'q':'−−·−', 'Ψ':'−−·−', 'Щ':'−−·−',
+      'R':'·−·',  'r':'·−·',  'Ρ':'·−·',
+      'S':'···',  's':'···',  'Σ':'···',
+      'T':'−',    't':'−',    'Τ':'−',
+      'U':'··−',  'u':'··−',
+      'V':'···−', 'v':'···−', 'Ж':'···−',
+      'W':'·−−',  'w':'·−−',  'Ω':'·−−',  'В':'·−−',
+      'X':'−··−', 'x':'−··−',             'Ь':'−··−', 'Ъ':'−··−',
+      'Y':'−·−−', 'y':'−·−−', 'Υ':'−·−−', 'Ы':'−·−−',
+      'Z':'−−··', 'z':'−−··', 'Ζ':'−−··', 'З':'−−··',
+
+      '0':'−−−−−',
+      '1':'·−−−−',
+      '2':'··−−−',
+      '3':'···−−',
+      '4':'····−',
+      '5':'·····',
+      '6':'−····',
+      '7':'−−···',
+      '8':'−−−··',
+      '9':'−−−−·',
+
+      'À':'·−−·−', 'à':'·−−·−', 'Å':'·−−·−', 'å':'·−−·−',
+      'Ä':'·−·−',  'ä':'·−·−',  'æ':'·−·−',  'ą':'·−·−',  'Я':'·−·−',
+      'È':'·−··−', 'è':'·−··−', 'ł':'·−··−',
+      'É':'··−··', 'é':'··−··', 'đ':'··−··', 'ę':'··−··', 'Э':'··−··',
+      'Ö':'−−−·',  'ö':'−−−·',  'ø':'−−−·',  'ó':'−−−·',  'Ч':'−−−·',
+      'Ü':'··−−',  'ü':'··−−',  'Ю':'··−−',
+      'ç':'−·−··',  'ĉ':'−·−··',  'ć':'−·−··',
+      'ĝ':'−−·−·',
+      'ŝ':'···−·',
+
+      'ẞ':'···−−··', 'ß':'···−−··',
+      'CH':'−−−−', 'ch':'−−−−', 'Š':'−−−−', 'š':'−−−−', 'Χ':'−−−−', 'Ш':'−−−−', 'ĥ':'−−−−',
+      'Ñ':'−−·−−', 'ñ':'−−·−−', 'ń':'−−·−−',
+      // CH will never be used as there is no equivalent Unicode ligature.
+
+      '.':'·−·−·−',
+      ',':'−−··−−',
+      ':':'−−−···',
+      ';':'−·−·−·',
+      '?':'··−−··',
+      '!':'−·−·−−',
+      '-':'−····−',
+      '_':'··−−·−',
+      '(':'−·−−·',
+      ')':'−·−−·−',
+      '\'':'·−−−−·',
+      '"':'·−··−·',
+      '=':'−···−',
+      '+':'·−·−·', // AR
+      '/':'−··−·',
+      '@':'·−−·−·',
+      '$':'···−··−·',
+      '&':'·−···', // AS
+
+      '<AA>':'·−·−', // Space down one line (new line)
+      '<AR>':'·−·−·', // Stop copying (end of message)
+      '<AS>':'·−···', // Wait
+      '<BK>':'−···−·−', // BreaK
+      '<BT>':'−···−', // Space down two lines (new paragraph)
+      '<CL>':'−·−··−··', // CLosing down
+      '<CT>':'−·−·−', '<KA>':'−·−·−', // Attention, Commencing Transmission
+      '<KN>':'−·−−·', // Invitation to a specific named station to transmit
+      '<SK>':'···−·−', '<VA>':'···−·−', // End of contact
+      '<SN>':'···−·', '<VE>':'···−·', // Understood
+      '<SOS>':'···−−−···', // Serious distress message
+      '<HH>':'········', // Error
+
+      ' ':' ',
+      '>':'    ', // "visible" pause before message
+      '\t':'  ',
+      '\n':'   ',
     }
-  }
-
-  static get alphabet() {
-    return Object.keys(MorsePlayer.codeTable);
-  }
-
-  constructor(props) {
-    super(props);
 
     this.context = new (window.AudioContext || window.webkitAudioContext)();
 
-    this.oscillator = this.context.createOscillator()
-    this.gain = this.context.createGain()
+    this.gainNode = this.context.createGain();
+    this.gainNode.connect(this.context.destination);
+    this.gainNode.gain.value = 0;
 
-    this.gain.gain.setValueAtTime(0.0, this.context.currentTime);
-    this.oscillator.frequency.value = 500;
+    this.oscillatorNode = this.context.createOscillator();
+    this.oscillatorNode.frequency.value = this.props.frequency;
+    this.oscillatorNode.connect(this.gainNode);
+    this.oscillatorNode.start(0);
 
-    this.oscillator.connect(this.gain);
-    this.oscillator.start(0);
-    this.gain.connect(this.context.destination);
-
-    let rate = 25;
-    this.dot = 1.2 / rate;
-
-    this.addEventListener('play', e => this.handlePlay(e));
+    this.play(this.props.message);
   }
 
-  playChar(t, c) {
-    for (var i = 0; i < c.length; i++) {
-      switch(c[i]) {
-      case '.':
-        this.gain.gain.setValueAtTime(1.0, t);
-        t += this.dot;
-        this.gain.gain.setValueAtTime(0.0, t);
-        break;
-      case '-':
-        this.gain.gain.setValueAtTime(1.0, t);
-        t += 3 * this.dot;
-        this.gain.gain.setValueAtTime(0.0, t);
-        break;
-      default:
-      }
-      t += this.dot;
-    }
-    return t;
-  };
+  componentWillUmount() {
+		this.message = '';
+  }
 
-  playString(s) {
-    s = s.toUpperCase();
-    var t = this.context.currentTime;
-    for (var i = 0; i < s.length; i++) {
-      if (s[i] === ' ') {
-        t += 3 * this.dot;
-      } else if (MorsePlayer.codeTable[s[i]] !== undefined) {
-        t = this.playChar(t, MorsePlayer.codeTable[s[i]]);
-        t += 2 * this.dot;
-      };
-    };
-    this.gain.gain.setValueAtTime(0.0, t);
-  };
-
-  handlePlay(e) {
-    if (e.detail.input !== undefined) {
-      this.playString(e.detail.input);
-    } else {
-      console.log('received play event with undefined input', e);
+  componentWillReceiveProps(nextProps) {
+    this.speed(nextProps.speed);
+		this.oscillatorNode.frequency.value = nextProps.frequency;
+    if (nextProps.message !== this.props.message) {
+      this.play(nextProps.message);
     }
-  };
+  }
 
   render() {
     return (
@@ -121,6 +239,12 @@ class MorsePlayer extends Component {
       </div>
     );
   }
+}
+
+MorsePlayer.propTypes = {
+  speed: PropTypes.number.isRequired,
+  frequency: PropTypes.number.isRequired,
+  message: PropTypes.string.isRequired,
 }
 
 export default MorsePlayer;

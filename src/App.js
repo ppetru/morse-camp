@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
 import './App.css';
-import Speller from './Speller';
+import Worder from './Worder';
 
 class App extends Component {
   render() {
     return (
-      <Speller />
+      <Worder />
     );
   }
 }
