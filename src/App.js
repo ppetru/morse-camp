@@ -6,7 +6,7 @@ import Worder from './Worder';
 class App extends Component {
   render() {
     return (
-      <Worder />
+      <Worder store={this.props.store} />
     );
   }
 }

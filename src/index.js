@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import DevTools from "mobx-react-devtools";
+import WebFontLoader from 'webfontloader';
+
 import './index.css';
 import App from './App';
+import Model from './Model';
 import registerServiceWorker from './registerServiceWorker';
-import WebFontLoader from 'webfontloader';
 
 WebFontLoader.load({
   google: {
@@ -11,5 +14,16 @@ WebFontLoader.load({
   },
 });
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const store = new Model();
+
+ReactDOM.render((
+  <div>
+    <DevTools />
+    <App store={store} />
+  </div>
+  ),
+  document.getElementById('root'));
+
 registerServiceWorker();
+
+window.store = store;

@@ -106,7 +106,6 @@ class MorsePlayer extends Component {
   play = (message) => {
 		// Use already saved message if no new message is given
 		message = message || this.message;
-    console.log(message);
 
 		// nothing to do?
 		if (message === '') {
