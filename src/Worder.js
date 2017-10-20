@@ -51,12 +51,6 @@ const PlayStep = (class PlayStep extends Component {
         <Button
           raised
           primary
-        >
-          Skip
-        </Button>
-        <Button
-          raised
-          primary
           onClick={this.props.store.start}
         >
           Stop
