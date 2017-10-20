@@ -5,6 +5,7 @@ class Model {
     extendObservable(this, {
       step: "start",
       morseText: "",
+      playing: false,
       start: action(() => {
         this.step = "start";
       }),
@@ -19,6 +20,12 @@ class Model {
       }),
       clearText: action(() => {
         this.morseText = "";
+      }),
+      startPlaying: action(() => {
+        this.playing = true;
+      }),
+      stopPlaying: action(() => {
+        this.playing = false;
       }),
     })
   }

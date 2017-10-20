@@ -60,22 +60,17 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
       '<HH>':'........', // Error
   }
 
-  speed = (wpm) => {
+  get ditLength() {
     // 1.2s per dit is 1WPM
-    this.ditLength = 1.2/wpm;
-	}
-
-  frequency = hz => {
-    this.oscillator.frequency.value = hz;
-    this.rampTimeConstant = 1/hz;
+    return 1.2/this.props.speed;
   }
 
   soundOn = time => {
-    this.gain.gain.setTargetAtTime(1.0, time, this.rampTimeConstant);
+    this.gain.gain.setTargetAtTime(1.0, time, 1/this.props.frequency);
   }
 
   soundOff = time => {
-    this.gain.gain.setTargetAtTime(0.0, time, this.rampTimeConstant);
+    this.gain.gain.setTargetAtTime(0.0, time, 1/this.props.frequency);
   }
 
   playChar = (t, c) => {
@@ -100,7 +95,10 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
 
   playString = s => {
     s = s.toUpperCase();
-    var t = this.props.audioContext.currentTime;
+    this.props.store.startPlaying();
+    const oscillator = this.makeOscillator();
+    oscillator.start();
+    let t = this.props.audioContext.currentTime;
     for (var i = 0; i < s.length; i++) {
       // TODO: handle prosigns
       if (s[i] === ' ') {
@@ -112,28 +110,24 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
         console.log("Character '", s[i], "' unknown");
       };
     };
+    oscillator.stop(t);
+  }
+
+  makeOscillator = () => {
+    const oscillator = this.props.audioContext.createOscillator();
+    oscillator.connect(this.gain);
+    oscillator.frequency.value = this.props.frequency;
+    oscillator.addEventListener("ended", event => this.props.store.stopPlaying());
+    return oscillator;
   }
 
   componentDidMount() {
-    this.speed(this.props.speed);
-
-    // Volume 1 = 100%, more leads to harmonics due to overmodulation
-    this.volume = 1;
-
-    this.oscillator = this.props.audioContext.createOscillator();
     this.gain = this.props.audioContext.createGain();
-
-    this.gain.gain.setValueAtTime(0.0, this.props.audioContext.currentTime);
-    this.frequency(this.props.frequency);
-
-    this.oscillator.connect(this.gain);
-    this.oscillator.start();
-
+    this.gain.gain.value = 0;
     this.gain.connect(this.props.audioContext.destination);
 
     this.autorun = autorun(() => {
       if (this.props.store.morseText !== "") {
-        console.log("playing", this.props.store.morseText);
         this.playString(this.props.store.morseText);
         this.props.store.clearText();
       }
@@ -142,11 +136,6 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
 
   componentWillUmount() {
     this.autorun();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.speed(nextProps.speed);
-    this.frequency(nextProps.frequency);
   }
 
   render() {
