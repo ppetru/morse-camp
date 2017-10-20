@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useStrict } from 'mobx';
 import { Provider } from 'mobx-react';
 import DevTools from 'mobx-react-devtools';
 import WebFontLoader from 'webfontloader';
@@ -14,6 +15,8 @@ WebFontLoader.load({
     families: ['Roboto:300,400,500,700', 'Material Icons'],
   },
 });
+
+useStrict(true);
 
 const store = new Model();
 
