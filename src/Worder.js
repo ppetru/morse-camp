@@ -9,6 +9,7 @@ import {
 } from 'react-md';
 
 import MorsePlayer from './MorsePlayer';
+import WORDS from './words';
 
 const StartStep = inject("store")(observer(({ store }) =>
   <div>
@@ -47,20 +48,20 @@ const PlayingStatus = inject("store")(observer(({ store }) => (
                 : <h1>Waiting...</h1>
 )))
 
-const ShowStep = inject("store")(observer(({ store, word }) => (
+const ShowStep = inject("store")(observer(({ store, word, resultCallback }) => (
   <div>
     <h1>The word is: {word}</h1>
     <Button
       raised
       primary
-      onClick={store.play}
+      onClick={() => resultCallback(true)}
     >
       Correct
     </Button>
     <Button
       raised
       primary
-      onClick={store.play}
+      onClick={() => resultCallback(false)}
     >
       Incorrect
     </Button>
@@ -75,11 +76,12 @@ const ShowStep = inject("store")(observer(({ store, word }) => (
 )))
 ShowStep.propTypes = {
   word: PropTypes.string.isRequired,
+  resultCallback: PropTypes.func.isRequired,
 }
 
 const PlayStep = inject("store")(observer(class PlayStep extends Component {
   pickWord = () => {
-    return "e";
+    return WORDS[Math.floor(Math.random() * WORDS.length)];
   }
 
   componentDidMount() {
@@ -104,12 +106,17 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
     }
   }
 
+  onResult = success => {
+    this.word = this.pickWord();
+    this.props.store.play();
+  }
+
   render() {
     let content;
     if (this.props.store.step === "play") {
       content = <PlayingButtons />
     } else {
-      content = <ShowStep word={this.word} />
+      content = <ShowStep word={this.word} resultCallback={this.onResult} />
     }
     return (
       <div>
