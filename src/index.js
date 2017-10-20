@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import DevTools from "mobx-react-devtools";
+import { Provider } from 'mobx-react';
+import DevTools from 'mobx-react-devtools';
 import WebFontLoader from 'webfontloader';
 
 import './index.css';
@@ -19,7 +20,9 @@ const store = new Model();
 ReactDOM.render((
   <div>
     <DevTools />
-    <App store={store} />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </div>
   ),
   document.getElementById('root'));

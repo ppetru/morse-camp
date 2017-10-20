@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 import {
   Button,
@@ -9,7 +9,7 @@ import {
 
 import MorsePlayer from './MorsePlayer';
 
-const StartStep = observer(class StartStep extends Component {
+const StartStep = inject("store")(observer(class StartStep extends Component {
   render() {
     return (
       <div>
@@ -24,11 +24,11 @@ const StartStep = observer(class StartStep extends Component {
       </div>
     )
   }
-})
+}))
 StartStep.propTypes = {
 }
 
-const PlayStep = (class PlayStep extends Component {
+const PlayStep = inject("store")(observer(class PlayStep extends Component {
   pickWord() {
     return "hi";
   }
@@ -58,11 +58,11 @@ const PlayStep = (class PlayStep extends Component {
       </div>
     )
   }
-})
+}))
 PlayStep.propTypes = {
 }
 
-const ShowStep = observer(class ShowStep extends Component {
+const ShowStep = inject("store")(observer(class ShowStep extends Component {
   render() {
     return (
       <div>
@@ -84,11 +84,11 @@ const ShowStep = observer(class ShowStep extends Component {
       </div>
     )
   }
-})
+}))
 ShowStep.propTypes = {
 }
 
-const Worder = observer(class Worder extends Component {
+const Worder = inject("store")(observer(class Worder extends Component {
   render() {
     var step;
     switch (this.props.store.step) {
@@ -111,7 +111,7 @@ const Worder = observer(class Worder extends Component {
       </Paper>
     )
   }
-})
+}))
   /*
         <MorsePlayer
           speed={30}
