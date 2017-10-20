@@ -58,70 +58,24 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
       '<KN>':'-.--.', // Invitation to a specific named station to transmit
       '<SK>':'...-.-', '<VA>':'...-.-', // End of contact
       '<HH>':'........', // Error
-
-      ' ':' ',
-      '\t':'  ',
-      '\n':'   ',
   }
 
   speed = (wpm) => {
-		// 1200ms per dit is 1WPM
-		this.ditLength = 1200/wpm;
+    // 1.2s per dit is 1WPM
+    this.ditLength = 1.2/wpm;
 	}
 
-  foo = (message) => {
-    let character = 'a';
-		var lengthSum=0;
-		var now = this.props.audioContext.currentTime;
-		// set ramp time to 2 periods
-		var rampTime = 1/this.oscillator.frequency.value*2;
-		for(let i=0;i<character.length;i++) {
-			// iterate dits and dahs
-			if (character[i]==='.') {
-				this.gain.gain.linearRampToValueAtTime(
-					0, now + (lengthSum+1)*this.ditLength/1000);
-				this.gain.gain.linearRampToValueAtTime(
-					this.volume, now + (lengthSum+1)*this.ditLength/1000 +
-					rampTime);
-
-				this.gain.gain.linearRampToValueAtTime(
-					this.volume, now + (lengthSum+2)*this.ditLength/1000);
-				this.gain.gain.linearRampToValueAtTime(
-					0, now + (lengthSum+2)*this.ditLength/1000 +
-					rampTime);
-
-				lengthSum+=2;
-			} else if (character[i]==='-') {
-				this.gain.gain.linearRampToValueAtTime(
-					0, now + (lengthSum+1)*this.ditLength/1000);
-				this.gain.gain.linearRampToValueAtTime(
-					this.volume, now + (lengthSum+1)*this.ditLength/1000 +
-					rampTime);
-
-				this.gain.gain.linearRampToValueAtTime(
-					this.volume, now + (lengthSum+4)*this.ditLength/1000);
-				this.gain.gain.linearRampToValueAtTime(
-					0, now + (lengthSum+4)*this.ditLength/1000 +
-					rampTime);
-
-				lengthSum+=4;
-			} else if (character[i]===' ') {
-				lengthSum+=3; // plus 2 for last character and 2 for this added below = 7
-			}
-		}
-    window.setTimeout(() => {
-			this.play();
-		}, (lengthSum+2)*this.ditLength);
-		// two additional dits pause sum up to three dits between characters
-
-	} // play
+  frequency = hz => {
+    this.oscillator.frequency.value = hz;
+    this.rampTimeConstant = 1/hz;
+  }
 
   soundOn = time => {
-    this.gain.gain.setValueAtTime(1.0, time);
+    this.gain.gain.setTargetAtTime(1.0, time, this.rampTimeConstant);
   }
 
   soundOff = time => {
-    this.gain.gain.setValueAtTime(0.0, time);
+    this.gain.gain.setTargetAtTime(0.0, time, this.rampTimeConstant);
   }
 
   playChar = (t, c) => {
@@ -129,17 +83,17 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
       switch(c[i]) {
       case '.':
           this.soundOn(t);
-          t += this.ditLength/1000;
+          t += this.ditLength;
           this.soundOff(t);
           break;
       case '-':
           this.soundOn(t);
-          t += 3 * this.ditLength/1000;
+          t += 3 * this.ditLength;
           this.soundOff(t);
           break;
       default:
       }
-      t += this.ditLength/1000;
+      t += this.ditLength;
     }
     return t;
   }
@@ -150,10 +104,10 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
     for (var i = 0; i < s.length; i++) {
       // TODO: handle prosigns
       if (s[i] === ' ') {
-        t += 3 * this.ditLength/1000;
+        t += 4 * this.ditLength; // +3 after the last char = 7 for inter-word
       } else if (this.morseCodes[s[i]] !== undefined) {
         t = this.playChar(t, this.morseCodes[s[i]]);
-        t += 2 * this.ditLength/1000;
+        t += 2 * this.ditLength; // +1 after the last symbol = 3 for inter-char
       } else {
         console.log("Character '", s[i], "' unknown");
       };
@@ -170,7 +124,7 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
     this.gain = this.props.audioContext.createGain();
 
     this.gain.gain.setValueAtTime(0.0, this.props.audioContext.currentTime);
-    this.oscillator.frequency.value = this.props.frequency;
+    this.frequency(this.props.frequency);
 
     this.oscillator.connect(this.gain);
     this.oscillator.start();
@@ -192,7 +146,7 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
 
   componentWillReceiveProps(nextProps) {
     this.speed(nextProps.speed);
-		this.oscillator.frequency.value = nextProps.frequency;
+    this.frequency(nextProps.frequency);
   }
 
   render() {
