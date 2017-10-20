@@ -14,6 +14,12 @@ class Model {
       show: action(() => {
         this.step = "show";
       }),
+      playText: action(text => {
+        this.morseText = text;
+      }),
+      clearText: action(() => {
+        this.morseText = "";
+      }),
     })
   }
 }

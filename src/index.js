@@ -19,11 +19,12 @@ WebFontLoader.load({
 useStrict(true);
 
 const store = new Model();
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 ReactDOM.render((
   <div>
     <DevTools />
-    <Provider store={store}>
+    <Provider store={store} audioContext={audioContext} >
       <App />
     </Provider>
   </div>

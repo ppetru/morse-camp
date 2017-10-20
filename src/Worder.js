@@ -34,7 +34,7 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
   }
 
   componentDidMount() {
-    this.props.store.morseText = this.pickWord();
+    this.props.store.playText(this.pickWord());
   }
 
   render() {
@@ -70,14 +70,14 @@ const ShowStep = inject("store")(observer(class ShowStep extends Component {
         <Button
           raised
           primary
-          onClick={this.props.store.start}
+          onClick={this.props.store.play}
         >
           Correct
         </Button>
         <Button
           raised
           primary
-          onClick={this.props.store.start}
+          onClick={this.props.store.play}
         >
           Incorrect
         </Button>
@@ -105,6 +105,10 @@ const Worder = inject("store")(observer(class Worder extends Component {
     }
     return (
       <Paper zDepth={2} className="md-grid">
+        <MorsePlayer
+          speed={30}
+          frequency={500}
+        />
         <div className="">
           {step}
         </div>
@@ -112,13 +116,5 @@ const Worder = inject("store")(observer(class Worder extends Component {
     )
   }
 }))
-  /*
-        <MorsePlayer
-          speed={30}
-          frequency={500}
-          message={this.state.morseText}
-          audioContext={new (window.AudioContext || window.webkitAudioContext)()}
-        />
-        */
 
 export default Worder;
