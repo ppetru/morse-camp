@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { useStrict } from 'mobx';
 import { Provider } from 'mobx-react';
-import DevTools from 'mobx-react-devtools';
 import WebFontLoader from 'webfontloader';
 
 import './index.css';
@@ -23,7 +22,6 @@ const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 ReactDOM.render((
   <div>
-    <DevTools />
     <Provider store={store} audioContext={audioContext} >
       <App />
     </Provider>
