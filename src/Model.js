@@ -6,13 +6,14 @@ class Model {
       step: "start",
       morseText: "",
       playing: false,
-      start: action(() => {
+      stopRequest: false,
+      startStep: action(() => {
         this.step = "start";
       }),
-      play: action(() => {
+      playStep: action(() => {
         this.step = "play";
       }),
-      show: action(() => {
+      showStep: action(() => {
         this.step = "show";
       }),
       playText: action(text => {
@@ -21,11 +22,15 @@ class Model {
       clearText: action(() => {
         this.morseText = "";
       }),
-      startPlaying: action(() => {
+      startedPlaying: action(() => {
         this.playing = true;
       }),
-      stopPlaying: action(() => {
+      stoppedPlaying: action(() => {
         this.playing = false;
+        this.stopRequest = false;
+      }),
+      requestStopPlaying: action(() => {
+        this.stopRequest = true;
       }),
     })
   }

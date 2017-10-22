@@ -17,11 +17,24 @@ const StartStep = inject("store")(observer(({ store }) =>
     <Button
       raised
       primary
-      onClick={store.play}
+      onClick={store.playStep}
     >
       Start
     </Button>
   </div>
+))
+
+const QuitButton = inject("store")(observer(({ store }) =>
+  <Button
+    raised
+    primary
+    onClick={() => {
+      store.requestStopPlaying();
+      store.startStep()
+    }}
+  >
+    Quit
+  </Button>
 ))
 
 const PlayingButtons = inject("store")(observer(({ store }) =>
@@ -29,17 +42,11 @@ const PlayingButtons = inject("store")(observer(({ store }) =>
     <Button
       raised
       primary
-      onClick={store.show}
+      onClick={store.showStep}
     >
       Show
     </Button>
-    <Button
-      raised
-      primary
-      onClick={store.start}
-    >
-      Stop
-    </Button>
+    <QuitButton />
   </div>
 ))
 
@@ -65,13 +72,7 @@ const ShowStep = inject("store")(observer(({ store, word, resultCallback }) => (
     >
       Incorrect
     </Button>
-    <Button
-      raised
-      primary
-      onClick={store.start}
-    >
-      Stop
-    </Button>
+    <QuitButton />
   </div>
 )))
 ShowStep.propTypes = {
@@ -84,19 +85,21 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
     return WORDS[Math.floor(Math.random() * WORDS.length)];
   }
 
+  autoPlay = () => {
+    if (!this.props.store.playing) {
+      if (this.word === null) {
+        this.word = this.pickWord();
+        this.props.store.playText(this.word);
+      } else {
+        this.timeout = setTimeout(() => this.props.store.playText(this.word), 1000);
+      }
+    }
+  }
+
   componentDidMount() {
     this.word = null;
     this.timeout = null;
-    this.autorun = autorun(() => {
-      if (!this.props.store.playing) {
-        if (this.word === null) {
-          this.word = this.pickWord();
-          this.props.store.playText(this.word);
-        } else {
-          this.timeout = setTimeout(() => this.props.store.playText(this.word), 1000);
-        }
-      }
-    });
+    this.autorun = autorun(this.autoPlay);
   }
 
   componentWillUnmount() {
@@ -107,8 +110,16 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
   }
 
   onResult = success => {
-    this.word = this.pickWord();
-    this.props.store.play();
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+    this.word = null;
+    this.props.store.playStep();
+    if (this.props.store.playing) {
+      this.props.store.requestStopPlaying();
+    } else {
+      this.autoPlay();
+    }
   }
 
   render() {

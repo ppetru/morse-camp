@@ -95,9 +95,10 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
 
   playString = s => {
     s = s.toUpperCase();
-    this.props.store.startPlaying();
-    const oscillator = this.makeOscillator();
-    oscillator.start();
+    this.props.store.startedPlaying();
+    this.makeOscillator();
+    this.playing = true;
+    this.oscillator.start();
     let t = this.props.audioContext.currentTime;
     for (var i = 0; i < s.length; i++) {
       // TODO: handle prosigns
@@ -110,15 +111,17 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
         console.log("Character '", s[i], "' unknown");
       };
     };
-    oscillator.stop(t);
+    this.oscillator.stop(t);
   }
 
   makeOscillator = () => {
-    const oscillator = this.props.audioContext.createOscillator();
-    oscillator.connect(this.gain);
-    oscillator.frequency.value = this.props.frequency;
-    oscillator.addEventListener("ended", event => this.props.store.stopPlaying());
-    return oscillator;
+    this.oscillator = this.props.audioContext.createOscillator();
+    this.oscillator.connect(this.gain);
+    this.oscillator.frequency.value = this.props.frequency;
+    this.oscillator.addEventListener("ended", event => {
+      this.playing = false;
+      this.props.store.stoppedPlaying()
+    });
   }
 
   componentDidMount() {
@@ -126,16 +129,28 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
     this.gain.gain.value = 0;
     this.gain.connect(this.props.audioContext.destination);
 
-    this.autorun = autorun(() => {
+    this.playing = false;
+    this.oscillator = null;
+
+    this.watchForText = autorun(() => {
       if (this.props.store.morseText !== "") {
         this.playString(this.props.store.morseText);
         this.props.store.clearText();
       }
     });
+    this.watchForStop = autorun(() => {
+      if (this.props.store.stopRequest && this.playing) {
+        const t = this.props.audioContext.currentTime;
+        this.gain.gain.cancelScheduledValues(t);
+        this.soundOff(t + this.ditLength); // gracefully ramp down in case the tone was on
+        this.oscillator.stop(t + 7 * this.ditLength); // leave some space between words
+      }
+    });
   }
 
   componentWillUmount() {
-    this.autorun();
+    this.watchForText();
+    this.watchForStop();
   }
 
   render() {
