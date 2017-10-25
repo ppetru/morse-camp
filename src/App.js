@@ -1,14 +1,45 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { NavigationDrawer } from 'react-md';
 
 import './App.css';
+import NavItemLink from './NavItemLink';
 import Worder from './Worder';
+import Settings from './Settings';
 
-class App extends Component {
+const navItems = [{
+  label: 'Home',
+  to: '/',
+  exact: true,
+  icon: 'home',
+}, {
+  label: 'Settings',
+  to: `/settings`,
+  icon: 'settings',
+}];
+
+class App extends PureComponent {
   render() {
     return (
-      <Worder />
+      <Router>
+        <Route
+          render={({ location }) => (
+            <NavigationDrawer
+              drawerTitle="Morse Camp"
+              toolbarTitle="Morse Camp"
+              navItems={navItems.map(props => <NavItemLink {...props} key={props.to} />)}
+            >
+              <Switch key={location.key}>
+                <Route path="/settings" location={location} component={Settings} />
+                <Route location={location} render={() =>
+                    <Worder />}
+                />
+              </Switch>
+            </NavigationDrawer>
+          )}
+        />
+      </Router>
     );
   }
 }
-
 export default App;
