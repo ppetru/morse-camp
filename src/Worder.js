@@ -5,22 +5,24 @@ import { inject, observer } from 'mobx-react';
 
 import {
   Button,
-  Paper
 } from 'react-md';
 
+import './Worder.css';
 import MorsePlayer from './MorsePlayer';
 import WORDS from './words';
 
 const StartStep = inject("store")(observer(({ store }) =>
   <div>
     <h1>Get ready to listen</h1>
-    <Button
-      raised
-      primary
-      onClick={store.playStep}
-    >
-      Start
-    </Button>
+    <div className="bottomRight">
+      <Button
+        raised
+        primary
+        onClick={store.playStep}
+      >
+        Start
+      </Button>
+    </div>
   </div>
 ))
 
@@ -39,14 +41,16 @@ const QuitButton = inject("store")(observer(({ store }) =>
 
 const PlayingButtons = inject("store")(observer(({ store }) =>
   <div>
-    <Button
-      raised
-      primary
-      onClick={store.showStep}
-    >
-      Show
-    </Button>
-    <QuitButton />
+    <div className="bottomRight">
+      <Button
+        raised
+        primary
+        onClick={store.showStep}
+      >
+        Show
+      </Button>
+      <QuitButton />
+    </div>
   </div>
 ))
 
@@ -58,21 +62,23 @@ const PlayingStatus = inject("store")(observer(({ store }) => (
 const ShowStep = inject("store")(observer(({ store, word, resultCallback }) => (
   <div>
     <h1>The word is: {word}</h1>
-    <Button
-      raised
-      primary
-      onClick={() => resultCallback(true)}
-    >
-      Correct
-    </Button>
-    <Button
-      raised
-      primary
-      onClick={() => resultCallback(false)}
-    >
-      Incorrect
-    </Button>
-    <QuitButton />
+    <div className="bottomRight">
+      <Button
+        raised
+        primary
+        onClick={() => resultCallback(true)}
+      >
+        Correct
+      </Button>
+      <Button
+        raised
+        primary
+        onClick={() => resultCallback(false)}
+      >
+        Incorrect
+      </Button>
+      <QuitButton />
+    </div>
   </div>
 )))
 ShowStep.propTypes = {
@@ -151,15 +157,15 @@ const Worder = inject("store")(observer(({ store }) => {
       default:
   }
   return (
-    <Paper zDepth={2} className="md-grid">
+    <div className="md-grid">
       <MorsePlayer
         speed={30}
         frequency={500}
       />
-      <div className="">
+      <div>
         {step}
       </div>
-    </Paper>
+    </div>
   )
 }))
 
