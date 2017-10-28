@@ -50,19 +50,34 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
     return WORDS[Math.floor(Math.random() * WORDS.length)];
   }
 
+  playWord = () => {
+    const { store } = this.props;
+    if (store.isPlaying) {
+      this.playCount++;
+    }
+    this.props.store.playText(this.word);
+  }
+
+  resetWord = () => {
+    this.word = null;
+    this.playCount = 0;
+  }
+
   autoPlay = () => {
     if (!this.props.store.playing) {
       if (this.word === null) {
         this.word = this.pickWord();
-        this.props.store.playText(this.word);
+        this.playWord();
       } else {
-        this.timeout = setTimeout(() => this.props.store.playText(this.word), 1000);
+        this.timeout = setTimeout(this.playWord, 2000);
       }
     }
   }
 
   componentDidMount() {
-    this.word = null;
+    this.resetWord();
+    this.correctCount = 0;
+    this.repeatCount = 0;
     this.timeout = null;
     this.autorun = autorun(this.autoPlay);
   }
@@ -75,13 +90,20 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
   }
 
   onResult = success => {
+    const { store } = this.props;
+
+    this.repeatCount += this.playCount;
+    if (success) {
+      this.correctCount++;
+    }
+
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
-    this.word = null;
-    this.props.store.playStep();
-    if (this.props.store.playing) {
-      this.props.store.requestStopPlaying();
+    this.resetWord();
+    store.playStep();
+    if (store.playing) {
+      store.requestStopPlaying();
     } else {
       this.autoPlay();
     }
@@ -135,6 +157,11 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
         />
         <CardText>
           {text}
+          <ul>
+            <li>Correct: {this.correctCount}</li>
+            <li>Repeats: {this.repeatCount}</li>
+            <li>Ratio: {this.correctCount / this.repeatCount}</li>
+          </ul>
         </CardText>
         {actions}
       </Card>

@@ -7,6 +7,7 @@ class Model {
       morseText: "",
       playing: false,
       stopRequest: false,
+
       startStep: action(() => {
         this.step = "start";
       }),
@@ -32,6 +33,10 @@ class Model {
       requestStopPlaying: action(() => {
         this.stopRequest = true;
       }),
+
+      get isPlaying() {
+        return (this.step === "play");
+      }
     })
   }
 }
