@@ -1,9 +1,9 @@
 @import 'globals';
 
 .bottomRight {
+  @extend %md-block-centered;
   position: fixed;
   bottom: 0;
   width: 100%;
-  text-align: right;
   padding-right: 1em;
 }

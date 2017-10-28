@@ -5,6 +5,10 @@ import { inject, observer } from 'mobx-react';
 
 import {
   Button,
+  Card,
+  CardActions,
+  CardText,
+  CardTitle,
 } from 'react-md';
 
 import './Worder.css';
@@ -12,9 +16,11 @@ import MorsePlayer from './MorsePlayer';
 import WORDS from './words';
 
 const StartStep = inject("store")(observer(({ store }) =>
-  <div>
-    <h1>Get ready to listen</h1>
-    <div className="bottomRight">
+  <Card className="bottomRight">
+    <CardTitle
+      title="Get ready to listen"
+    />
+    <CardActions centered>
       <Button
         raised
         primary
@@ -22,8 +28,8 @@ const StartStep = inject("store")(observer(({ store }) =>
       >
         Start
       </Button>
-    </div>
-  </div>
+    </CardActions>
+  </Card>
 ))
 
 const QuitButton = inject("store")(observer(({ store }) =>
@@ -38,53 +44,6 @@ const QuitButton = inject("store")(observer(({ store }) =>
     Quit
   </Button>
 ))
-
-const PlayingButtons = inject("store")(observer(({ store }) =>
-  <div>
-    <div className="bottomRight">
-      <Button
-        raised
-        primary
-        onClick={store.showStep}
-      >
-        Show
-      </Button>
-      <QuitButton />
-    </div>
-  </div>
-))
-
-const PlayingStatus = inject("store")(observer(({ store }) => (
-  store.playing ? <h1>Playing...</h1>
-                : <h1>Waiting...</h1>
-)))
-
-const ShowStep = inject("store")(observer(({ store, word, resultCallback }) => (
-  <div>
-    <h1>The word is: {word}</h1>
-    <div className="bottomRight">
-      <Button
-        raised
-        primary
-        onClick={() => resultCallback(true)}
-      >
-        Correct
-      </Button>
-      <Button
-        raised
-        primary
-        onClick={() => resultCallback(false)}
-      >
-        Incorrect
-      </Button>
-      <QuitButton />
-    </div>
-  </div>
-)))
-ShowStep.propTypes = {
-  word: PropTypes.string.isRequired,
-  resultCallback: PropTypes.func.isRequired,
-}
 
 const PlayStep = inject("store")(observer(class PlayStep extends Component {
   pickWord = () => {
@@ -129,17 +88,56 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
   }
 
   render() {
-    let content;
-    if (this.props.store.step === "play") {
-      content = <PlayingButtons />
+    const { store } = this.props;
+    let actions, text;
+
+    if (store.step === "play") {
+      actions = (
+        <CardActions centered>
+          <Button
+            raised
+            primary
+            onClick={store.showStep}
+          >
+            Show
+          </Button>
+          <QuitButton />
+        </CardActions>
+      )
+      text = <p>Decode the text press 'Show' when ready</p>
     } else {
-      content = <ShowStep word={this.word} resultCallback={this.onResult} />
+      actions = (
+        <CardActions centered>
+          <Button
+            raised
+            primary
+            onClick={() => this.onResult(true)}
+          >
+            Correct
+          </Button>
+          <Button
+            raised
+            primary
+            onClick={() => this.onResult(false)}
+          >
+            Incorrect
+          </Button>
+          <QuitButton />
+        </CardActions>
+      )
+      text = <p>The text was: <b>{this.word}</b></p>
     }
     return (
-      <div>
-        <PlayingStatus />
-        {content}
-      </div>
+      <Card className="bottomRight">
+        <CardTitle
+          title="Listen"
+          subtitle={store.playing ? "Playing..." : "Waiting..."}
+        />
+        <CardText>
+          {text}
+        </CardText>
+        {actions}
+      </Card>
     )
   }
 }))
