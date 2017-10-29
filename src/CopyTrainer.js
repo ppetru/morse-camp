@@ -12,7 +12,6 @@ import {
 } from 'react-md';
 
 import './CopyTrainer.css';
-import MorsePlayer from './MorsePlayer';
 import WORDS from './words';
 
 const StartStep = inject("store")(observer(({ store }) =>
@@ -183,10 +182,6 @@ const CopyTrainer = inject("store")(observer(({ store }) => {
   }
   return (
     <div className="md-grid">
-      <MorsePlayer
-        speed={30}
-        frequency={500}
-      />
       <div>
         {step}
       </div>

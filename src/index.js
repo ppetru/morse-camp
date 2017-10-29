@@ -6,6 +6,7 @@ import WebFontLoader from 'webfontloader';
 
 import './index.css';
 import App from './App';
+import MorsePlayer from './MorsePlayer';
 import RootStore from './stores/RootStore';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -19,10 +20,11 @@ useStrict(true);
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const store = new RootStore();
+const player = new MorsePlayer(30, 500, store.morse, audioContext);
 
 ReactDOM.render((
   <div>
-    <Provider store={store} audioContext={audioContext} >
+    <Provider store={store}>
       <App />
     </Provider>
   </div>
@@ -32,3 +34,4 @@ ReactDOM.render((
 registerServiceWorker();
 
 window.store = store;
+window.player = player;

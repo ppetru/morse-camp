@@ -1,11 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { autorun } from 'mobx';
-import { inject, observer } from 'mobx-react';
 
-
-const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer extends Component {
-
+class MorsePlayer {
   morseCodes = {
       'A':'.-',
       'B':'-...',
@@ -62,15 +57,15 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
 
   get ditLength() {
     // 1.2s per dit is 1WPM
-    return 1.2/this.props.speed;
+    return 1.2/this.speed;
   }
 
   soundOn = time => {
-    this.gain.gain.setTargetAtTime(1.0, time, 1/this.props.frequency);
+    this.gain.gain.setTargetAtTime(1.0, time, 1/this.frequency);
   }
 
   soundOff = time => {
-    this.gain.gain.setTargetAtTime(0.0, time, 1/this.props.frequency);
+    this.gain.gain.setTargetAtTime(0.0, time, 1/this.frequency);
   }
 
   playChar = (t, c) => {
@@ -95,11 +90,11 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
 
   playString = s => {
     s = s.toUpperCase();
-    this.props.store.morse.startedPlaying();
+    this.store.startedPlaying();
     this.makeOscillator();
     this.playing = true;
     this.oscillator.start();
-    let t = this.props.audioContext.currentTime;
+    let t = this.audioContext.currentTime;
     for (var i = 0; i < s.length; i++) {
       // TODO: handle prosigns
       if (s[i] === ' ') {
@@ -115,57 +110,43 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
   }
 
   makeOscillator = () => {
-    this.oscillator = this.props.audioContext.createOscillator();
+    this.oscillator = this.audioContext.createOscillator();
     this.oscillator.connect(this.gain);
-    this.oscillator.frequency.value = this.props.frequency;
+    this.oscillator.frequency.value = this.frequency;
     this.oscillator.addEventListener("ended", event => {
       this.playing = false;
-      this.props.store.morse.stoppedPlaying()
+      this.store.stoppedPlaying()
     });
   }
 
-  componentDidMount() {
-    const { store } = this.props;
+  constructor(speed, frequency, store, audioContext) {
+    this.speed = speed;
+    this.frequency = frequency;
+    this.store = store;
+    this.audioContext = audioContext;
 
-    this.gain = this.props.audioContext.createGain();
+    this.gain = this.audioContext.createGain();
     this.gain.gain.value = 0;
-    this.gain.connect(this.props.audioContext.destination);
+    this.gain.connect(this.audioContext.destination);
 
     this.playing = false;
     this.oscillator = null;
 
     this.watchForText = autorun(() => {
-      if (store.morse.morseText !== "") {
-        this.playString(store.morse.morseText);
-        store.morse.clearText();
+      if (store.morseText !== "") {
+        this.playString(store.morseText);
+        store.clearText();
       }
     });
     this.watchForStop = autorun(() => {
-      if (store.morse.stopRequest && this.playing) {
-        const t = this.props.audioContext.currentTime;
+      if (store.stopRequest && this.playing) {
+        const t = this.audioContext.currentTime;
         this.gain.gain.cancelScheduledValues(t);
         this.soundOff(t + this.ditLength); // gracefully ramp down in case the tone was on
         this.oscillator.stop(t + 7 * this.ditLength); // leave some space between words
       }
     });
   }
-
-  componentWillUmount() {
-    this.watchForText();
-    this.watchForStop();
-  }
-
-  render() {
-    return (
-      <div>
-      </div>
-    );
-  }
-}))
-
-MorsePlayer.propTypes = {
-  speed: PropTypes.number.isRequired,
-  frequency: PropTypes.number.isRequired,
 }
 
 export default MorsePlayer;
