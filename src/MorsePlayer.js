@@ -95,7 +95,7 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
 
   playString = s => {
     s = s.toUpperCase();
-    this.props.store.startedPlaying();
+    this.props.store.morse.startedPlaying();
     this.makeOscillator();
     this.playing = true;
     this.oscillator.start();
@@ -120,11 +120,13 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
     this.oscillator.frequency.value = this.props.frequency;
     this.oscillator.addEventListener("ended", event => {
       this.playing = false;
-      this.props.store.stoppedPlaying()
+      this.props.store.morse.stoppedPlaying()
     });
   }
 
   componentDidMount() {
+    const { store } = this.props;
+
     this.gain = this.props.audioContext.createGain();
     this.gain.gain.value = 0;
     this.gain.connect(this.props.audioContext.destination);
@@ -133,13 +135,13 @@ const MorsePlayer = inject("store", "audioContext")(observer(class MorsePlayer e
     this.oscillator = null;
 
     this.watchForText = autorun(() => {
-      if (this.props.store.morseText !== "") {
-        this.playString(this.props.store.morseText);
-        this.props.store.clearText();
+      if (store.morse.morseText !== "") {
+        this.playString(store.morse.morseText);
+        store.morse.clearText();
       }
     });
     this.watchForStop = autorun(() => {
-      if (this.props.store.stopRequest && this.playing) {
+      if (store.morse.stopRequest && this.playing) {
         const t = this.props.audioContext.currentTime;
         this.gain.gain.cancelScheduledValues(t);
         this.soundOff(t + this.ditLength); // gracefully ramp down in case the tone was on

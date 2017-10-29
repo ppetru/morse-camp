@@ -6,7 +6,7 @@ import WebFontLoader from 'webfontloader';
 
 import './index.css';
 import App from './App';
-import Model from './Model';
+import RootStore from './stores/RootStore';
 import registerServiceWorker from './registerServiceWorker';
 
 WebFontLoader.load({
@@ -17,8 +17,8 @@ WebFontLoader.load({
 
 useStrict(true);
 
-const store = new Model();
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const store = new RootStore();
 
 ReactDOM.render((
   <div>

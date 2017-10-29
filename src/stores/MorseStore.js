@@ -1,22 +1,14 @@
 import { action, extendObservable } from 'mobx';
 
-class Model {
-  constructor() {
+class MorseStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore
+
     extendObservable(this, {
-      step: "start",
       morseText: "",
       playing: false,
       stopRequest: false,
 
-      startStep: action(() => {
-        this.step = "start";
-      }),
-      playStep: action(() => {
-        this.step = "play";
-      }),
-      showStep: action(() => {
-        this.step = "show";
-      }),
       playText: action(text => {
         this.morseText = text;
       }),
@@ -33,12 +25,8 @@ class Model {
       requestStopPlaying: action(() => {
         this.stopRequest = true;
       }),
-
-      get isPlaying() {
-        return (this.step === "play");
-      }
     })
   }
 }
 
-export default Model;
+export default MorseStore;

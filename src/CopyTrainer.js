@@ -24,7 +24,7 @@ const StartStep = inject("store")(observer(({ store }) =>
       <Button
         raised
         primary
-        onClick={store.playStep}
+        onClick={store.copyTrainer.playStep}
       >
         Start
       </Button>
@@ -37,8 +37,8 @@ const QuitButton = inject("store")(observer(({ store }) =>
     raised
     primary
     onClick={() => {
-      store.requestStopPlaying();
-      store.startStep()
+      store.morse.requestStopPlaying();
+      store.copyTrainer.startStep()
     }}
   >
     Quit
@@ -52,10 +52,10 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
 
   playWord = () => {
     const { store } = this.props;
-    if (store.isPlaying) {
+    if (store.copyTrainer.isPlaying) {
       this.playCount++;
     }
-    this.props.store.playText(this.word);
+    store.morse.playText(this.word);
   }
 
   resetWord = () => {
@@ -64,7 +64,7 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
   }
 
   autoPlay = () => {
-    if (!this.props.store.playing) {
+    if (!this.props.store.morse.playing) {
       if (this.word === null) {
         this.word = this.pickWord();
         this.playWord();
@@ -101,9 +101,9 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
       clearTimeout(this.timeout);
     }
     this.resetWord();
-    store.playStep();
-    if (store.playing) {
-      store.requestStopPlaying();
+    store.copyTrainer.playStep();
+    if (store.morse.playing) {
+      store.morse.requestStopPlaying();
     } else {
       this.autoPlay();
     }
@@ -113,13 +113,13 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
     const { store } = this.props;
     let actions, text;
 
-    if (store.step === "play") {
+    if (store.copyTrainer.step === "play") {
       actions = (
         <CardActions centered>
           <Button
             raised
             primary
-            onClick={store.showStep}
+            onClick={store.copyTrainer.showStep}
           >
             Show
           </Button>
@@ -153,7 +153,7 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
       <Card className="bottomRight">
         <CardTitle
           title="Listen"
-          subtitle={store.playing ? "Playing..." : "Waiting..."}
+          subtitle={store.morse.playing ? "Playing..." : "Waiting..."}
         />
         <CardText>
           {text}
@@ -171,7 +171,7 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
 
 const CopyTrainer = inject("store")(observer(({ store }) => {
   let step;
-  switch (store.step) {
+  switch (store.copyTrainer.step) {
       case "start":
         step = <StartStep />
         break;
