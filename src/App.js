@@ -4,7 +4,7 @@ import { NavigationDrawer } from 'react-md';
 
 import './App.css';
 import NavItemLink from './NavItemLink';
-import Worder from './Worder';
+import CopyTrainer from './CopyTrainer';
 import Settings from './Settings';
 
 const navItems = [{
@@ -32,7 +32,7 @@ class App extends PureComponent {
               <Switch key={location.key}>
                 <Route path="/settings" location={location} component={Settings} />
                 <Route location={location} render={() =>
-                    <Worder />}
+                    <CopyTrainer />}
                 />
               </Switch>
             </NavigationDrawer>

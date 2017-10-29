@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from 'react-md';
 
-import './Worder.css';
+import './CopyTrainer.css';
 import MorsePlayer from './MorsePlayer';
 import WORDS from './words';
 
@@ -169,7 +169,7 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
   }
 }))
 
-const Worder = inject("store")(observer(({ store }) => {
+const CopyTrainer = inject("store")(observer(({ store }) => {
   let step;
   switch (store.step) {
       case "start":
@@ -194,4 +194,4 @@ const Worder = inject("store")(observer(({ store }) => {
   )
 }))
 
-export default Worder;
+export default CopyTrainer;
