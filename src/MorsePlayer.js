@@ -1,4 +1,3 @@
-import { autorun } from 'mobx';
 
 class MorsePlayer {
   morseCodes = {
@@ -119,6 +118,15 @@ class MorsePlayer {
     });
   }
 
+  forceStop = () => {
+    if (this.playing) {
+      const t = this.audioContext.currentTime;
+      this.gain.gain.cancelScheduledValues(t);
+      this.soundOff(t + this.ditLength); // gracefully ramp down in case the tone was on
+      this.oscillator.stop(t + 7 * this.ditLength); // leave some space between words
+    }
+  }
+
   constructor(speed, frequency, store, audioContext) {
     this.speed = speed;
     this.frequency = frequency;
@@ -131,21 +139,6 @@ class MorsePlayer {
 
     this.playing = false;
     this.oscillator = null;
-
-    this.watchForText = autorun(() => {
-      if (store.morseText !== "") {
-        this.playString(store.morseText);
-        store.clearText();
-      }
-    });
-    this.watchForStop = autorun(() => {
-      if (store.stopRequest && this.playing) {
-        const t = this.audioContext.currentTime;
-        this.gain.gain.cancelScheduledValues(t);
-        this.soundOff(t + this.ditLength); // gracefully ramp down in case the tone was on
-        this.oscillator.stop(t + 7 * this.ditLength); // leave some space between words
-      }
-    });
   }
 }
 

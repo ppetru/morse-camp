@@ -24,7 +24,7 @@ const player = new MorsePlayer(30, 500, store.morse, audioContext);
 
 ReactDOM.render((
   <div>
-    <Provider store={store}>
+    <Provider store={store} morsePlayer={player} >
       <App />
     </Provider>
   </div>
@@ -34,4 +34,3 @@ ReactDOM.render((
 registerServiceWorker();
 
 window.store = store;
-window.player = player;

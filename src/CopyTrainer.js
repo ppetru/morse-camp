@@ -31,12 +31,12 @@ const StartStep = inject("store")(observer(({ store }) =>
   </Card>
 ))
 
-const QuitButton = inject("store")(observer(({ store }) =>
+const QuitButton = inject("store", "morsePlayer")(observer(({ store, morsePlayer }) =>
   <Button
     raised
     primary
     onClick={() => {
-      store.morse.requestStopPlaying();
+      morsePlayer.forceStop();
       store.copyTrainer.startStep()
     }}
   >
@@ -44,17 +44,17 @@ const QuitButton = inject("store")(observer(({ store }) =>
   </Button>
 ))
 
-const PlayStep = inject("store")(observer(class PlayStep extends Component {
+const PlayStep = inject("store", "morsePlayer")(observer(class PlayStep extends Component {
   pickWord = () => {
     return WORDS[Math.floor(Math.random() * WORDS.length)];
   }
 
   playWord = () => {
-    const { store } = this.props;
+    const { store, morsePlayer } = this.props;
     if (store.copyTrainer.isPlaying) {
       this.playCount++;
     }
-    store.morse.playText(this.word);
+    morsePlayer.playString(this.word);
   }
 
   resetWord = () => {
@@ -89,7 +89,7 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
   }
 
   onResult = success => {
-    const { store } = this.props;
+    const { store, morsePlayer } = this.props;
 
     this.repeatCount += this.playCount;
     if (success) {
@@ -102,7 +102,7 @@ const PlayStep = inject("store")(observer(class PlayStep extends Component {
     this.resetWord();
     store.copyTrainer.playStep();
     if (store.morse.playing) {
-      store.morse.requestStopPlaying();
+      morsePlayer.forceStop();
     } else {
       this.autoPlay();
     }
