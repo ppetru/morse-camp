@@ -15,125 +15,171 @@ import './CopyTrainer.css';
 import WORDS from './words';
 
 
-const PlayLoop = inject("store", "morsePlayer")(observer(class PlayLoop extends Component {
+const PlayHiddenCard = inject("store")(observer(({ store, onShow }) =>
+  <Card className="bottomRight">
+    <CardTitle
+      title="Listen"
+      subtitle={store.morse.playing ? "Playing..." : "Waiting..."}
+    />
+    <CardText>
+      <p>Decode the text and press 'Show' when ready</p>
+    </CardText>
+    <CardActions centered>
+      <Button
+        raised
+        primary
+        onClick={onShow}
+      >
+        Show
+      </Button>
+    </CardActions>
+  </Card>
+))
+PlayHiddenCard.propTypes = {
+  onShow: PropTypes.func.isRequired,
+}
+
+
+const PlayVisibleCard = inject("store")(observer(({ store, text, onCorrect, onIncorrect }) =>
+  <Card className="bottomRight">
+    <CardTitle
+      title="Listen"
+      subtitle={store.morse.playing ? "Playing..." : "Waiting..."}
+    />
+    <CardText>
+      <p>The text was: <b>{text}</b></p>
+    </CardText>
+    <CardActions centered>
+      <Button
+        raised
+        primary
+        onClick={onCorrect}
+      >
+        Correct
+      </Button>
+      <Button
+        raised
+        primary
+        onClick={onIncorrect}
+      >
+        Incorrect
+      </Button>
+    </CardActions>
+  </Card>
+))
+PlayVisibleCard.propTypes = {
+  text: PropTypes.string.isRequired,
+  onCorrect: PropTypes.func.isRequired,
+  onIncorrect: PropTypes.func.isRequired,
+}
+
+
+const PlayText = inject("store", "morsePlayer")(observer(class PlayText extends Component {
   state = {
     hidden: true,
   }
 
-  pickWord = () => {
-    return WORDS[Math.floor(Math.random() * WORDS.length)];
-  }
+  playText = () => {
+    const { morsePlayer, text } = this.props;
+    const { hidden } = this.state;
 
-  playWord = () => {
-    if (this.state.hidden) {
+    if (hidden) {
       this.playCount++;
     }
-    this.props.morsePlayer.playString(this.word);
+    morsePlayer.playString(text);
   }
 
-  resetWord = () => {
-    this.word = null;
-    this.playCount = 0;
-    this.setState({ hidden: true });
-  }
-
-  autoPlay = () => {
+  playLoop = () => {
     if (!this.props.store.morse.playing) {
-      if (this.word === null) {
-        this.word = this.pickWord();
-        this.playWord();
+      if (this.playCount === 0) {
+        this.playText();
       } else {
-        this.timeout = setTimeout(this.playWord, 2000);
+        this.timeout = setTimeout(this.playText, 2000);
       }
     }
   }
 
-  componentDidMount() {
-    this.setState({ hidden: true });
-    this.resetWord();
-    this.timeout = null;
-    this.autorun = autorun(this.autoPlay);
+  start = () => {
+    this.playCount = 0;
+    this.autorun = autorun(this.playLoop);
+  }
+
+  stop = () => {
+    this.autorun();
+    clearTimeout(this.timeout);
+    this.props.morsePlayer.forceStop();
+  }
+
+  componentWillMount() {
+    this.start();
   }
 
   componentWillUnmount() {
-    this.autorun();
-    if (this.timeout) {
-      clearTimeout(this.timeout);
+    this.stop();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.text !== this.props.text) {
+      this.stop();
+      this.setState({ hidden: true });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.text !== this.props.text) {
+      this.start();
     }
   }
 
   onResult = success => {
-    const { store, morsePlayer, onResult } = this.props;
-
-    onResult(success, this.playCount);
-
-    if (this.timeout) {
-      clearTimeout(this.timeout);
-    }
-    this.resetWord();
-    if (store.morse.playing) {
-      morsePlayer.forceStop();
-    } else {
-      this.autoPlay();
-    }
+    this.stop();
+    this.props.onResult(success, this.playCount);
   }
 
   render() {
-    const { store } = this.props;
-    const { hidden } = this.state;
-    let actions, text;
-
-    if (hidden) {
-      actions = (
-        <CardActions centered>
-          <Button
-            raised
-            primary
-            onClick={() => this.setState({ hidden: false })}
-          >
-            Show
-          </Button>
-        </CardActions>
-      )
-      text = <p>Decode the text and press 'Show' when ready</p>
+    if (this.state.hidden) {
+      return <PlayHiddenCard onShow={() => this.setState({ hidden: false })} />
     } else {
-      actions = (
-        <CardActions centered>
-          <Button
-            raised
-            primary
-            onClick={() => this.onResult(true)}
-          >
-            Correct
-          </Button>
-          <Button
-            raised
-            primary
-            onClick={() => this.onResult(false)}
-          >
-            Incorrect
-          </Button>
-        </CardActions>
-      )
-      text = <p>The text was: <b>{this.word}</b></p>
+      return <PlayVisibleCard
+        text={this.props.text}
+        onCorrect={() => this.onResult(true)}
+        onIncorrect={() => this.onResult(false)}
+      />
     }
-    return (
-      <Card className="bottomRight">
-        <CardTitle
-          title="Listen"
-          subtitle={store.morse.playing ? "Playing..." : "Waiting..."}
-        />
-        <CardText>
-          {text}
-        </CardText>
-        {actions}
-      </Card>
-    )
+
   }
 }))
+PlayText.propTypes = {
+  onResult: PropTypes.func.isRequired,
+  text: PropTypes.string.isRequired,
+}
+
+
+class PlayLoop extends Component {
+  pickText = () => {
+    return WORDS[Math.floor(Math.random() * WORDS.length)];
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = { text: this.pickText() };
+  }
+
+  onResult = (success, count) => {
+    this.props.onResult(success, count);
+    this.setState({ text: this.pickText() });
+  }
+
+  render() {
+    return (
+      <PlayText text={this.state.text} onResult={this.onResult} />
+    )
+  }
+}
 PlayLoop.propTypes = {
   onResult: PropTypes.func.isRequired,
 };
+
 
 const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer extends Component {
   state = {
@@ -159,7 +205,6 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
   }
 
   render () {
-    const { store } = this.props;
     const { active, repeatCount, correctCount } = this.state;
 
     var button;

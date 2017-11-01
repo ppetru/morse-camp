@@ -114,7 +114,7 @@ class MorsePlayer {
     this.oscillator.frequency.value = this.frequency;
     this.oscillator.addEventListener("ended", event => {
       this.playing = false;
-      this.store.stoppedPlaying()
+      this.store.stoppedPlaying();
     });
   }
 

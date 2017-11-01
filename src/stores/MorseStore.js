@@ -12,7 +12,6 @@ class MorseStore {
       }),
       stoppedPlaying: action(() => {
         this.playing = false;
-        this.stopRequest = false;
       }),
     })
   }
