@@ -14,52 +14,27 @@ import {
 import './CopyTrainer.css';
 import WORDS from './words';
 
-const StartStep = inject("store")(observer(({ store }) =>
-  <Card className="bottomRight">
-    <CardTitle
-      title="Get ready to listen"
-    />
-    <CardActions centered>
-      <Button
-        raised
-        primary
-        onClick={store.copyTrainer.playStep}
-      >
-        Start
-      </Button>
-    </CardActions>
-  </Card>
-))
 
-const QuitButton = inject("store", "morsePlayer")(observer(({ store, morsePlayer }) =>
-  <Button
-    raised
-    primary
-    onClick={() => {
-      morsePlayer.forceStop();
-      store.copyTrainer.startStep()
-    }}
-  >
-    Quit
-  </Button>
-))
+const PlayLoop = inject("store", "morsePlayer")(observer(class PlayLoop extends Component {
+  state = {
+    hidden: true,
+  }
 
-const PlayStep = inject("store", "morsePlayer")(observer(class PlayStep extends Component {
   pickWord = () => {
     return WORDS[Math.floor(Math.random() * WORDS.length)];
   }
 
   playWord = () => {
-    const { store, morsePlayer } = this.props;
-    if (store.copyTrainer.isPlaying) {
+    if (this.state.hidden) {
       this.playCount++;
     }
-    morsePlayer.playString(this.word);
+    this.props.morsePlayer.playString(this.word);
   }
 
   resetWord = () => {
     this.word = null;
     this.playCount = 0;
+    this.setState({ hidden: true });
   }
 
   autoPlay = () => {
@@ -74,9 +49,8 @@ const PlayStep = inject("store", "morsePlayer")(observer(class PlayStep extends 
   }
 
   componentDidMount() {
+    this.setState({ hidden: true });
     this.resetWord();
-    this.correctCount = 0;
-    this.repeatCount = 0;
     this.timeout = null;
     this.autorun = autorun(this.autoPlay);
   }
@@ -89,18 +63,14 @@ const PlayStep = inject("store", "morsePlayer")(observer(class PlayStep extends 
   }
 
   onResult = success => {
-    const { store, morsePlayer } = this.props;
+    const { store, morsePlayer, onResult } = this.props;
 
-    this.repeatCount += this.playCount;
-    if (success) {
-      this.correctCount++;
-    }
+    onResult(success, this.playCount);
 
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
     this.resetWord();
-    store.copyTrainer.playStep();
     if (store.morse.playing) {
       morsePlayer.forceStop();
     } else {
@@ -110,22 +80,22 @@ const PlayStep = inject("store", "morsePlayer")(observer(class PlayStep extends 
 
   render() {
     const { store } = this.props;
+    const { hidden } = this.state;
     let actions, text;
 
-    if (store.copyTrainer.step === "play") {
+    if (hidden) {
       actions = (
         <CardActions centered>
           <Button
             raised
             primary
-            onClick={store.copyTrainer.showStep}
+            onClick={() => this.setState({ hidden: false })}
           >
             Show
           </Button>
-          <QuitButton />
         </CardActions>
       )
-      text = <p>Decode the text press 'Show' when ready</p>
+      text = <p>Decode the text and press 'Show' when ready</p>
     } else {
       actions = (
         <CardActions centered>
@@ -143,7 +113,6 @@ const PlayStep = inject("store", "morsePlayer")(observer(class PlayStep extends 
           >
             Incorrect
           </Button>
-          <QuitButton />
         </CardActions>
       )
       text = <p>The text was: <b>{this.word}</b></p>
@@ -156,37 +125,71 @@ const PlayStep = inject("store", "morsePlayer")(observer(class PlayStep extends 
         />
         <CardText>
           {text}
-          <ul>
-            <li>Correct: {this.correctCount}</li>
-            <li>Repeats: {this.repeatCount}</li>
-            <li>Ratio: {this.correctCount / this.repeatCount}</li>
-          </ul>
         </CardText>
         {actions}
       </Card>
     )
   }
 }))
+PlayLoop.propTypes = {
+  onResult: PropTypes.func.isRequired,
+};
 
-const CopyTrainer = inject("store")(observer(({ store }) => {
-  let step;
-  switch (store.copyTrainer.step) {
-      case "start":
-        step = <StartStep />
-        break;
-      case "play":
-      case "show":
-        step = <PlayStep />
-        break;
-      default:
+const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer extends Component {
+  state = {
+    active: false,
+    repeatCount: 0,
+    correctCount: 0,
   }
-  return (
-    <div className="md-grid">
+
+  start = () => {
+    this.setState({ active: true });
+  }
+
+  stop = () => {
+    this.props.morsePlayer.forceStop();
+    this.setState({ active: false });
+  }
+
+  onResult = (success, repeats) => {
+    this.setState((prevState, props) => ({
+      repeatCount: prevState.repeatCount + repeats,
+      correctCount: prevState.correctCount + (success ? 1 : 0),
+    }))
+  }
+
+  render () {
+    const { store } = this.props;
+    const { active, repeatCount, correctCount } = this.state;
+
+    var button;
+    if (active) {
+      button = <Button raised primary onClick={this.stop}>
+        Stop
+      </Button>
+    } else {
+      button = <Button raised primary onClick={this.start}>
+        Start
+      </Button>
+    }
+
+    const ratio = (correctCount / repeatCount) * 100;
+
+    return (
       <div>
-        {step}
+        <Card>
+          <CardTitle title="Copy Trainer" />
+          <CardText>
+            <p>Success ratio: {ratio.toFixed()}%</p>
+          </CardText>
+          <CardActions centered>
+            {button}
+          </CardActions>
+        </Card>
+        {active && <PlayLoop onResult={this.onResult} />}
       </div>
-    </div>
-  )
+    )
+  }
 }))
 
 export default CopyTrainer;
