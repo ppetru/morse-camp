@@ -184,8 +184,11 @@ PlayLoop.propTypes = {
 const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer extends Component {
   state = {
     active: false,
-    repeatCount: 0,
-    correctCount: 0,
+    ratio: 0,
+  }
+
+  componentWillMount() {
+    this.results = [];
   }
 
   start = () => {
@@ -198,14 +201,17 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
   }
 
   onResult = (success, repeats) => {
-    this.setState((prevState, props) => ({
-      repeatCount: prevState.repeatCount + repeats,
-      correctCount: prevState.correctCount + (success ? 1 : 0),
-    }))
+    if (this.results.push([success, repeats]) > 20) {
+      this.results.shift();
+    }
+    const total = this.results.reduce((sum, value) =>
+      [sum[0]+value[0], sum[1]+value[1]], [0, 0]);
+    const ratio = (total[0] / total[1]) * 100;
+    this.setState({ ratio });
   }
 
   render () {
-    const { active, repeatCount, correctCount } = this.state;
+    const { active, ratio } = this.state;
 
     var button;
     if (active) {
@@ -217,8 +223,6 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
         Start
       </Button>
     }
-
-    const ratio = (correctCount / repeatCount) * 100;
 
     return (
       <div>
