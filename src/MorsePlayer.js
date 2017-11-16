@@ -43,15 +43,13 @@ class MorsePlayer {
       ',':'--..--',
       '?':'..--..',
 
-      '<AR>':'.-.-.', // Stop copying (end of message)
-      '<AS>':'.-...', // Wait
-      '<BK>':'-...-.-', // BreaK
-      '<BT>':'-...-', // Space down two lines (new paragraph)
-      '<CL>':'-.-..-..', // CLosing down
-      '<CT>':'-.-.-', '<KA>':'-.-.-', // Attention, Commencing Transmission
-      '<KN>':'-.--.', // Invitation to a specific named station to transmit
-      '<SK>':'...-.-', '<VA>':'...-.-', // End of contact
-      '<HH>':'........', // Error
+      '<AR>':'.-.-.',
+      '<AS>':'.-...',
+      '<BK>':'-...-.-',
+      '<BT>':'-...-',
+      '<CL>':'-.-..-..',
+      '<KN>':'-.--.',
+      '<SK>':'...-.-',
   }
 
   get ditLength() {
@@ -94,16 +92,24 @@ class MorsePlayer {
     this.playing = true;
     this.oscillator.start();
     let t = this.audioContext.currentTime;
-    for (var i = 0; i < s.length; i++) {
-      // TODO: handle prosigns
-      if (s[i] === ' ') {
+    var i = 0;
+    while (i < s.length) {
+      let char;
+      if (s[i] === '<') {
+        char = s.slice(i, i+4);
+        i += 3;
+      } else {
+        char = s[i];
+      }
+      if (char === ' ') {
         t += 4 * this.ditLength; // +3 after the last char = 7 for inter-word
-      } else if (this.morseCodes[s[i]] !== undefined) {
-        t = this.playChar(t, this.morseCodes[s[i]]);
+      } else if (this.morseCodes[char] !== undefined) {
+        t = this.playChar(t, this.morseCodes[char]);
         t += 2 * this.ditLength; // +1 after the last symbol = 3 for inter-char
       } else {
-        console.log("Character '", s[i], "' unknown");
+        console.log("Character '", char, "' unknown");
       };
+      i++;
     };
     this.oscillator.stop(t);
   }
