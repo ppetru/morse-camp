@@ -23,9 +23,7 @@ function makeWordMap() {
 const wordMap = makeWordMap();
 
 function pickWord(length) {
-  let w = wordMap[length][Math.floor(Math.random() * wordMap[length].length)];
-  console.log(w);
-  return w;
+  return wordMap[length][Math.floor(Math.random() * wordMap[length].length)];
 };
 
 export { pickWord };
