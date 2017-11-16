@@ -213,13 +213,18 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
     const total = this.results.reduce((sum, value) =>
       [sum[0]+value[0], sum[1]+value[1]], [0, 0]);
     var ratio = (total[0] / total[1]) * 100;
+
     var { level } = this.state;
-    if (ratio > 80) {
-      level++;
-      ratio = 50;
-    } else if (ratio < 20 && level > 1) {
-      level--;
-      ratio = 50;
+    if (this.results.length > 5) {
+      if (ratio > 80) {
+        level++;
+        this.results = [];
+        ratio = 0;
+      } else if (ratio < 20 && level > 1) {
+        level--;
+        this.results = [];
+        ratio = 0;
+      }
     }
     this.setState({ ratio, level });
   }
