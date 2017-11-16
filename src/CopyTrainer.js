@@ -156,8 +156,12 @@ PlayText.propTypes = {
 
 
 class PlayLoop extends Component {
+  state = {
+    text: "",
+  };
+
   pickText = () => {
-    return pickWord(3);
+    return pickWord(this.props.wordLength, this.state.text);
   }
 
   constructor(props) {
@@ -177,6 +181,7 @@ class PlayLoop extends Component {
   }
 }
 PlayLoop.propTypes = {
+  wordLength: PropTypes.number.isRequired,
   onResult: PropTypes.func.isRequired,
 };
 
@@ -185,6 +190,7 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
   state = {
     active: false,
     ratio: 0,
+    level: 1,
   }
 
   componentWillMount() {
@@ -206,12 +212,20 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
     }
     const total = this.results.reduce((sum, value) =>
       [sum[0]+value[0], sum[1]+value[1]], [0, 0]);
-    const ratio = (total[0] / total[1]) * 100;
-    this.setState({ ratio });
+    var ratio = (total[0] / total[1]) * 100;
+    var { level } = this.state;
+    if (ratio > 80) {
+      level++;
+      ratio = 50;
+    } else if (ratio < 20 && level > 1) {
+      level--;
+      ratio = 50;
+    }
+    this.setState({ ratio, level });
   }
 
   render () {
-    const { active, ratio } = this.state;
+    const { active, ratio, level } = this.state;
 
     var button;
     if (active) {
@@ -227,7 +241,7 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
     return (
       <div>
         <Card>
-          <CardTitle title="Copy Trainer" />
+          <CardTitle title="Copy Trainer" subtitle={"Level " + level} />
           <CardText>
             <p>Success ratio: {ratio.toFixed()}%</p>
           </CardText>
@@ -235,7 +249,7 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
             {button}
           </CardActions>
         </Card>
-        {active && <PlayLoop onResult={this.onResult} />}
+        {active && <PlayLoop wordLength={level} onResult={this.onResult} />}
       </div>
     )
   }

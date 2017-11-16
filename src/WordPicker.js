@@ -22,8 +22,12 @@ function makeWordMap() {
 
 const wordMap = makeWordMap();
 
-function pickWord(length) {
-  return wordMap[length][Math.floor(Math.random() * wordMap[length].length)];
+function pickWord(length, previous) {
+  var w;
+  do {
+    w = wordMap[length][Math.floor(Math.random() * wordMap[length].length)];
+  } while (w === previous);
+  return w;
 };
 
 export { pickWord };
