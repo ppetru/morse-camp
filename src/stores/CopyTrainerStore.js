@@ -1,4 +1,4 @@
-import { action, extendObservable } from 'mobx';
+import { extendObservable } from 'mobx';
 
 class CopyTrainerStore {
   constructor(rootStore) {
