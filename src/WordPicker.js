@@ -1,3 +1,5 @@
+import 'seedrandom';
+
 import { words as cw } from './words/cw.js';
 import { words as top5k } from './words/top5k.js';
 
@@ -28,6 +30,7 @@ function makeWordMap() {
 }
 
 const wordMap = makeWordMap();
+Math.seedrandom();
 
 function pickWord(length, previous) {
   var w;

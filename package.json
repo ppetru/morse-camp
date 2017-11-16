@@ -12,6 +12,7 @@
     "react-md": "^1.1.7",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
+    "seedrandom": "^2.4.3",
     "webfontloader": "^1.6.28"
   },
   "scripts": {
