@@ -1,4 +1,4 @@
-top5k = [
+const top5k = [
   ["the", "a", 22038615],
   ["be", "v", 12545825],
   ["and", "c", 10741073],
@@ -3650,7 +3650,7 @@ top5k = [
   ["medium", "j", 8586],
   ["outdoor", "j", 8101],
   ["suck", "v", 8204],
-  and/["or", "c", 8481],
+  ["andor", "c", 8481],
   ["broadcast", "n", 8130],
   ["re", "i", 15773],
   ["leap", "v", 8376],
@@ -5000,3 +5000,6 @@ top5k = [
   ["apology", "n", 4972],
   ["till", "i", 5079],
 ];
+
+const words = top5k.map(w => w[0]);
+export { words };

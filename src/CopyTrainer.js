@@ -12,7 +12,7 @@ import {
 } from 'react-md';
 
 import './CopyTrainer.css';
-import WORDS from './words';
+import { pickWord } from './WordPicker';
 
 
 const PlayHiddenCard = inject("store")(observer(({ store, onShow }) =>
@@ -157,7 +157,7 @@ PlayText.propTypes = {
 
 class PlayLoop extends Component {
   pickText = () => {
-    return WORDS[Math.floor(Math.random() * WORDS.length)];
+    return pickWord(3);
   }
 
   constructor(props) {
