@@ -34,3 +34,4 @@ ReactDOM.render((
 registerServiceWorker();
 
 window.store = store;
+window.player = player;
