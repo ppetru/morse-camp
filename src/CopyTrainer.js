@@ -12,7 +12,7 @@ import {
 } from 'react-md';
 
 import './CopyTrainer.css';
-import { pickWord } from './WordPicker';
+import { pickWord } from './TextGenerator';
 
 
 const PlayHiddenCard = inject("store")(observer(({ store, onShow }) =>
