@@ -158,21 +158,23 @@ const PlayLoop = inject("store")(class PlayLoop extends Component {
   state = {
     loopCount: 0,
     text: "",
+    pattern: "",
   };
 
   pickText = () => {
-    return this.props.store.copyTrainer.generateText();
+    const { text, pattern } =  this.props.store.copyTrainer.generateText();
+    this.setState({ text, pattern });
   }
 
-  constructor(props) {
-    super(props);
-    this.state = { text: this.pickText() };
+  componentDidMount() {
+    this.pickText();
   }
 
   onResult = (success, count) => {
     this.props.onResult(success, count);
+    this.props.store.copyTrainer.patternFeedback(this.state.pattern, success, count);
+    this.pickText();
     this.setState((prev, props) => ({
-      text: this.pickText(),
       loopCount: prev.loopCount + 1,
     }));
   }

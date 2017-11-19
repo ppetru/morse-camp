@@ -10,16 +10,24 @@ function weightedChoice(weights) {
   const weightSum = weights.reduce((sum, w) => sum + w)
   let choice = Math.floor(Math.random() * weightSum) + 1
   let idx = weights.length - 1
-  while ((choice -= weights[idx]) > 0) {
+  while (choice > 0 && idx > 0) {
+    choice -= weights[idx]
     idx -= 1
   }
   return idx
 }
 
 class ResultTracker {
-  constructor(success, total) {
-    this.success = success;
-    this.total = total;
+  constructor() {
+    this.success = 0;
+    this.total = 0;
+  }
+
+  record(success, count) {
+    this.total += count;
+    if (success) {
+      this.success++;
+    }
   }
 
   get ratio() {
@@ -31,7 +39,7 @@ class ResultTracker {
   }
 
   get pickProbability() {
-    return 1 - this.ratio;
+    return Math.sin(Math.PI * this.ratio);
   }
 }
 
@@ -50,7 +58,7 @@ class CopyTrainerStore {
     if (!results) {
       return { [bootstrap]: 1 }
     }
-    for (let k in Object.keys(results)) {
+    for (let k of Object.keys(results)) {
       candidates[k] = results[k].pickProbability;
     }
     if (!(bootstrap in candidates)) {
@@ -101,10 +109,31 @@ class CopyTrainerStore {
       pattern.push(producer);
     }
     console.log("final text:", text, pattern);
-    return text;
+    return { text, pattern };
+  }
+
+  recordFeedback(results, id, success, count) {
+    var tracker;
+    if (!(id in results)) {
+      tracker = new ResultTracker();
+      results[id] = tracker;
+    } else {
+      tracker = results[id];
+    }
+    tracker.record(success, count);
+  }
+
+  patternFeedback(pattern, success, count) {
+    this.recordFeedback(this.repeaters, pattern[0], success, count);
+    for (let i = 1; i < pattern.length; i++) {
+      const [ producer, size ] = pattern[i].split(":");
+      console.log(producer, size);
+      if (!(producer in this.producers)) {
+        this.producers[producer] = {};
+      }
+      this.recordFeedback(this.producers[producer], size, success, count);
+    }
   }
 }
 
 export default CopyTrainerStore;
-
-
