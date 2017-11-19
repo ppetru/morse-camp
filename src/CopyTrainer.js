@@ -12,7 +12,6 @@ import {
 } from 'react-md';
 
 import './CopyTrainer.css';
-import { pickWord } from './TextGenerator';
 
 
 const PlayHiddenCard = inject("store")(observer(({ store, onShow }) =>
@@ -155,13 +154,14 @@ PlayText.propTypes = {
 }
 
 
-class PlayLoop extends Component {
+const PlayLoop = inject("store")(class PlayLoop extends Component {
   state = {
+    loopCount: 0,
     text: "",
   };
 
   pickText = () => {
-    return pickWord(this.props.wordLength, this.state.text);
+    return this.props.store.copyTrainer.generateText();
   }
 
   constructor(props) {
@@ -171,15 +171,19 @@ class PlayLoop extends Component {
 
   onResult = (success, count) => {
     this.props.onResult(success, count);
-    this.setState({ text: this.pickText() });
+    this.setState((prev, props) => ({
+      text: this.pickText(),
+      loopCount: prev.loopCount + 1,
+    }));
   }
 
   render() {
+    const { loopCount, text} = this.state;
     return (
-      <PlayText text={this.state.text} onResult={this.onResult} />
+      <PlayText key={loopCount} text={text} onResult={this.onResult} />
     )
   }
-}
+})
 PlayLoop.propTypes = {
   wordLength: PropTypes.number.isRequired,
   onResult: PropTypes.func.isRequired,
