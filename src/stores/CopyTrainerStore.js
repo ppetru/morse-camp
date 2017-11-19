@@ -41,6 +41,10 @@ class ResultTracker {
   get pickProbability() {
     return Math.sin(Math.PI * this.ratio);
   }
+
+  get canProgress() {
+    return this.ratio > 0.5;
+  }
 }
 
 class CopyTrainerStore {
@@ -60,6 +64,12 @@ class CopyTrainerStore {
     }
     for (let k of Object.keys(results)) {
       candidates[k] = results[k].pickProbability;
+      if (results[k].canProgress) {
+        const nk = parseInt(k, 10) + 1;
+        if (!(nk in candidates)) {
+          candidates[nk] = 0.5;
+        }
+      }
     }
     if (!(bootstrap in candidates)) {
       candidates[bootstrap] = 1;
@@ -74,7 +84,7 @@ class CopyTrainerStore {
   }
 
   pickRepeater() {
-    const candidates = this.getCandidates(this.repeaters, 2);
+    const candidates = this.getCandidates(this.repeaters, 1);
     return this.pickCandidate(candidates);
   }
 

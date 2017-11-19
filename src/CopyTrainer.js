@@ -176,7 +176,7 @@ const PlayLoop = inject("store")(class PlayLoop extends Component {
   }
 
   render() {
-    const { loopCount, text} = this.state;
+    const { text } = this.state;
     return (
       <PlayText text={text} onResult={this.onResult} />
     )
