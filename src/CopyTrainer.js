@@ -156,13 +156,12 @@ PlayText.propTypes = {
 
 const PlayLoop = inject("store")(class PlayLoop extends Component {
   state = {
-    loopCount: 0,
     text: "",
     pattern: "",
   };
 
   pickText = () => {
-    const { text, pattern } =  this.props.store.copyTrainer.generateText();
+    const { text, pattern } =  this.props.store.copyTrainer.generateText(this.state.pattern);
     this.setState({ text, pattern });
   }
 
@@ -174,15 +173,12 @@ const PlayLoop = inject("store")(class PlayLoop extends Component {
     this.props.onResult(success, count);
     this.props.store.copyTrainer.patternFeedback(this.state.pattern, success, count);
     this.pickText();
-    this.setState((prev, props) => ({
-      loopCount: prev.loopCount + 1,
-    }));
   }
 
   render() {
     const { loopCount, text} = this.state;
     return (
-      <PlayText key={loopCount} text={text} onResult={this.onResult} />
+      <PlayText text={text} onResult={this.onResult} />
     )
   }
 })

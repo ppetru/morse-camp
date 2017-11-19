@@ -99,15 +99,18 @@ class CopyTrainerStore {
     return { producer: winner, value: values[winner] };
   }
 
-  generateText() {
+  generateText(oldPattern) {
     var text = "";
-    const count = this.pickRepeater();
-    var pattern = [ count ];
-    for (let i = 0; i < count; i++) {
-      const { producer, value } =  this.fillSlot(count, i);
-      text += value;
-      pattern.push(producer);
-    }
+    var pattern;
+    do {
+      const count = this.pickRepeater();
+      pattern = [ count ];
+      for (let i = 0; i < count; i++) {
+        const { producer, value } =  this.fillSlot(count, i);
+        text += value;
+        pattern.push(producer);
+      }
+    } while (pattern.toString() === oldPattern.toString());
     console.log("final text:", text, pattern);
     return { text, pattern };
   }
@@ -127,7 +130,6 @@ class CopyTrainerStore {
     this.recordFeedback(this.repeaters, pattern[0], success, count);
     for (let i = 1; i < pattern.length; i++) {
       const [ producer, size ] = pattern[i].split(":");
-      console.log(producer, size);
       if (!(producer in this.producers)) {
         this.producers[producer] = {};
       }
