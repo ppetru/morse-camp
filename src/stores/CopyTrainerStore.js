@@ -8,7 +8,7 @@ Math.seedrandom();
 
 function weightedChoice(weights) {
   const weightSum = weights.reduce((sum, w) => sum + w)
-  let choice = Math.floor(Math.random() * weightSum) + 1
+  let choice = Math.floor(Math.random() * weightSum)
   let idx = weights.length - 1
   while (choice > 0 && idx > 0) {
     choice -= weights[idx]
@@ -110,9 +110,10 @@ class CopyTrainerStore {
   }
 
   generateText(oldPattern) {
-    var text = "";
+    var text;
     var pattern;
     do {
+      text = "";
       const count = this.pickRepeater();
       pattern = [ count ];
       for (let i = 0; i < count; i++) {
