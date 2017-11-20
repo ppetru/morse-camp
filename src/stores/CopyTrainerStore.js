@@ -21,16 +21,20 @@ class ResultTracker {
   constructor() {
     this.success = 0;
     this.total = 0;
+    this.results = [];
   }
 
   record(success, count) {
+    if (this.results.push([success, count]) > 20) {
+      this.results.shift();
+    }
     this.total += count;
     if (success) {
       this.success++;
     }
   }
 
-  get ratio() {
+  get overallRatio() {
     if (this.total === 0) {
       return 0;
     } else {
@@ -38,12 +42,21 @@ class ResultTracker {
     }
   }
 
+  get ratio() {
+    if (this.results.length === 0) {
+      return 0;
+    }
+    const total = this.results.reduce((sum, value) =>
+            [sum[0]+value[0], sum[1]+value[1]], [0, 0]);
+    return total[0] / total[1];
+  }
+
   get pickProbability() {
     return Math.sin(Math.PI * this.ratio);
   }
 
   get canProgress() {
-    return this.ratio > 0.5;
+    return this.results.length > 5 && this.ratio > 0.5;
   }
 }
 
