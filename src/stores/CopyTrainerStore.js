@@ -98,7 +98,7 @@ class CopyTrainerStore {
 
   pickRepeater() {
     const candidates = this.getCandidates(this.repeaters, 1);
-    return this.pickCandidate(candidates);
+    return parseInt(this.pickCandidate(candidates), 10);
   }
 
   fillSlot(pattern, total, index) {

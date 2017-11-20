@@ -29,7 +29,18 @@ function withSizeLimit(limit, func) {
 function withCountLimit(limit, func) {
   return (size, pattern, total, index) => {
     const count = pattern.filter(p => p.startsWith(func.producerName)).length;
+    //console.log(func.producerName, pattern, count);
     if (count <= limit) {
+      return func(size, pattern, total, index);
+    } else {
+      return null;
+    }
+  }
+}
+
+function withSingleton(func) {
+  return (size, pattern, total, index) => {
+    if (total === 1) {
       return func(size, pattern, total, index);
     } else {
       return null;
@@ -47,10 +58,10 @@ function makeSymbolPicker(symbols) {
   }
 }
 
-const letterProducer = withSpacePrepender(withCountLimit(1, withSizeLimit(1, makeSymbolPicker([
+const letterProducer = withSingleton(withSizeLimit(1, makeSymbolPicker([
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
     'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-  ]))))
+])))
 letterProducer.producerName = 'letter'
 
 const digitProducer = withSpacePrepender(withSizeLimit(3, makeSymbolPicker([
