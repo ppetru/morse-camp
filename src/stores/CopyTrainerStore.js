@@ -93,7 +93,8 @@ class CopyTrainerStore {
     var candidates = {};
     // values returned by each candidate
     var values = {};
-    for (const [name, func] of Object.entries(PRODUCERS)) {
+    for (const func of PRODUCERS) {
+      const name = func.producerName;
       let c = this.getCandidates(this.producers[name], 1);
       for (const [size, prob] of Object.entries(c)) {
         let val = func(parseInt(size, 10), pattern, total, index);

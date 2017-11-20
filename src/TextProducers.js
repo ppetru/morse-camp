@@ -28,6 +28,12 @@ function withSizeLimit(limit, func) {
 
 function withCountLimit(limit, func) {
   return (size, pattern, total, index) => {
+    const count = pattern.filter(p => p.startsWith(func.producerName)).length;
+    if (count <= limit) {
+      return func(size, pattern, total, index);
+    } else {
+      return null;
+    }
   }
 }
 
@@ -41,22 +47,26 @@ function makeSymbolPicker(symbols) {
   }
 }
 
-const letterProducer = withSpacePrepender(withSizeLimit(1, makeSymbolPicker([
+const letterProducer = withSpacePrepender(withCountLimit(1, withSizeLimit(1, makeSymbolPicker([
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-  'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-])))
+    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+  ]))))
+letterProducer.producerName = 'letter'
 
 const digitProducer = withSpacePrepender(withSizeLimit(3, makeSymbolPicker([
   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
 ])))
+digitProducer.producerName = 'digits'
 
-const punctuationProducer = withSizeLimit(1, makeSymbolPicker([
+const punctuationProducer = withCountLimit(1, withSizeLimit(1, makeSymbolPicker([
   '.', ',', '?'
-]))
-
-const prosignProducer = withSpacePrepender(withSizeLimit(1, makeSymbolPicker([
-  '<AR>', '<AS>', '<BK>', '<CL>', '<KN>', '<SK>'
 ])))
+punctuationProducer.producerName = 'punctuation'
+
+const prosignProducer = withSpacePrepender(withCountLimit(1, withSizeLimit(1, makeSymbolPicker([
+  '<AR>', '<AS>', '<BK>', '<CL>', '<KN>', '<SK>'
+]))))
+prosignProducer.producerName = 'prosign'
 
 function makeWordMap(words) {
   var map = [];
@@ -79,19 +89,24 @@ function makeWordMap(words) {
 
 function makeWordProducer(words) {
   const { map, maxLen } = makeWordMap(words);
-  console.log(maxLen);
   return withSpacePrepender(withSizeLimit(maxLen, (size, pattern, total, index) => {
     return map[size][Math.floor(Math.random() * map[size].length)];
   }))
 }
 
-const PRODUCERS = {
-  'letters': letterProducer,
-  'digits': digitProducer,
-  'punctuation': punctuationProducer,
-  'prosign': prosignProducer,
-  'top5k': makeWordProducer(top5k),
-  'cw': makeWordProducer(cw),
-}
+const top5kProducer = makeWordProducer(top5k);
+top5kProducer.producerName = 'top5k';
+
+const cwProducer = makeWordProducer(cw);
+cwProducer.producerName = 'cw';
+
+const PRODUCERS = [
+  letterProducer,
+  digitProducer,
+  punctuationProducer,
+  prosignProducer,
+  top5kProducer,
+  cwProducer,
+]
 
 export { PRODUCERS };
