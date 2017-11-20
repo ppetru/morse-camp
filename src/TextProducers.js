@@ -26,10 +26,10 @@ function withSizeLimit(limit, func) {
   }
 }
 
-function withCountLimit(limit, func) {
+function withCountLimit(name, limit, func) {
   return (size, pattern, total, index) => {
-    const count = pattern.filter(p => p.startsWith(func.producerName)).length;
-    //console.log(func.producerName, pattern, count);
+    const count = pattern.filter(p => p.startsWith(name)).length;
+    console.log(name, pattern, count);
     if (count <= limit) {
       return func(size, pattern, total, index);
     } else {
@@ -69,12 +69,12 @@ const digitProducer = withSpacePrepender(withSizeLimit(3, makeSymbolPicker([
 ])))
 digitProducer.producerName = 'digits'
 
-const punctuationProducer = withCountLimit(1, withSizeLimit(1, makeSymbolPicker([
+const punctuationProducer = withCountLimit('punctuation', 1, withSizeLimit(1, makeSymbolPicker([
   '.', ',', '?'
 ])))
 punctuationProducer.producerName = 'punctuation'
 
-const prosignProducer = withSpacePrepender(withCountLimit(1, withSizeLimit(1, makeSymbolPicker([
+const prosignProducer = withSpacePrepender(withCountLimit('prosign', 1, withSizeLimit(1, makeSymbolPicker([
   '<AR>', '<AS>', '<BK>', '<CL>', '<KN>', '<SK>'
 ]))))
 prosignProducer.producerName = 'prosign'
