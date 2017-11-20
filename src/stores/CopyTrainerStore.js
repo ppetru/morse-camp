@@ -88,7 +88,7 @@ class CopyTrainerStore {
     return this.pickCandidate(candidates);
   }
 
-  fillSlot(total, index) {
+  fillSlot(pattern, total, index) {
     // weighted candidates to fill the slot with
     var candidates = {};
     // values returned by each candidate
@@ -96,7 +96,7 @@ class CopyTrainerStore {
     for (const [name, func] of Object.entries(PRODUCERS)) {
       let c = this.getCandidates(this.producers[name], 1);
       for (const [size, prob] of Object.entries(c)) {
-        let val = func(parseInt(size, 10), total, index);
+        let val = func(parseInt(size, 10), pattern, total, index);
         // val is null if the producer doesn't work for these parameters
         if (val !== null) {
           const key = name + ":" + size;
@@ -117,7 +117,7 @@ class CopyTrainerStore {
       const count = this.pickRepeater();
       pattern = [ count ];
       for (let i = 0; i < count; i++) {
-        const { producer, value } =  this.fillSlot(count, i);
+        const { producer, value } =  this.fillSlot(pattern.slice(1), count, i);
         text += value;
         pattern.push(producer);
       }
