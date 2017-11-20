@@ -126,6 +126,7 @@ class CopyTrainerStore {
   generateText(oldPattern) {
     var text;
     var pattern;
+    var hack = 0; // TODO: fix this
     do {
       text = "";
       const count = this.pickRepeater();
@@ -135,7 +136,12 @@ class CopyTrainerStore {
         text += value;
         pattern.push(producer);
       }
-    } while (pattern.toString() === oldPattern.toString());
+      hack++;
+    } while (pattern.toString() === oldPattern.toString() && hack < 10);
+    if (hack === 10) {
+      text = "oops";
+      pattern = [ 1 ];
+    }
     console.log("final text:", text, pattern);
     return { text, pattern };
   }
