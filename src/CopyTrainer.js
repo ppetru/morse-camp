@@ -170,7 +170,6 @@ const PlayLoop = inject("store")(class PlayLoop extends Component {
   }
 
   onResult = (success, count) => {
-    this.props.onResult(success, count);
     this.props.store.copyTrainer.patternFeedback(this.state.pattern, success, count);
     this.pickText();
   }
@@ -183,20 +182,12 @@ const PlayLoop = inject("store")(class PlayLoop extends Component {
   }
 })
 PlayLoop.propTypes = {
-  wordLength: PropTypes.number.isRequired,
-  onResult: PropTypes.func.isRequired,
 };
 
 
 const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer extends Component {
   state = {
     active: false,
-    ratio: 0,
-    level: 1,
-  }
-
-  componentWillMount() {
-    this.results = [];
   }
 
   start = () => {
@@ -208,31 +199,8 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
     this.setState({ active: false });
   }
 
-  onResult = (success, repeats) => {
-    if (this.results.push([success, repeats]) > 20) {
-      this.results.shift();
-    }
-    const total = this.results.reduce((sum, value) =>
-      [sum[0]+value[0], sum[1]+value[1]], [0, 0]);
-    var ratio = (total[0] / total[1]) * 100;
-
-    var { level } = this.state;
-    if (this.results.length > 5) {
-      if (ratio > 80) {
-        level++;
-        this.results = [];
-        ratio = 0;
-      } else if (ratio < 20 && level > 1) {
-        level--;
-        this.results = [];
-        ratio = 0;
-      }
-    }
-    this.setState({ ratio, level });
-  }
-
   render () {
-    const { active, ratio, level } = this.state;
+    const { active } = this.state;
 
     var button;
     if (active) {
@@ -248,15 +216,14 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
     return (
       <div>
         <Card>
-          <CardTitle title="Copy Trainer" subtitle={"Level " + level} />
+          <CardTitle title="Copy Trainer" />
           <CardText>
-            <p>Success ratio: {ratio.toFixed()}%</p>
           </CardText>
           <CardActions centered>
             {button}
           </CardActions>
         </Card>
-        {active && <PlayLoop wordLength={level} onResult={this.onResult} />}
+        {active && <PlayLoop />}
       </div>
     )
   }
