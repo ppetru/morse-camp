@@ -1,4 +1,4 @@
-import { action, extendObservable } from 'mobx';
+import { action, extendObservable, observable } from 'mobx';
 import 'seedrandom'
 
 import { PRODUCERS } from '../TextProducers';
@@ -65,8 +65,8 @@ class CopyTrainerStore {
     this.rootStore = rootStore
 
     extendObservable(this, {
-      repeaters: {}, // 1: resultTracker, 2: resultTracker, ...
-      producers: {}, // 'letters': { 1: resultTracker }, 'words': { 1: resultTracker, 2: resultTracker }, ...
+      repeaters: observable(new Map()), // 1: resultTracker, 2: resultTracker, ...
+      producers: observable(new Map()), // 'letters': { 1: resultTracker }, 'words': { 1: resultTracker, 2: resultTracker }, ...
     })
   }
 
@@ -75,9 +75,10 @@ class CopyTrainerStore {
     if (!results) {
       return { [bootstrap]: 1 }
     }
-    for (let k of Object.keys(results)) {
-      candidates[k] = results[k].pickProbability;
-      if (results[k].canProgress) {
+    for (let k of results.keys()) {
+      let res = results.get(k);
+      candidates[k] = res.pickProbability;
+      if (res.canProgress) {
         const nk = parseInt(k, 10) + 1;
         if (!(nk in candidates)) {
           candidates[nk] = 0.5;
@@ -108,7 +109,7 @@ class CopyTrainerStore {
     var values = {};
     for (const func of PRODUCERS) {
       const name = func.producerName;
-      let c = this.getCandidates(this.producers[name], 1);
+      let c = this.getCandidates(this.producers.get(name), 1);
       for (const [size, prob] of Object.entries(c)) {
         let val = func(parseInt(size, 10), pattern, total, index);
         // val is null if the producer doesn't work for these parameters
@@ -146,27 +147,27 @@ class CopyTrainerStore {
     return { text, pattern };
   }
 
-  recordFeedback(results, id, success, count) {
+  recordFeedback = action((results, id, success, count) => {
     var tracker;
-    if (!(id in results)) {
+    if (!results.has(id)) {
       tracker = new ResultTracker();
-      results[id] = tracker;
+      results.set(id, tracker);
     } else {
-      tracker = results[id];
+      tracker = results.get(id);
     }
     tracker.record(success, count);
-  }
+  })
 
-  patternFeedback(pattern, success, count) {
+  patternFeedback = action((pattern, success, count) => {
     this.recordFeedback(this.repeaters, pattern[0], success, count);
     for (let i = 1; i < pattern.length; i++) {
       const [ producer, size ] = pattern[i].split(":");
-      if (!(producer in this.producers)) {
-        this.producers[producer] = {};
+      if (!this.producers.has(producer)) {
+        this.producers.set(producer, observable(new Map()));
       }
-      this.recordFeedback(this.producers[producer], size, success, count);
+      this.recordFeedback(this.producers.get(producer), size, success, count);
     }
-  }
+  })
 }
 
 export default CopyTrainerStore;

@@ -184,6 +184,7 @@ const PlayLoop = inject("store")(class PlayLoop extends Component {
 PlayLoop.propTypes = {
 };
 
+const Result = ({ r }) => r.ratio.toFixed(2);
 
 const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer extends Component {
   state = {
@@ -201,6 +202,7 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
 
   render () {
     const { active } = this.state;
+    const store = this.props.store.copyTrainer;
 
     var button;
     if (active) {
@@ -212,12 +214,17 @@ const CopyTrainer = inject("store", "morsePlayer")(observer(class CopyTrainer ex
         Start
       </Button>
     }
+    var entries = [];
+    for (var [k, v] of store.repeaters.entries()) {
+      entries.push(<li key={k}>{k}: <Result r={v}/></li>);
+    }
 
     return (
       <div>
         <Card>
           <CardTitle title="Copy Trainer" />
           <CardText>
+            Repeaters: <ul>{entries}</ul>
           </CardText>
           <CardActions centered>
             {button}

@@ -29,7 +29,6 @@ function withSizeLimit(limit, func) {
 function withCountLimit(name, limit, func) {
   return (size, pattern, total, index) => {
     const count = pattern.filter(p => p.startsWith(name)).length;
-    console.log(name, pattern, count);
     if (count <= limit) {
       return func(size, pattern, total, index);
     } else {
