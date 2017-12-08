@@ -2,20 +2,10 @@ import { action, extendObservable, observable } from 'mobx';
 import 'seedrandom'
 
 import { PRODUCERS } from '../TextProducers';
+const weighted = require('weighted');
 
 
 Math.seedrandom();
-
-function weightedChoice(weights) {
-  const weightSum = weights.reduce((sum, w) => sum + w)
-  let choice = Math.floor(Math.random() * weightSum)
-  let idx = weights.length - 1
-  while (choice > 0 && idx > 0) {
-    choice -= weights[idx]
-    idx -= 1
-  }
-  return idx
-}
 
 class ResultTracker {
   constructor() {
@@ -91,15 +81,9 @@ class CopyTrainerStore {
     return candidates;
   }
 
-  pickCandidate(candidates) {
-    const k = Object.keys(candidates);
-    const r = weightedChoice(Object.values(candidates));
-    return k[r];
-  }
-
   pickRepeater() {
     const candidates = this.getCandidates(this.repeaters, 1);
-    return parseInt(this.pickCandidate(candidates), 10);
+    return parseInt(weighted.select(candidates), 10);
   }
 
   fillSlot(pattern, total, index) {
@@ -120,7 +104,7 @@ class CopyTrainerStore {
         }
       }
     }
-    const winner = this.pickCandidate(candidates);    
+    const winner = weighted.select(candidates);
     return { producer: winner, value: values[winner] };
   }
 

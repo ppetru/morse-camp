@@ -14,7 +14,8 @@
     "react-scripts": "1.0.14",
     "seedrandom": "^2.4.3",
     "web-audio-test-api": "^0.5.2",
-    "webfontloader": "^1.6.28"
+    "webfontloader": "^1.6.28",
+    "weighted": "^0.3.0"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
