@@ -42,7 +42,16 @@ class ResultTracker {
   }
 
   get pickProbability() {
-    return Math.sin(Math.PI * this.ratio);
+    const r = Math.floor(this.ratio * 100);
+    var p;
+    if (r < 5 || r > 95) {
+      p = 1;
+    } else if (r < 20 || r > 80) {
+      p = 10;
+    } else {
+      p = 80;
+    }
+    return p / 100;
   }
 
   get canProgress() {
