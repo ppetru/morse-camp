@@ -68,9 +68,9 @@ const digitProducer = withSpacePrepender(withSizeLimit(3, makeSymbolPicker([
 ])))
 digitProducer.producerName = 'digits'
 
-const punctuationProducer = withCountLimit('punctuation', 1, withSizeLimit(1, makeSymbolPicker([
+const punctuationProducer = withSpacePrepender(withCountLimit('punctuation', 1, withSizeLimit(1, makeSymbolPicker([
   '.', ',', '?'
-])))
+]))))
 punctuationProducer.producerName = 'punctuation'
 
 const prosignProducer = withSpacePrepender(withCountLimit('prosign', 1, withSizeLimit(1, makeSymbolPicker([
