@@ -1,20 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'mobx-react';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "mobx-react";
 import "web-audio-test-api";
 
-import App from './App';
-import MorsePlayer from './MorsePlayer';
-import RootStore from './stores/RootStore';
-import './beforeTest.js';
+import App from "./App";
+import MorsePlayer from "./MorsePlayer";
+import RootStore from "./stores/RootStore";
+import "./beforeTest.js";
 
-it('renders without crashing', () => {
+it("renders without crashing", () => {
   const store = new RootStore();
   const audioContext = new AudioContext();
   const player = new MorsePlayer(30, 500, store.morse, audioContext);
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   ReactDOM.render(
-      <Provider store={store} morsePlayer={player} >
-        <App />
-      </Provider>, div);
+    <Provider store={store} morsePlayer={player}>
+      <App />
+    </Provider>,
+    div
+  );
 });

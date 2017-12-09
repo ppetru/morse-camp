@@ -1,22 +1,25 @@
-import React, { PureComponent } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { NavigationDrawer } from 'react-md';
+import React, { PureComponent } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { NavigationDrawer } from "react-md";
 
-import './App.css';
-import NavItemLink from './NavItemLink';
-import CopyTrainer from './CopyTrainer';
-import Settings from './Settings';
+import "./App.css";
+import NavItemLink from "./NavItemLink";
+import CopyTrainer from "./CopyTrainer";
+import Settings from "./Settings";
 
-const navItems = [{
-  label: 'Home',
-  to: '/',
-  exact: true,
-  icon: 'home',
-}, {
-  label: 'Settings',
-  to: `/settings`,
-  icon: 'settings',
-}];
+const navItems = [
+  {
+    label: "Home",
+    to: "/",
+    exact: true,
+    icon: "home"
+  },
+  {
+    label: "Settings",
+    to: `/settings`,
+    icon: "settings"
+  }
+];
 
 class App extends PureComponent {
   render() {
@@ -27,13 +30,17 @@ class App extends PureComponent {
             <NavigationDrawer
               drawerTitle="Morse Camp"
               toolbarTitle="Morse Camp"
-              navItems={navItems.map(props => <NavItemLink {...props} key={props.to} />)}
+              navItems={navItems.map(props => (
+                <NavItemLink {...props} key={props.to} />
+              ))}
             >
               <Switch key={location.key}>
-                <Route path="/settings" location={location} component={Settings} />
-                <Route location={location} render={() =>
-                    <CopyTrainer />}
+                <Route
+                  path="/settings"
+                  location={location}
+                  component={Settings}
                 />
+                <Route location={location} render={() => <CopyTrainer />} />
               </Switch>
             </NavigationDrawer>
           )}

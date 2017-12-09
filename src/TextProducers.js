@@ -1,6 +1,5 @@
-import { words as cw } from './words/cw.js';
-import { words as top5k } from './words/top5k.js';
-
+import { words as cw } from "./words/cw.js";
+import { words as top5k } from "./words/top5k.js";
 
 function withSpacePrepender(func) {
   return (size, pattern, total, index) => {
@@ -13,7 +12,7 @@ function withSpacePrepender(func) {
     } else {
       return result;
     }
-  }
+  };
 }
 
 function withSizeLimit(limit, func) {
@@ -23,7 +22,7 @@ function withSizeLimit(limit, func) {
     } else {
       return null;
     }
-  }
+  };
 }
 
 function withCountLimit(name, limit, func) {
@@ -34,7 +33,7 @@ function withCountLimit(name, limit, func) {
     } else {
       return null;
     }
-  }
+  };
 }
 
 function withSingleton(func) {
@@ -44,7 +43,7 @@ function withSingleton(func) {
     } else {
       return null;
     }
-  }
+  };
 }
 
 function makeSymbolPicker(symbols) {
@@ -54,29 +53,72 @@ function makeSymbolPicker(symbols) {
       group += symbols[Math.floor(Math.random() * symbols.length)];
     }
     return group;
-  }
+  };
 }
 
-const letterProducer = withSingleton(withSizeLimit(1, makeSymbolPicker([
-  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-])))
-letterProducer.producerName = 'letter'
+const letterProducer = withSingleton(
+  withSizeLimit(
+    1,
+    makeSymbolPicker([
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z"
+    ])
+  )
+);
+letterProducer.producerName = "letter";
 
-const digitProducer = withSpacePrepender(withSizeLimit(3, makeSymbolPicker([
-  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
-])))
-digitProducer.producerName = 'digits'
+const digitProducer = withSpacePrepender(
+  withSizeLimit(
+    3,
+    makeSymbolPicker(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
+  )
+);
+digitProducer.producerName = "digits";
 
-const punctuationProducer = withSpacePrepender(withCountLimit('punctuation', 1, withSizeLimit(1, makeSymbolPicker([
-  '.', ',', '?'
-]))))
-punctuationProducer.producerName = 'punctuation'
+const punctuationProducer = withSpacePrepender(
+  withCountLimit(
+    "punctuation",
+    1,
+    withSizeLimit(1, makeSymbolPicker([".", ",", "?"]))
+  )
+);
+punctuationProducer.producerName = "punctuation";
 
-const prosignProducer = withSpacePrepender(withCountLimit('prosign', 1, withSizeLimit(1, makeSymbolPicker([
-  '<AR>', '<AS>', '<BK>', '<CL>', '<KN>', '<SK>'
-]))))
-prosignProducer.producerName = 'prosign'
+const prosignProducer = withSpacePrepender(
+  withCountLimit(
+    "prosign",
+    1,
+    withSizeLimit(
+      1,
+      makeSymbolPicker(["<AR>", "<AS>", "<BK>", "<CL>", "<KN>", "<SK>"])
+    )
+  )
+);
+prosignProducer.producerName = "prosign";
 
 function makeWordMap(words) {
   var map = [];
@@ -87,7 +129,7 @@ function makeWordMap(words) {
     if (len in map) {
       map[len].push(w);
     } else {
-      map[len] = [ w ];
+      map[len] = [w];
     }
     if (len > maxLen) {
       maxLen = len;
@@ -99,16 +141,18 @@ function makeWordMap(words) {
 
 function makeWordProducer(words) {
   const { map, maxLen } = makeWordMap(words);
-  return withSpacePrepender(withSizeLimit(maxLen, (size, pattern, total, index) => {
-    return map[size][Math.floor(Math.random() * map[size].length)];
-  }))
+  return withSpacePrepender(
+    withSizeLimit(maxLen, (size, pattern, total, index) => {
+      return map[size][Math.floor(Math.random() * map[size].length)];
+    })
+  );
 }
 
 const top5kProducer = makeWordProducer(top5k);
-top5kProducer.producerName = 'top5k';
+top5kProducer.producerName = "top5k";
 
 const cwProducer = makeWordProducer(cw);
-cwProducer.producerName = 'cw';
+cwProducer.producerName = "cw";
 
 const PRODUCERS = [
   letterProducer,
@@ -116,7 +160,7 @@ const PRODUCERS = [
   punctuationProducer,
   prosignProducer,
   top5kProducer,
-  cwProducer,
-]
+  cwProducer
+];
 
 export { PRODUCERS };

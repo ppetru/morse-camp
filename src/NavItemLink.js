@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link, Route } from 'react-router-dom';
-import { FontIcon, ListItem } from 'react-md';
+import React from "react";
+import PropTypes from "prop-types";
+import { Link, Route } from "react-router-dom";
+import { FontIcon, ListItem } from "react-md";
 
 /**
  * Due to the fact that react-router uses context and most of the components
@@ -35,6 +35,6 @@ NavItemLink.propTypes = {
   label: PropTypes.string.isRequired,
   to: PropTypes.string,
   exact: PropTypes.bool,
-  icon: PropTypes.node,
+  icon: PropTypes.node
 };
 export default NavItemLink;
