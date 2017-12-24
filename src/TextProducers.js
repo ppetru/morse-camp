@@ -3,54 +3,20 @@ import { words as top5k } from "./words/top5k.js";
 
 var producers = {};
 
-function withSpacePrepender(func) {
+function makeSymbolPicker(sizeLimit, symbols) {
   return (size, pattern) => {
-    const result = func(size, pattern);
-    if (result === null) {
+    if (size > sizeLimit) {
       return null;
     }
-    if (pattern.length > 2) {
-      return " " + result;
-    } else {
-      return result;
-    }
-  };
-}
-
-function withSizeLimit(limit, func) {
-  return (size, pattern) => {
-    if (size <= limit) {
-      return func(size, pattern);
-    } else {
+    if (pattern[0].size !== 1) {
       return null;
     }
-  };
-}
-
-function withCountLimit(name, limit, func) {
-  return (size, pattern) => {
-    const count = pattern.filter(p => p.producer === name).length;
-    if (count < limit) {
-      return func(size, pattern);
+    var group;
+    if (pattern.length > 1) {
+      group = " ";
     } else {
-      return null;
+      group = "";
     }
-  };
-}
-
-function withSingleton(func) {
-  return (size, pattern) => {
-    if (pattern[0].size === 1) {
-      return func(size, pattern);
-    } else {
-      return null;
-    }
-  };
-}
-
-function makeSymbolPicker(symbols) {
-  return (size, pattern) => {
-    var group = "";
     for (let i = 0; i < size; i++) {
       group += symbols[Math.floor(Math.random() * symbols.length)];
     }
@@ -58,68 +24,61 @@ function makeSymbolPicker(symbols) {
   };
 }
 
-const letterProducer = withSingleton(
-  withSizeLimit(
-    1,
-    makeSymbolPicker([
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "i",
-      "j",
-      "k",
-      "l",
-      "m",
-      "n",
-      "o",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t",
-      "u",
-      "v",
-      "w",
-      "x",
-      "y",
-      "z"
-    ])
-  )
-);
+const letterProducer = makeSymbolPicker(1, [
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "j",
+  "k",
+  "l",
+  "m",
+  "n",
+  "o",
+  "p",
+  "q",
+  "r",
+  "s",
+  "t",
+  "u",
+  "v",
+  "w",
+  "x",
+  "y",
+  "z"
+]);
 producers["letter"] = letterProducer;
 
-const digitProducer = withSpacePrepender(
-  withSizeLimit(
-    3,
-    makeSymbolPicker(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
-  )
-);
+const digitProducer = makeSymbolPicker(3, [
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9"
+]);
 producers["digits"] = digitProducer;
 
-const punctuationProducer = withSpacePrepender(
-  withCountLimit(
-    "punctuation",
-    1,
-    withSizeLimit(1, makeSymbolPicker([".", ",", "?"]))
-  )
-);
+const punctuationProducer = makeSymbolPicker(1, [".", ",", "?"]);
 producers["punctuation"] = punctuationProducer;
 
-const prosignProducer = withSpacePrepender(
-  withCountLimit(
-    "prosign",
-    1,
-    withSizeLimit(
-      1,
-      makeSymbolPicker(["<AR>", "<AS>", "<BK>", "<CL>", "<KN>", "<SK>"])
-    )
-  )
-);
+const prosignProducer = makeSymbolPicker(1, [
+  "<AR>",
+  "<AS>",
+  "<BK>",
+  "<CL>",
+  "<KN>",
+  "<SK>"
+]);
 producers["prosign"] = prosignProducer;
 
 function makeWordMap(words) {
@@ -143,11 +102,18 @@ function makeWordMap(words) {
 
 function makeWordProducer(words) {
   const { map, maxLen } = makeWordMap(words);
-  return withSpacePrepender(
-    withSizeLimit(maxLen, (size, pattern) => {
-      return map[size][Math.floor(Math.random() * map[size].length)];
-    })
-  );
+  return (size, pattern) => {
+    if (size > maxLen) {
+      return null;
+    }
+    var prefix;
+    if (pattern.length > 1) {
+      prefix = " ";
+    } else {
+      prefix = "";
+    }
+    return prefix + map[size][Math.floor(Math.random() * map[size].length)];
+  };
 }
 
 producers["top5k"] = makeWordProducer(top5k);
