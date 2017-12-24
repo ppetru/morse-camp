@@ -94,7 +94,7 @@ class CopyTrainerStore {
   recordFeedback = action((results, id, success, count) => {
     var tracker;
     if (!results.has(id)) {
-      tracker = new ResultTracker();
+      tracker = observable(new ResultTracker());
       results.set(id, tracker);
     } else {
       tracker = results.get(id);

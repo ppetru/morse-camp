@@ -182,6 +182,15 @@ PlayLoop.propTypes = {};
 
 const Result = ({ r }) => r.ratio.toFixed(2);
 
+const Producer = ({ p }) =>
+  p
+    ? p.entries().map(([k, v]) => (
+        <li key={k}>
+          {k}: <Result r={v} />
+        </li>
+      ))
+    : "";
+
 const CopyTrainer = inject("store", "morsePlayer")(
   observer(
     class CopyTrainer extends Component {
@@ -217,10 +226,13 @@ const CopyTrainer = inject("store", "morsePlayer")(
           );
         }
         var entries = [];
-        for (var [k, v] of store.repeaters.entries()) {
+        for (let [k, v] of store.producers.entries()) {
           entries.push(
             <li key={k}>
-              {k}: <Result r={v} />
+              {k}:
+              <ul>
+                <Producer p={v} />
+              </ul>
             </li>
           );
         }
@@ -230,7 +242,7 @@ const CopyTrainer = inject("store", "morsePlayer")(
             <Card>
               <CardTitle title="Copy Trainer" />
               <CardText>
-                Repeaters: <ul>{entries}</ul>
+                Results: <ul>{entries}</ul>
               </CardText>
               <CardActions centered>{button}</CardActions>
             </Card>
