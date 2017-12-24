@@ -8,7 +8,8 @@ function makeSymbolPicker(sizeLimit, symbols) {
     if (size > sizeLimit) {
       return null;
     }
-    if (pattern[0].size !== 1) {
+    // only up to 2 symbols at a time
+    if (pattern[0].size > 2) {
       return null;
     }
     var group;
@@ -111,6 +112,9 @@ function makeWordProducer(words) {
       prefix = " ";
     } else {
       prefix = "";
+    }
+    if (!(size in map)) {
+      return null;
     }
     return prefix + map[size][Math.floor(Math.random() * map[size].length)];
   };
