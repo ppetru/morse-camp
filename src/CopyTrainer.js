@@ -154,7 +154,7 @@ const PlayLoop = inject("store")(
 
     pickText = () => {
       const { text, pattern } = this.props.store.copyTrainer.generateText(
-        this.state.pattern
+        this.state.text
       );
       this.setState({ text, pattern });
     };

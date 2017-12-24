@@ -76,7 +76,7 @@ class CopyTrainerStore {
     return { producer: winner, value: values.get(winner) };
   }
 
-  generateText(oldPattern) {
+  generateText(oldText) {
     var text;
     var pattern;
     var hack = 0; // TODO: fix this
@@ -95,10 +95,7 @@ class CopyTrainerStore {
         pattern.push(producer);
       }
       hack++;
-    } while (
-      JSON.stringify(pattern) === JSON.stringify(oldPattern) &&
-      hack < 10
-    );
+    } while (text === oldText && hack < 10);
     if (hack === 10) {
       text = "oops";
       pattern = [
