@@ -1,7 +1,7 @@
 import { action, extendObservable, observable } from "mobx";
 import "seedrandom";
 
-import { ResultTracker } from "../ResultTracker";
+import { ResultTracker } from "./ResultTracker";
 import { PRODUCERS } from "../TextProducers";
 const weighted = require("weighted");
 
@@ -12,8 +12,11 @@ class CopyTrainerStore {
     this.rootStore = rootStore;
 
     extendObservable(this, {
-      repeaters: observable(new Map()), // 1: resultTracker, 2: resultTracker, ...
-      producers: observable(new Map()) // 'letters': { 1: resultTracker }, 'words': { 1: resultTracker, 2: resultTracker }, ...
+      // 'repeats': { 1: resultTracker, 2: resultTracker },
+      // 'letters': { 1: resultTracker },
+      // 'words': { 1: resultTracker, 2: resultTracker },
+      // ...
+      producers: observable(new Map())
     });
   }
 
@@ -39,7 +42,7 @@ class CopyTrainerStore {
   }
 
   pickRepeater() {
-    const candidates = this.getCandidates(this.repeaters, 1);
+    const candidates = this.getCandidates(this.producers.get("repeats"), 1);
     return parseInt(weighted.select(candidates), 10);
   }
 
@@ -72,7 +75,7 @@ class CopyTrainerStore {
     do {
       text = "";
       const count = this.pickRepeater();
-      pattern = [count];
+      pattern = ["repeats:" + count];
       for (let i = 0; i < count; i++) {
         const { producer, value } = this.fillSlot(pattern.slice(1), count, i);
         text += value;
@@ -100,8 +103,7 @@ class CopyTrainerStore {
   });
 
   patternFeedback = action((pattern, success, count) => {
-    this.recordFeedback(this.repeaters, pattern[0], success, count);
-    for (let i = 1; i < pattern.length; i++) {
+    for (let i = 0; i < pattern.length; i++) {
       const [producer, size] = pattern[i].split(":");
       if (!this.producers.has(producer)) {
         this.producers.set(producer, observable(new Map()));

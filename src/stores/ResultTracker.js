@@ -1,8 +1,12 @@
+import { extendObservable, observable } from "mobx";
+
 export class ResultTracker {
   constructor() {
-    this.success = 0;
-    this.total = 0;
-    this.results = [];
+    extendObservable(this, {
+      success: 0,
+      total: 0,
+      results: observable([])
+    });
   }
 
   record(success, count) {
