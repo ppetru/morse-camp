@@ -85,7 +85,7 @@ class CopyTrainerStore {
     } while (pattern.toString() === oldPattern.toString() && hack < 10);
     if (hack === 10) {
       text = "oops";
-      pattern = [1];
+      pattern = ["repeats:1"];
     }
     console.log("final text:", text, pattern);
     return { text, pattern };
