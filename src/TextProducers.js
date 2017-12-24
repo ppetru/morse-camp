@@ -1,15 +1,22 @@
 import { words as cw } from "./words/cw.js";
 import { words as top5k } from "./words/top5k.js";
 
-var producers = {};
+var producers = new Map();
+
+function registerProducer(name, func, startSize) {
+  producers.set(name, {
+    func: func,
+    startSize: startSize
+  });
+}
 
 function makeSymbolPicker(sizeLimit, symbols) {
   return (size, pattern) => {
     if (size > sizeLimit) {
       return null;
     }
-    // only up to 2 symbols at a time
-    if (pattern[0].size > 2) {
+    // only 1 symbol at a time
+    if (pattern[0].size !== 1) {
       return null;
     }
     var group;
@@ -53,7 +60,7 @@ const letterProducer = makeSymbolPicker(1, [
   "y",
   "z"
 ]);
-producers["letter"] = letterProducer;
+registerProducer("letter", letterProducer, 1);
 
 const digitProducer = makeSymbolPicker(3, [
   "0",
@@ -67,10 +74,10 @@ const digitProducer = makeSymbolPicker(3, [
   "8",
   "9"
 ]);
-producers["digits"] = digitProducer;
+registerProducer("digits", digitProducer, 1);
 
 const punctuationProducer = makeSymbolPicker(1, [".", ",", "?"]);
-producers["punctuation"] = punctuationProducer;
+registerProducer("punctuation", punctuationProducer, 1);
 
 const prosignProducer = makeSymbolPicker(1, [
   "<AR>",
@@ -80,7 +87,7 @@ const prosignProducer = makeSymbolPicker(1, [
   "<KN>",
   "<SK>"
 ]);
-producers["prosign"] = prosignProducer;
+registerProducer("prosign", prosignProducer, 1);
 
 function makeWordMap(words) {
   var map = [];
@@ -120,9 +127,8 @@ function makeWordProducer(words) {
   };
 }
 
-producers["top5k"] = makeWordProducer(top5k);
-
-producers["cw"] = makeWordProducer(cw);
+registerProducer("top5k", makeWordProducer(top5k), 2);
+registerProducer("cw", makeWordProducer(cw), 2);
 
 const PRODUCERS = producers;
 
