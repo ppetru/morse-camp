@@ -1,78 +1,26 @@
-import { action, extendObservable, observable } from 'mobx';
-import 'seedrandom'
+import { action, extendObservable, observable } from "mobx";
+import "seedrandom";
 
-import { PRODUCERS } from '../TextProducers';
-const weighted = require('weighted');
-
+import { ResultTracker } from "../ResultTracker";
+import { PRODUCERS } from "../TextProducers";
+const weighted = require("weighted");
 
 Math.seedrandom();
 
-class ResultTracker {
-  constructor() {
-    this.success = 0;
-    this.total = 0;
-    this.results = [];
-  }
-
-  record(success, count) {
-    if (this.results.push([success, count]) > 20) {
-      this.results.shift();
-    }
-    this.total += count;
-    if (success) {
-      this.success++;
-    }
-  }
-
-  get overallRatio() {
-    if (this.total === 0) {
-      return 0;
-    } else {
-      return this.success / this.total;
-    }
-  }
-
-  get ratio() {
-    if (this.results.length === 0) {
-      return 0;
-    }
-    const total = this.results.reduce((sum, value) =>
-            [sum[0]+value[0], sum[1]+value[1]], [0, 0]);
-    return total[0] / total[1];
-  }
-
-  get pickProbability() {
-    const r = Math.floor(this.ratio * 100);
-    var p;
-    if (r < 5 || r > 95) {
-      p = 1;
-    } else if (r < 20 || r > 80) {
-      p = 10;
-    } else {
-      p = 80;
-    }
-    return p / 100;
-  }
-
-  get canProgress() {
-    return this.results.length > 5 && this.ratio > 0.5;
-  }
-}
-
 class CopyTrainerStore {
   constructor(rootStore) {
-    this.rootStore = rootStore
+    this.rootStore = rootStore;
 
     extendObservable(this, {
       repeaters: observable(new Map()), // 1: resultTracker, 2: resultTracker, ...
-      producers: observable(new Map()), // 'letters': { 1: resultTracker }, 'words': { 1: resultTracker, 2: resultTracker }, ...
-    })
+      producers: observable(new Map()) // 'letters': { 1: resultTracker }, 'words': { 1: resultTracker, 2: resultTracker }, ...
+    });
   }
 
   getCandidates(results, bootstrap) {
     var candidates = {};
     if (!results) {
-      return { [bootstrap]: 1 }
+      return { [bootstrap]: 1 };
     }
     for (let k of results.keys()) {
       let res = results.get(k);
@@ -124,9 +72,9 @@ class CopyTrainerStore {
     do {
       text = "";
       const count = this.pickRepeater();
-      pattern = [ count ];
+      pattern = [count];
       for (let i = 0; i < count; i++) {
-        const { producer, value } =  this.fillSlot(pattern.slice(1), count, i);
+        const { producer, value } = this.fillSlot(pattern.slice(1), count, i);
         text += value;
         pattern.push(producer);
       }
@@ -134,7 +82,7 @@ class CopyTrainerStore {
     } while (pattern.toString() === oldPattern.toString() && hack < 10);
     if (hack === 10) {
       text = "oops";
-      pattern = [ 1 ];
+      pattern = [1];
     }
     console.log("final text:", text, pattern);
     return { text, pattern };
@@ -149,18 +97,18 @@ class CopyTrainerStore {
       tracker = results.get(id);
     }
     tracker.record(success, count);
-  })
+  });
 
   patternFeedback = action((pattern, success, count) => {
     this.recordFeedback(this.repeaters, pattern[0], success, count);
     for (let i = 1; i < pattern.length; i++) {
-      const [ producer, size ] = pattern[i].split(":");
+      const [producer, size] = pattern[i].split(":");
       if (!this.producers.has(producer)) {
         this.producers.set(producer, observable(new Map()));
       }
       this.recordFeedback(this.producers.get(producer), size, success, count);
     }
-  })
+  });
 }
 
 export default CopyTrainerStore;
