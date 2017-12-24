@@ -48,9 +48,10 @@ class CopyTrainerStore {
 
   fillSlot(pattern, total, index) {
     // weighted candidates to fill the slot with
-    var candidates = {};
+    var candidates = [];
+    var weights = [];
     // values returned by each candidate
-    var values = {};
+    var values = new Map();
     for (const func of PRODUCERS) {
       const name = func.producerName;
       let c = this.getCandidates(this.producers.get(name), 1);
@@ -58,24 +59,31 @@ class CopyTrainerStore {
         let val = func(parseInt(size, 10), pattern, total, index);
         // val is null if the producer doesn't work for these parameters
         if (val !== null) {
-          const key = name + ":" + size;
-          candidates[key] = prob;
+          const key = {
+            producer: name,
+            size: size
+          };
+          candidates.push(key);
+          weights.push(prob);
           values[key] = val;
         }
       }
     }
-    const winner = weighted.select(candidates);
+    const winner = weighted.select(candidates, weights);
     return { producer: winner, value: values[winner] };
   }
 
   generateText(oldPattern) {
     var text;
-    var pattern;
+    var pattern = [];
     var hack = 0; // TODO: fix this
     do {
       text = "";
       const count = this.pickRepeater();
-      pattern = ["repeats:" + count];
+      pattern.push({
+        producer: "repeats",
+        size: count
+      });
       for (let i = 0; i < count; i++) {
         const { producer, value } = this.fillSlot(pattern.slice(1), count, i);
         text += value;
@@ -85,9 +93,18 @@ class CopyTrainerStore {
     } while (pattern.toString() === oldPattern.toString() && hack < 10);
     if (hack === 10) {
       text = "oops";
-      pattern = ["repeats:1"];
+      pattern = [
+        {
+          producer: "repeats",
+          size: 1
+        }
+      ];
     }
-    console.log("final text:", text, pattern);
+    console.log(
+      "final text:",
+      text,
+      pattern.map(e => e.producer + ":" + e.size)
+    );
     return { text, pattern };
   }
 
@@ -103,12 +120,16 @@ class CopyTrainerStore {
   });
 
   patternFeedback = action((pattern, success, count) => {
-    for (let i = 0; i < pattern.length; i++) {
-      const [producer, size] = pattern[i].split(":");
-      if (!this.producers.has(producer)) {
-        this.producers.set(producer, observable(new Map()));
+    for (let e of pattern) {
+      if (!this.producers.has(e.producer)) {
+        this.producers.set(e.producer, observable(new Map()));
       }
-      this.recordFeedback(this.producers.get(producer), size, success, count);
+      this.recordFeedback(
+        this.producers.get(e.producer),
+        e.size,
+        success,
+        count
+      );
     }
   });
 }
