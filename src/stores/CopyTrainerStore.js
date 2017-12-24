@@ -29,7 +29,7 @@ class CopyTrainerStore {
       let res = results.get(k);
       candidates[k] = res.pickProbability;
       if (res.canProgress) {
-        const nk = parseInt(k, 10) + 1;
+        const nk = k + 1;
         if (!(nk in candidates)) {
           candidates[nk] = 0.5;
         }
@@ -43,7 +43,7 @@ class CopyTrainerStore {
 
   pickRepeater() {
     const candidates = this.getCandidates(this.producers.get("repeats"), 1);
-    return parseInt(weighted.select(candidates), 10);
+    return weighted.select(candidates);
   }
 
   fillSlot(pattern, total, index) {
@@ -56,7 +56,7 @@ class CopyTrainerStore {
       const name = func.producerName;
       let c = this.getCandidates(this.producers.get(name), 1);
       for (const [size, prob] of Object.entries(c)) {
-        let val = func(parseInt(size, 10), pattern, total, index);
+        let val = func(size, pattern, total, index);
         // val is null if the producer doesn't work for these parameters
         if (val !== null) {
           const key = {
