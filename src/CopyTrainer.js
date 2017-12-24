@@ -241,10 +241,10 @@ const CopyTrainer = inject("store", "morsePlayer")(
           <div>
             <Card>
               <CardTitle title="Copy Trainer" />
+              <CardActions centered>{button}</CardActions>
               <CardText>
                 Results: <ul>{entries}</ul>
               </CardText>
-              <CardActions centered>{button}</CardActions>
             </Card>
             {active && <PlayLoop />}
           </div>
