@@ -5,6 +5,23 @@ const weighted = require("weighted");
 
 Math.seedrandom();
 
+function pickProbability(result) {
+  const r = Math.floor(result.ratio * 100);
+  var p;
+  if (r < 5 || r > 95) {
+    p = 1;
+  } else if (r < 20 || r > 80) {
+    p = 10;
+  } else {
+    p = 80;
+  }
+  return p / 100;
+}
+
+function canProgress(result) {
+  return result.results.length > 5 && result.ratio > 0.5;
+}
+
 function getCandidates(results, bootstrap) {
   var candidates = new Map();
   if (!results) {
@@ -13,8 +30,8 @@ function getCandidates(results, bootstrap) {
   }
   for (let k of results.keys()) {
     let res = results.get(k);
-    candidates.set(k, res.pickProbability);
-    if (res.canProgress) {
+    candidates.set(k, pickProbability(res));
+    if (canProgress(res)) {
       const nk = parseInt(k, 10) + 1;
       if (!candidates.has(nk)) {
         candidates.set(nk, 0.5);

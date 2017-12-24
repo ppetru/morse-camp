@@ -37,21 +37,4 @@ export class ResultTracker {
     );
     return total[0] / total[1];
   }
-
-  get pickProbability() {
-    const r = Math.floor(this.ratio * 100);
-    var p;
-    if (r < 5 || r > 95) {
-      p = 1;
-    } else if (r < 20 || r > 80) {
-      p = 10;
-    } else {
-      p = 80;
-    }
-    return p / 100;
-  }
-
-  get canProgress() {
-    return this.results.length > 5 && this.ratio > 0.5;
-  }
 }
