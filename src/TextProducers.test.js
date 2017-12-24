@@ -11,6 +11,6 @@ it("does not repeat prosigns", () => {
       size: 1
     }
   ];
-  var p = PRODUCERS["prosign"](1, pattern.slice(1), 2, 1);
+  var p = PRODUCERS["prosign"](1, pattern);
   expect(p).toBeNull();
 });

@@ -4,12 +4,12 @@ import { words as top5k } from "./words/top5k.js";
 var producers = {};
 
 function withSpacePrepender(func) {
-  return (size, pattern, total, index) => {
-    const result = func(size, pattern, total, index);
+  return (size, pattern) => {
+    const result = func(size, pattern);
     if (result === null) {
       return null;
     }
-    if (index > 0) {
+    if (pattern.length > 2) {
       return " " + result;
     } else {
       return result;
@@ -18,9 +18,9 @@ function withSpacePrepender(func) {
 }
 
 function withSizeLimit(limit, func) {
-  return (size, pattern, total, index) => {
+  return (size, pattern) => {
     if (size <= limit) {
-      return func(size, pattern, total, index);
+      return func(size, pattern);
     } else {
       return null;
     }
@@ -28,10 +28,10 @@ function withSizeLimit(limit, func) {
 }
 
 function withCountLimit(name, limit, func) {
-  return (size, pattern, total, index) => {
+  return (size, pattern) => {
     const count = pattern.filter(p => p.producer === name).length;
     if (count < limit) {
-      return func(size, pattern, total, index);
+      return func(size, pattern);
     } else {
       return null;
     }
@@ -39,9 +39,9 @@ function withCountLimit(name, limit, func) {
 }
 
 function withSingleton(func) {
-  return (size, pattern, total, index) => {
-    if (total === 1) {
-      return func(size, pattern, total, index);
+  return (size, pattern) => {
+    if (pattern[0].size === 1) {
+      return func(size, pattern);
     } else {
       return null;
     }
@@ -49,7 +49,7 @@ function withSingleton(func) {
 }
 
 function makeSymbolPicker(symbols) {
-  return (size, pattern, total, index) => {
+  return (size, pattern) => {
     var group = "";
     for (let i = 0; i < size; i++) {
       group += symbols[Math.floor(Math.random() * symbols.length)];
@@ -144,7 +144,7 @@ function makeWordMap(words) {
 function makeWordProducer(words) {
   const { map, maxLen } = makeWordMap(words);
   return withSpacePrepender(
-    withSizeLimit(maxLen, (size, pattern, total, index) => {
+    withSizeLimit(maxLen, (size, pattern) => {
       return map[size][Math.floor(Math.random() * map[size].length)];
     })
   );
