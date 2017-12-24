@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { autorun } from "mobx";
 import { inject, observer } from "mobx-react";
-
 import { Button, Card, CardActions, CardText, CardTitle } from "react-md";
+
+import generateText from "./TextGenerator";
 
 import "./CopyTrainer.css";
 
@@ -153,7 +154,8 @@ const PlayLoop = inject("store")(
     };
 
     pickText = () => {
-      const { text, pattern } = this.props.store.copyTrainer.generateText(
+      const { text, pattern } = generateText(
+        this.props.store.copyTrainer.producers,
         this.state.text
       );
       this.setState({ text, pattern });
