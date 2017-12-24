@@ -21,29 +21,33 @@ class CopyTrainerStore {
   }
 
   getCandidates(results, bootstrap) {
-    var candidates = {};
+    var candidates = new Map();
     if (!results) {
-      return { [bootstrap]: 1 };
+      candidates.set(bootstrap, 1);
+      return candidates;
     }
     for (let k of results.keys()) {
       let res = results.get(k);
-      candidates[k] = res.pickProbability;
+      candidates.set(k, res.pickProbability);
       if (res.canProgress) {
-        const nk = k + 1;
-        if (!(nk in candidates)) {
-          candidates[nk] = 0.5;
+        const nk = parseInt(k, 10) + 1;
+        if (!candidates.has(nk)) {
+          candidates.set(nk, 0.5);
         }
       }
     }
-    if (!(bootstrap in candidates)) {
-      candidates[bootstrap] = 1;
+    if (!candidates.has(bootstrap)) {
+      candidates.set(bootstrap, 1);
     }
     return candidates;
   }
 
   pickRepeater() {
     const candidates = this.getCandidates(this.producers.get("repeats"), 1);
-    return weighted.select(candidates);
+    return weighted.select(
+      Array.from(candidates.keys()),
+      Array.from(candidates.values())
+    );
   }
 
   fillSlot(pattern) {
@@ -54,7 +58,7 @@ class CopyTrainerStore {
     var values = new Map();
     for (const [name, func] of Object.entries(PRODUCERS)) {
       let c = this.getCandidates(this.producers.get(name), 1);
-      for (const [size, prob] of Object.entries(c)) {
+      for (const [size, prob] of c.entries()) {
         let val = func(size, pattern);
         // val is null if the producer doesn't work for these parameters
         if (val !== null) {
