@@ -65,32 +65,37 @@ class CopyTrainerStore {
           };
           candidates.push(key);
           weights.push(prob);
-          values[key] = val;
+          values.set(key, val);
         }
       }
     }
     const winner = weighted.select(candidates, weights);
-    return { producer: winner, value: values[winner] };
+    return { producer: winner, value: values.get(winner) };
   }
 
   generateText(oldPattern) {
     var text;
-    var pattern = [];
+    var pattern;
     var hack = 0; // TODO: fix this
     do {
       text = "";
       const count = this.pickRepeater();
-      pattern.push({
-        producer: "repeats",
-        size: count
-      });
+      pattern = [
+        {
+          producer: "repeats",
+          size: count
+        }
+      ];
       for (let i = 0; i < count; i++) {
         const { producer, value } = this.fillSlot(pattern.slice(1), count, i);
         text += value;
         pattern.push(producer);
       }
       hack++;
-    } while (pattern.toString() === oldPattern.toString() && hack < 10);
+    } while (
+      JSON.stringify(pattern) === JSON.stringify(oldPattern) &&
+      hack < 10
+    );
     if (hack === 10) {
       text = "oops";
       pattern = [
