@@ -1,6 +1,8 @@
 import { words as cw } from "./words/cw.js";
 import { words as top5k } from "./words/top5k.js";
 
+var producers = {};
+
 function withSpacePrepender(func) {
   return (size, pattern, total, index) => {
     const result = func(size, pattern, total, index);
@@ -89,7 +91,7 @@ const letterProducer = withSingleton(
     ])
   )
 );
-letterProducer.producerName = "letter";
+producers["letter"] = letterProducer;
 
 const digitProducer = withSpacePrepender(
   withSizeLimit(
@@ -97,7 +99,7 @@ const digitProducer = withSpacePrepender(
     makeSymbolPicker(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
   )
 );
-digitProducer.producerName = "digits";
+producers["digits"] = digitProducer;
 
 const punctuationProducer = withSpacePrepender(
   withCountLimit(
@@ -106,7 +108,7 @@ const punctuationProducer = withSpacePrepender(
     withSizeLimit(1, makeSymbolPicker([".", ",", "?"]))
   )
 );
-punctuationProducer.producerName = "punctuation";
+producers["punctuation"] = punctuationProducer;
 
 const prosignProducer = withSpacePrepender(
   withCountLimit(
@@ -118,7 +120,7 @@ const prosignProducer = withSpacePrepender(
     )
   )
 );
-prosignProducer.producerName = "prosign";
+producers["prosign"] = prosignProducer;
 
 function makeWordMap(words) {
   var map = [];
@@ -148,19 +150,10 @@ function makeWordProducer(words) {
   );
 }
 
-const top5kProducer = makeWordProducer(top5k);
-top5kProducer.producerName = "top5k";
+producers["top5k"] = makeWordProducer(top5k);
 
-const cwProducer = makeWordProducer(cw);
-cwProducer.producerName = "cw";
+producers["cw"] = makeWordProducer(cw);
 
-const PRODUCERS = [
-  letterProducer,
-  digitProducer,
-  punctuationProducer,
-  prosignProducer,
-  top5kProducer,
-  cwProducer
-];
+const PRODUCERS = producers;
 
 export { PRODUCERS };

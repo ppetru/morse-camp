@@ -1,7 +1,5 @@
 import { PRODUCERS } from "./TextProducers";
 
-const [letter, digit, punctuation, prosign, top5k, cw] = PRODUCERS;
-
 it("does not repeat prosigns", () => {
   var pattern = [
     {
@@ -9,10 +7,10 @@ it("does not repeat prosigns", () => {
       size: 2
     },
     {
-      producer: prosign.producerName,
+      producer: "prosign",
       size: 1
     }
   ];
-  var p = prosign(1, pattern.slice(1), 2, 1);
+  var p = PRODUCERS["prosign"](1, pattern.slice(1), 2, 1);
   expect(p).toBeNull();
 });

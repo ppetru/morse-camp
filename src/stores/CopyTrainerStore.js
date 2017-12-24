@@ -52,8 +52,7 @@ class CopyTrainerStore {
     var weights = [];
     // values returned by each candidate
     var values = new Map();
-    for (const func of PRODUCERS) {
-      const name = func.producerName;
+    for (const [name, func] of Object.entries(PRODUCERS)) {
       let c = this.getCandidates(this.producers.get(name), 1);
       for (const [size, prob] of Object.entries(c)) {
         let val = func(size, pattern, total, index);
