@@ -61,7 +61,7 @@ const letterProducer = makeSymbolPicker(1, [
   "y",
   "z"
 ]);
-registerProducer("letter", letterProducer, 1);
+//registerProducer("letter", letterProducer, 1);
 
 const digitProducer = makeSymbolPicker(3, [
   "0",
@@ -75,7 +75,7 @@ const digitProducer = makeSymbolPicker(3, [
   "8",
   "9"
 ]);
-registerProducer("digits", digitProducer, 1, "letter");
+//registerProducer("digits", digitProducer, 1, "letter");
 
 const punctuationProducer = makeSymbolPicker(1, [".", ",", "?"]);
 registerProducer("punctuation", punctuationProducer, 1, "digits");
@@ -88,7 +88,7 @@ const prosignProducer = makeSymbolPicker(1, [
   "<KN>",
   "<SK>"
 ]);
-registerProducer("prosign", prosignProducer, 1, "punctuation");
+//registerProducer("prosign", prosignProducer, 1, "punctuation");
 
 function makeWordMap(words) {
   var map = [];
@@ -128,7 +128,8 @@ function makeWordProducer(words) {
   };
 }
 
-registerProducer("cw", makeWordProducer(cw), 2, "letter");
+//registerProducer("cw", makeWordProducer(cw), 2, "letter");
+registerProducer("cw", makeWordProducer(cw), 2);
 registerProducer("top5k", makeWordProducer(top5k), 2, "cw");
 
 const PRODUCERS = producers;

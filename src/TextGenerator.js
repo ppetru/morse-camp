@@ -11,9 +11,9 @@ function mostlyCenter(result) {
   if (r < 5 || r > 95) {
     p = 1;
   } else if (r < 20 || r > 80) {
-    p = 10;
+    p = 5;
   } else {
-    p = 80;
+    p = 90;
   }
   return p / 100;
 }
@@ -62,7 +62,9 @@ function getCandidates(allResults, name, bootstrap, probabilityFunc) {
 }
 
 function pickRepeater(results) {
-  const candidates = getCandidates(results, "repeats", 1, linearRampCap);
+  //const candidates = getCandidates(results, "repeats", 1, linearRampCap);
+  var candidates = new Map();
+  candidates.set(1, 1);
   return weighted.select(
     Array.from(candidates.keys()),
     Array.from(candidates.values())
