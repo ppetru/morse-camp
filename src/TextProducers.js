@@ -129,7 +129,7 @@ function makeWordProducer(words) {
 }
 
 registerProducer("cw", makeWordProducer(cw), 2, "letter");
-registerProducer("top5k", makeWordProducer(top5k), 2, "top5k");
+registerProducer("top5k", makeWordProducer(top5k), 2, "cw");
 
 const PRODUCERS = producers;
 
