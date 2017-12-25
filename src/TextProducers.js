@@ -3,10 +3,11 @@ import { words as top5k } from "./words/top5k.js";
 
 var producers = new Map();
 
-function registerProducer(name, func, startSize) {
+function registerProducer(name, func, startSize, dep) {
   producers.set(name, {
     func: func,
-    startSize: startSize
+    startSize: startSize,
+    dep: dep
   });
 }
 
@@ -74,10 +75,10 @@ const digitProducer = makeSymbolPicker(3, [
   "8",
   "9"
 ]);
-registerProducer("digits", digitProducer, 1);
+registerProducer("digits", digitProducer, 1, "letter");
 
 const punctuationProducer = makeSymbolPicker(1, [".", ",", "?"]);
-registerProducer("punctuation", punctuationProducer, 1);
+registerProducer("punctuation", punctuationProducer, 1, "digits");
 
 const prosignProducer = makeSymbolPicker(1, [
   "<AR>",
@@ -87,7 +88,7 @@ const prosignProducer = makeSymbolPicker(1, [
   "<KN>",
   "<SK>"
 ]);
-registerProducer("prosign", prosignProducer, 1);
+registerProducer("prosign", prosignProducer, 1, "punctuation");
 
 function makeWordMap(words) {
   var map = [];
@@ -127,8 +128,8 @@ function makeWordProducer(words) {
   };
 }
 
-registerProducer("top5k", makeWordProducer(top5k), 2);
-registerProducer("cw", makeWordProducer(cw), 2);
+registerProducer("cw", makeWordProducer(cw), 2, "letter");
+registerProducer("top5k", makeWordProducer(top5k), 2, "top5k");
 
 const PRODUCERS = producers;
 

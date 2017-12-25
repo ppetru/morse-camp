@@ -22,17 +22,23 @@ function canProgress(result) {
   return result.results.length > 5 && result.ratio > 0.5;
 }
 
-function getCandidates(results, bootstrap) {
+function depMet(results, dep) {
+  return results.has(dep) && canProgress(results.get(dep).values()[0]);
+}
+
+function getCandidates(allResults, name, bootstrap) {
   var candidates = new Map();
+  var results = allResults.get(name);
   if (!results) {
     candidates.set(bootstrap, 1);
     return candidates;
   }
-  for (let k of results.keys()) {
+  for (var k of results.keys()) {
     let res = results.get(k);
+    k = parseInt(k, 10);
     candidates.set(k, pickProbability(res));
     if (canProgress(res)) {
-      const nk = parseInt(k, 10) + 1;
+      const nk = k + 1;
       if (!candidates.has(nk)) {
         candidates.set(nk, 0.5);
       }
@@ -45,7 +51,7 @@ function getCandidates(results, bootstrap) {
 }
 
 function pickRepeater(results) {
-  const candidates = getCandidates(results.get("repeats"), 1);
+  const candidates = getCandidates(results, "repeats", 1);
   return weighted.select(
     Array.from(candidates.keys()),
     Array.from(candidates.values())
@@ -58,8 +64,11 @@ function fillSlot(results, pattern) {
   var weights = [];
   // values returned by each candidate
   var values = new Map();
-  for (const [name, { func, startSize }] of PRODUCERS.entries()) {
-    let c = getCandidates(results.get(name), startSize);
+  for (const [name, { func, startSize, dep }] of PRODUCERS.entries()) {
+    if (dep && !depMet(results, dep)) {
+      continue;
+    }
+    let c = getCandidates(results, name, startSize);
     for (const [size, prob] of c.entries()) {
       let val = func(size, pattern);
       // val is null if the producer doesn't work for these parameters
