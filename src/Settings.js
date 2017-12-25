@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Button, TextField } from "react-md";
 import { inject, observer } from "mobx-react";
 
