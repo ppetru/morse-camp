@@ -20,7 +20,7 @@ useStrict(true);
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const store = new RootStore();
-const player = new MorsePlayer(30, 500, store.morse, audioContext);
+const player = new MorsePlayer(store.morse, audioContext);
 
 ReactDOM.render(
   <div>

@@ -53,15 +53,15 @@ class MorsePlayer {
 
   get ditLength() {
     // 1.2s per dit is 1WPM
-    return 1.2 / this.speed;
+    return 1.2 / this.store.speed;
   }
 
   soundOn = time => {
-    this.gain.gain.setTargetAtTime(1.0, time, 1 / this.frequency);
+    this.gain.gain.setTargetAtTime(1.0, time, 1 / this.store.frequency);
   };
 
   soundOff = time => {
-    this.gain.gain.setTargetAtTime(0.0, time, 1 / this.frequency);
+    this.gain.gain.setTargetAtTime(0.0, time, 1 / this.store.frequency);
   };
 
   playChar = (t, c) => {
@@ -116,7 +116,7 @@ class MorsePlayer {
   makeOscillator = () => {
     this.oscillator = this.audioContext.createOscillator();
     this.oscillator.connect(this.gain);
-    this.oscillator.frequency.value = this.frequency;
+    this.oscillator.frequency.value = this.store.frequency;
     this.oscillator.addEventListener("ended", event => {
       this.playing = false;
       this.store.stoppedPlaying();
@@ -132,9 +132,7 @@ class MorsePlayer {
     }
   };
 
-  constructor(speed, frequency, store, audioContext) {
-    this.speed = speed;
-    this.frequency = frequency;
+  constructor(store, audioContext) {
     this.store = store;
     this.audioContext = audioContext;
 

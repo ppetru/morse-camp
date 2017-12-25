@@ -11,7 +11,7 @@ import "./beforeTest.js";
 it("renders without crashing", () => {
   const store = new RootStore();
   const audioContext = new AudioContext();
-  const player = new MorsePlayer(30, 500, store.morse, audioContext);
+  const player = new MorsePlayer(store.morse, audioContext);
   const div = document.createElement("div");
   ReactDOM.render(
     <Provider store={store} morsePlayer={player}>
