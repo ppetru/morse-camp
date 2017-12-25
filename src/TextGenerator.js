@@ -5,13 +5,24 @@ const weighted = require("weighted");
 
 Math.seedrandom();
 
-function pickProbability(result) {
+function mostlyCenter(result) {
   const r = Math.floor(result.ratio * 100);
   var p;
   if (r < 5 || r > 95) {
     p = 1;
   } else if (r < 20 || r > 80) {
     p = 10;
+  } else {
+    p = 80;
+  }
+  return p / 100;
+}
+
+function linearRampCap(result) {
+  const r = Math.floor(result.ratio * 100);
+  var p;
+  if (r < 50) {
+    p = r;
   } else {
     p = 80;
   }
@@ -26,7 +37,7 @@ function depMet(results, dep) {
   return results.has(dep) && canProgress(results.get(dep).values()[0]);
 }
 
-function getCandidates(allResults, name, bootstrap) {
+function getCandidates(allResults, name, bootstrap, probabilityFunc) {
   var candidates = new Map();
   var results = allResults.get(name);
   if (!results) {
@@ -36,7 +47,7 @@ function getCandidates(allResults, name, bootstrap) {
   for (var k of results.keys()) {
     let res = results.get(k);
     k = parseInt(k, 10);
-    candidates.set(k, pickProbability(res));
+    candidates.set(k, probabilityFunc(res));
     if (canProgress(res)) {
       const nk = k + 1;
       if (!candidates.has(nk)) {
@@ -51,7 +62,7 @@ function getCandidates(allResults, name, bootstrap) {
 }
 
 function pickRepeater(results) {
-  const candidates = getCandidates(results, "repeats", 1);
+  const candidates = getCandidates(results, "repeats", 1, linearRampCap);
   return weighted.select(
     Array.from(candidates.keys()),
     Array.from(candidates.values())
@@ -68,7 +79,7 @@ function fillSlot(results, pattern) {
     if (dep && !depMet(results, dep)) {
       continue;
     }
-    let c = getCandidates(results, name, startSize);
+    let c = getCandidates(results, name, startSize, mostlyCenter);
     for (const [size, prob] of c.entries()) {
       let val = func(size, pattern);
       // val is null if the producer doesn't work for these parameters
