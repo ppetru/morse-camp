@@ -1,5 +1,4 @@
-import { words as cw } from "./words/cw.js";
-import { words as top5k } from "./words/top5k.js";
+import words from "./Words";
 
 var producers = new Map();
 
@@ -128,9 +127,7 @@ function makeWordProducer(words) {
   };
 }
 
-//registerProducer("cw", makeWordProducer(cw), 2, "letter");
-registerProducer("cw", makeWordProducer(cw), 2);
-registerProducer("top5k", makeWordProducer(top5k), 2, "cw");
+registerProducer("words", makeWordProducer(words), 2);
 
 const PRODUCERS = producers;
 
