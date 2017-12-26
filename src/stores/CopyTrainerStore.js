@@ -1,7 +1,10 @@
-import { action, autorun, extendObservable, observable, reaction } from "mobx";
+import { action, autorun, extendObservable, observable } from "mobx";
 
-class CopyTrainerStore {
+import SettingsSaver from "./SettingsSaver";
+
+class CopyTrainerStore extends SettingsSaver {
   constructor(rootStore, transport, noDebounce) {
+    super();
     this.rootStore = rootStore;
     this.transport = transport;
 
@@ -18,28 +21,10 @@ class CopyTrainerStore {
       }
     });
 
-    this.loadSettings = this.transport
-      .loadSettings("copyTrainer")
-      .then(json => {
-        if (json) {
-          this.setMinLength(json.minLength);
-          this.setMaxLength(json.maxLength);
-        }
-      });
+    this.setupSettings("copyTrainer", noDebounce);
 
     this.loadWords = this.transport.iterateWords((w, s) =>
       this.setWordScore(w, s)
-    );
-
-    var opts = {};
-    if (!noDebounce) {
-      opts.delay = 500;
-    }
-
-    this.saveHandler = reaction(
-      () => this.asJson,
-      json => this.transport.saveSettings("copyTrainer", json),
-      opts
     );
 
     this.wordPersister = autorun(() => {
@@ -48,6 +33,11 @@ class CopyTrainerStore {
       }
     });
   }
+
+  setFromJson = action(json => {
+    this.setMinLength(json.minLength);
+    this.setMaxLength(json.maxLength);
+  });
 
   setWordScore = action((w, score) => {
     this.words.set(w, score);

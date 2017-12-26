@@ -1,7 +1,10 @@
-import { action, extendObservable, reaction } from "mobx";
+import { action, extendObservable } from "mobx";
 
-class MorseStore {
-  constructor(rootStore, transport) {
+import SettingsSaver from "./SettingsSaver";
+
+class MorseStore extends SettingsSaver {
+  constructor(rootStore, transport, noDebounce) {
+    super();
     this.rootStore = rootStore;
     this.transport = transport;
 
@@ -16,10 +19,6 @@ class MorseStore {
       stoppedPlaying: action(() => {
         this.playing = false;
       }),
-      setSpeed: action(speed => (this.speed = parseInt(speed, 10))),
-      setFrequency: action(
-        frequency => (this.frequency = parseInt(frequency, 10))
-      ),
 
       get asJson() {
         return {
@@ -29,19 +28,19 @@ class MorseStore {
       }
     });
 
-    this.transport.loadSettings("morsePlayer").then(json => {
-      if (json) {
-        this.setSpeed(json.speed);
-        this.setFrequency(json.frequency);
-      }
-    });
-
-    this.saveHandler = reaction(
-      () => this.asJson,
-      json => this.transport.saveSettings("morsePlayer", json),
-      { delay: 500 }
-    );
+    this.setupSettings("morsePlayer", noDebounce);
   }
+
+  setFromJson = action(json => {
+    this.setSpeed(json.speed);
+    this.setFrequency(json.frequency);
+  });
+
+  setSpeed = action(speed => (this.speed = parseInt(speed, 10)));
+
+  setFrequency = action(
+    frequency => (this.frequency = parseInt(frequency, 10))
+  );
 }
 
 export default MorseStore;
