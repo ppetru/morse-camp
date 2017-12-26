@@ -22,3 +22,15 @@ it("deals with invalid values", () => {
   store.setMaxLength("bar");
   expect(store.maxLength).toEqual(0);
 });
+
+it("saves and restores settings", () => {
+  const transport = new FakeTransport();
+  var store = new CopyTrainerStore(null, transport, true);
+  store.setMinLength(3);
+  store.setMaxLength(9);
+  store = new CopyTrainerStore(null, transport, true);
+  return store.loadSettings.then(() => {
+    expect(store.minLength).toEqual(3);
+    expect(store.maxLength).toEqual(9);
+  });
+});

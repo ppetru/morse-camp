@@ -1,7 +1,7 @@
 import { action, autorun, extendObservable, observable, reaction } from "mobx";
 
 class CopyTrainerStore {
-  constructor(rootStore, transport) {
+  constructor(rootStore, transport, noDebounce) {
     this.rootStore = rootStore;
     this.transport = transport;
 
@@ -18,19 +18,28 @@ class CopyTrainerStore {
       }
     });
 
-    this.transport.loadSettings("copyTrainer").then(json => {
-      if (json) {
-        this.setMinLength(json.minLength);
-        this.setMaxLength(json.maxLength);
-      }
-    });
+    this.loadSettings = this.transport
+      .loadSettings("copyTrainer")
+      .then(json => {
+        if (json) {
+          this.setMinLength(json.minLength);
+          this.setMaxLength(json.maxLength);
+        }
+      });
 
-    this.transport.iterateWords((w, s) => this.setWordScore(w, s));
+    this.loadWords = this.transport.iterateWords((w, s) =>
+      this.setWordScore(w, s)
+    );
+
+    var opts = {};
+    if (!noDebounce) {
+      opts.delay = 500;
+    }
 
     this.saveHandler = reaction(
       () => this.asJson,
       json => this.transport.saveSettings("copyTrainer", json),
-      { delay: 500 }
+      opts
     );
 
     this.wordPersister = autorun(() => {

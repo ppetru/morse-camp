@@ -1,13 +1,27 @@
 class FakeTransport {
-  loadSettings(module) {
-    return Promise.resolve(null);
+  constructor() {
+    this.store = new Map();
   }
 
-  saveSettings(module, json) {}
+  loadSettings(module) {
+    return Promise.resolve(this.store.get("/" + module));
+  }
 
-  setIfDifferent(key, value) {}
+  saveSettings(module, json) {
+    this.setIfDifferent("/" + module, json);
+  }
 
-  iterateWords(func) {}
+  setIfDifferent(key, value) {
+    this.store.set(key, value);
+  }
+
+  iterateWords(func) {
+    this.store.forEach((value, key) => {
+      if (key[0] !== "/") {
+        func(key, value);
+      }
+    });
+  }
 }
 
 export default FakeTransport;
