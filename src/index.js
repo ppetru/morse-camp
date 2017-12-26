@@ -8,6 +8,7 @@ import "./index.css";
 import App from "./App";
 import MorsePlayer from "./MorsePlayer";
 import RootStore from "./stores/RootStore";
+import LocalTransport from "./LocalTransport";
 import registerServiceWorker from "./registerServiceWorker";
 
 WebFontLoader.load({
@@ -19,7 +20,8 @@ WebFontLoader.load({
 useStrict(true);
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const store = new RootStore();
+const transport = new LocalTransport();
+const store = new RootStore(transport);
 const player = new MorsePlayer(store.morse, audioContext);
 
 ReactDOM.render(
@@ -33,5 +35,6 @@ ReactDOM.render(
 
 registerServiceWorker();
 
+window.transport = transport;
 window.store = store;
 window.player = player;

@@ -6,8 +6,9 @@ import { ResultTracker } from "./ResultTracker";
 Math.seedrandom();
 
 class CopyTrainerStore {
-  constructor(rootStore) {
+  constructor(rootStore, transport) {
     this.rootStore = rootStore;
+    this.transport = transport;
 
     extendObservable(this, {
       // 'repeats': { 1: resultTracker, 2: resultTracker },
