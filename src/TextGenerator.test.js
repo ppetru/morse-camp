@@ -20,8 +20,3 @@ it("respects the min/max length", () => {
   const store = { minLength: 2, maxLength: 2 };
   expect(generateText(store, wordMap, "").length).toEqual(2);
 });
-
-it("doesn't repeat the previous text", () => {
-  const store = { minLength: 2, maxLength: 2 };
-  expect(generateText(store, wordMap, "aa")).toEqual("bb");
-});

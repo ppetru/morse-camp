@@ -3,7 +3,7 @@ const weighted = require("weighted");
 
 Math.seedrandom();
 
-function generateText(store, wordsBySize, oldText) {
+function generateText(store, wordsBySize) {
   var words = [];
   var weights = [];
   for (let i = store.minLength; i <= store.maxLength; i++) {
