@@ -4,6 +4,7 @@ import { autorun } from "mobx";
 import { inject, observer } from "mobx-react";
 import { Button, Card, CardActions, CardText, CardTitle } from "react-md";
 
+import { wordsBySize } from "./Words";
 import generateText from "./TextGenerator";
 
 import "./CopyTrainer.css";
@@ -149,16 +150,16 @@ PlayText.propTypes = {
 const PlayLoop = inject("store")(
   class PlayLoop extends Component {
     state = {
-      text: "",
-      pattern: ""
+      text: ""
     };
 
     pickText = () => {
-      const { text, pattern } = generateText(
-        this.props.store.copyTrainer.producers,
+      const text = generateText(
+        this.props.store.copyTrainer,
+        wordsBySize,
         this.state.text
       );
-      this.setState({ text, pattern });
+      this.setState({ text });
     };
 
     componentDidMount() {
@@ -166,11 +167,6 @@ const PlayLoop = inject("store")(
     }
 
     onResult = (success, count) => {
-      this.props.store.copyTrainer.patternFeedback(
-        this.state.pattern,
-        success,
-        count
-      );
       this.pickText();
     };
 
@@ -181,17 +177,6 @@ const PlayLoop = inject("store")(
   }
 );
 PlayLoop.propTypes = {};
-
-const Result = ({ r }) => r.ratio.toFixed(2);
-
-const Producer = ({ p }) =>
-  p
-    ? p.entries().map(([k, v]) => (
-        <li key={k}>
-          {k}: <Result r={v} />
-        </li>
-      ))
-    : "";
 
 const CopyTrainer = inject("store", "morsePlayer")(
   observer(
@@ -227,26 +212,13 @@ const CopyTrainer = inject("store", "morsePlayer")(
             </Button>
           );
         }
-        var entries = [];
-        for (let [k, v] of store.producers.entries()) {
-          entries.push(
-            <li key={k}>
-              {k}:
-              <ul>
-                <Producer p={v} />
-              </ul>
-            </li>
-          );
-        }
 
         return (
           <div>
             <Card>
               <CardTitle title="Copy Trainer" />
               <CardActions centered>{button}</CardActions>
-              <CardText>
-                Results: <ul>{entries}</ul>
-              </CardText>
+              <CardText />
             </Card>
             {active && <PlayLoop />}
           </div>
