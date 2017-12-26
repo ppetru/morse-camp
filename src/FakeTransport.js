@@ -3,8 +3,11 @@ class FakeTransport {
     return Promise.resolve(null);
   }
 
-  saveSettings(module, json) {
-  }
+  saveSettings(module, json) {}
+
+  setIfDifferent(key, value) {}
+
+  iterateWords(func) {}
 }
 
 export default FakeTransport;

@@ -1,4 +1,4 @@
-import { action, extendObservable, observable, reaction } from "mobx";
+import { action, autorun, extendObservable, observable, reaction } from "mobx";
 
 class CopyTrainerStore {
   constructor(rootStore, transport) {
@@ -25,11 +25,19 @@ class CopyTrainerStore {
       }
     });
 
+    this.transport.iterateWords((w, s) => this.setWordScore(w, s));
+
     this.saveHandler = reaction(
       () => this.asJson,
       json => this.transport.saveSettings("copyTrainer", json),
       { delay: 500 }
     );
+
+    this.wordPersister = autorun(() => {
+      for (const [k, v] of this.words.entries()) {
+        this.transport.setIfDifferent(k, v);
+      }
+    });
   }
 
   setWordScore = action((w, score) => {

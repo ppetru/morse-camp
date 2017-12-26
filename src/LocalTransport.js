@@ -12,7 +12,23 @@ class LocalTransport {
   }
 
   saveSettings(module, json) {
-    localforage.setItem("/" + module, json);
+    this.setIfDifferent("/" + module, json);
+  }
+
+  setIfDifferent(key, value) {
+    localforage.getItem(key).then(prevValue => {
+      if (prevValue !== value) {
+        localforage.setItem(key, value);
+      }
+    });
+  }
+
+  iterateWords(func) {
+    localforage.iterate((value, key, num) => {
+      if (key[0] !== "/") {
+        func(key, value);
+      }
+    });
   }
 }
 
