@@ -5062,7 +5062,12 @@ function makeWordMaps(words) {
     if (!size.has(word.length)) {
       size.set(word.length, new Map());
     }
-    size.get(word.length).set(word, freq);
+    const map = size.get(word.length);
+    if (map.has(word)) {
+      map.set(word, freq + map.get(word));
+    } else {
+      map.set(word, freq);
+    }
   });
 
   return [size];
