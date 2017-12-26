@@ -161,11 +161,7 @@ const PlayLoop = inject("store")(
     };
 
     pickText = () => {
-      const text = generateText(
-        this.props.store.copyTrainer,
-        wordsBySize,
-        this.state.text
-      );
+      const text = generateText(this.props.store.copyTrainer, wordsBySize);
       this.setState({ text });
     };
 
@@ -174,6 +170,11 @@ const PlayLoop = inject("store")(
     }
 
     onResult = (success, count) => {
+      this.props.store.copyTrainer.textFeedback(
+        this.state.text,
+        success,
+        count
+      );
       this.pickText();
     };
 

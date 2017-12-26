@@ -1,4 +1,4 @@
-import { action, extendObservable, reaction } from "mobx";
+import { action, extendObservable, observable, reaction } from "mobx";
 
 class CopyTrainerStore {
   constructor(rootStore, transport) {
@@ -8,6 +8,7 @@ class CopyTrainerStore {
     extendObservable(this, {
       minLength: 2,
       maxLength: 3,
+      words: observable.map(),
 
       get asJson() {
         return {
@@ -31,6 +32,10 @@ class CopyTrainerStore {
     );
   }
 
+  setWordScore = action((w, score) => {
+    this.words.set(w, score);
+  });
+
   setMinLength = action(l => {
     var n = parseInt(l, 10);
     if (isNaN(n)) {
@@ -51,6 +56,15 @@ class CopyTrainerStore {
     if (this.maxLength < this.minLength) {
       this.minLength = this.maxLength;
     }
+  });
+
+  wordFeedback = action((word, success, count) => {
+    this.setWordScore(word, success / count);
+  });
+
+  textFeedback = action((text, success, count) => {
+    const words = text.split(" ");
+    words.forEach(w => this.wordFeedback(w, success, count));
   });
 }
 

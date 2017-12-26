@@ -8,9 +8,12 @@ function generateText(store, wordsBySize) {
   var weights = [];
   for (let i = store.minLength; i <= store.maxLength; i++) {
     if (wordsBySize.has(i)) {
-      let map = wordsBySize.get(i);
-      words.push(...map.keys());
-      weights.push(...map.values());
+      for (const [word, freq] of wordsBySize.get(i)) {
+        if (!store.words.has(word) || store.words.get(word) !== 1) {
+          words.push(word);
+          weights.push(freq);
+        }
+      }
     }
   }
 
