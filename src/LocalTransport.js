@@ -7,20 +7,12 @@ class LocalTransport {
     });
   }
 
-  loadCopyTrainer() {
-    return localforage.getItem("copyTrainer");
+  loadSettings(module) {
+    return localforage.getItem("/" + module);
   }
 
-  saveCopyTrainer(json) {
-    localforage.setItem("copyTrainer", json);
-  }
-
-  loadMorse() {
-    return localforage.getItem("morsePlayer");
-  }
-
-  saveMorse(json) {
-    localforage.setItem("morsePlayer", json);
+  saveSettings(module, json) {
+    localforage.setItem("/" + module, json);
   }
 }
 

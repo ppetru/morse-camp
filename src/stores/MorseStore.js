@@ -29,7 +29,7 @@ class MorseStore {
       }
     });
 
-    this.transport.loadMorse().then(json => {
+    this.transport.loadSettings("morsePlayer").then(json => {
       if (json) {
         this.setSpeed(json.speed);
         this.setFrequency(json.frequency);
@@ -38,7 +38,7 @@ class MorseStore {
 
     this.saveHandler = reaction(
       () => this.asJson,
-      json => this.transport.saveMorse(json),
+      json => this.transport.saveSettings("morsePlayer", json),
       { delay: 500 }
     );
   }

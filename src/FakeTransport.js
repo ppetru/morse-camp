@@ -1,16 +1,9 @@
 class FakeTransport {
-  loadCopyTrainer() {
+  loadSettings(module) {
     return Promise.resolve(null);
   }
 
-  saveCopyTrainer(json) {
-  }
-
-  loadMorse() {
-    return Promise.resolve(null);
-  }
-
-  saveMorse(json) {
+  saveSettings(module, json) {
   }
 }
 

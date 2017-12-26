@@ -18,7 +18,7 @@ class CopyTrainerStore {
       }
     });
 
-    this.transport.loadCopyTrainer().then(json => {
+    this.transport.loadSettings("copyTrainer").then(json => {
       if (json) {
         this.setMinLength(json.minLength);
         this.setMaxLength(json.maxLength);
@@ -27,7 +27,7 @@ class CopyTrainerStore {
 
     this.saveHandler = reaction(
       () => this.asJson,
-      json => this.transport.saveCopyTrainer(json),
+      json => this.transport.saveSettings("copyTrainer", json),
       { delay: 500 }
     );
   }
