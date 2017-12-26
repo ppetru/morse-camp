@@ -1,4 +1,4 @@
-import { action, extendObservable } from "mobx";
+import { action, extendObservable, reaction } from "mobx";
 
 class CopyTrainerStore {
   constructor(rootStore, transport) {
@@ -28,8 +28,28 @@ class CopyTrainerStore {
         if (this.maxLength < this.minLength) {
           this.minLength = this.maxLength;
         }
-      })
+      }),
+
+      get asJson() {
+        return {
+          minLength: this.minLength,
+          maxLength: this.maxLength
+        };
+      }
     });
+
+    this.transport.loadCopyTrainer().then(json => {
+      if (json) {
+        this.setMinLength(json.minLength);
+        this.setMaxLength(json.maxLength);
+      }
+    });
+
+    this.saveHandler = reaction(
+      () => this.asJson,
+      json => this.transport.saveCopyTrainer(json),
+      { delay: 500 }
+    );
   }
 }
 

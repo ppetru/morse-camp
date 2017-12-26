@@ -7,6 +7,14 @@ class LocalTransport {
     });
   }
 
+  loadCopyTrainer() {
+    return localforage.getItem("copyTrainer");
+  }
+
+  saveCopyTrainer(json) {
+    localforage.setItem("copyTrainer", json);
+  }
+
   loadMorse() {
     return localforage.getItem("morsePlayer");
   }
