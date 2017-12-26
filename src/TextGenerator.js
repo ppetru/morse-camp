@@ -3,15 +3,29 @@ const weighted = require("weighted");
 
 Math.seedrandom();
 
-function generateText(store, wordsBySize) {
+const REPEAT_DELAY_MS = 30 * 1000;
+
+function generateText(store, wordsBySize, time) {
   var words = [];
   var weights = [];
-  for (let i = store.minLength; i <= store.maxLength; i++) {
-    if (wordsBySize.has(i)) {
-      for (const [word, freq] of wordsBySize.get(i)) {
-        if (!store.words.has(word) || store.words.get(word).s !== 1) {
-          words.push(word);
-          weights.push(freq);
+  for (let [word, data] of store.words.entries()) {
+    if (word.length < store.minLength || word.length > store.maxLength) {
+      continue;
+    }
+    if (data.s < 1 && time - data.t > REPEAT_DELAY_MS) {
+      words.push(word);
+      weights.push(1 - data.s);
+    }
+  }
+  if (words.length === 0) {
+    for (let i = store.minLength; i <= store.maxLength; i++) {
+      if (wordsBySize.has(i)) {
+        for (let [word, freq] of wordsBySize.get(i)) {
+          let data = store.words.get(word);
+          if (!data || (data.s === 1 && time - data.t > REPEAT_DELAY_MS)) {
+            words.push(word);
+            weights.push(freq);
+          }
         }
       }
     }
@@ -24,4 +38,4 @@ function generateText(store, wordsBySize) {
   }
 }
 
-export default generateText;
+export { generateText, REPEAT_DELAY_MS };

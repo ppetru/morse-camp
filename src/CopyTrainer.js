@@ -12,7 +12,7 @@ import {
 } from "react-md";
 
 import { wordsBySize } from "./Words";
-import generateText from "./TextGenerator";
+import { generateText } from "./TextGenerator";
 
 import "./CopyTrainer.css";
 
@@ -161,7 +161,11 @@ const PlayLoop = inject("store")(
     };
 
     pickText = () => {
-      const text = generateText(this.props.store.copyTrainer, wordsBySize);
+      const text = generateText(
+        this.props.store.copyTrainer,
+        wordsBySize,
+        Date.now()
+      );
       this.setState({ text });
     };
 
