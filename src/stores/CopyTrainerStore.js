@@ -23,8 +23,8 @@ class CopyTrainerStore extends SettingsSaver {
 
     this.setupSettings("copyTrainer", noDebounce);
 
-    this.loadWords = this.transport.iterateWords((w, s) =>
-      this.setWordScore(w, s)
+    this.loadWords = this.transport.iterateWords((w, d) =>
+      this.setWordData(w, d)
     );
 
     this.wordPersister = autorun(() => {
@@ -39,8 +39,8 @@ class CopyTrainerStore extends SettingsSaver {
     this.setMaxLength(json.maxLength);
   });
 
-  setWordScore = action((w, score) => {
-    this.words.set(w, score);
+  setWordData = action((w, data) => {
+    this.words.set(w, data);
   });
 
   setMinLength = action(l => {
@@ -65,13 +65,16 @@ class CopyTrainerStore extends SettingsSaver {
     }
   });
 
-  wordFeedback = action((word, success, count) => {
-    this.setWordScore(word, success / count);
+  wordFeedback = action((word, success, count, time) => {
+    this.setWordData(word, {
+      s: success / count,
+      t: time
+    });
   });
 
-  textFeedback = action((text, success, count) => {
+  textFeedback = action((text, success, count, time) => {
     const words = text.split(" ");
-    words.forEach(w => this.wordFeedback(w, success, count));
+    words.forEach(w => this.wordFeedback(w, success, count, time));
   });
 }
 

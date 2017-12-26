@@ -173,7 +173,8 @@ const PlayLoop = inject("store")(
       this.props.store.copyTrainer.textFeedback(
         this.state.text,
         success,
-        count
+        count,
+        Date.now()
       );
       this.pickText();
     };

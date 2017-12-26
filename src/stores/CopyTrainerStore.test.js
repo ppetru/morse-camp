@@ -34,3 +34,14 @@ it("saves and restores settings", () => {
     expect(store.maxLength).toEqual(9);
   });
 });
+
+it("saves and restores word feedback", () => {
+  const transport = new FakeTransport();
+  var store = new CopyTrainerStore(null, transport, true);
+  store.textFeedback("foo bar", 1, 2, 0);
+  store = new CopyTrainerStore(null, transport, true);
+  return store.loadSettings.then(() => {
+    expect(store.words.keys()).toContain("foo");
+    expect(store.words.keys()).toContain("bar");
+  });
+});

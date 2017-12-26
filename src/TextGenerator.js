@@ -9,7 +9,7 @@ function generateText(store, wordsBySize) {
   for (let i = store.minLength; i <= store.maxLength; i++) {
     if (wordsBySize.has(i)) {
       for (const [word, freq] of wordsBySize.get(i)) {
-        if (!store.words.has(word) || store.words.get(word) !== 1) {
+        if (!store.words.has(word) || store.words.get(word).s !== 1) {
           words.push(word);
           weights.push(freq);
         }
