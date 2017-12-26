@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { autorun } from "mobx";
 import { inject, observer } from "mobx-react";
-import { Button, Card, CardActions, CardText, CardTitle } from "react-md";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardText,
+  CardTitle,
+  TextField
+} from "react-md";
 
 import { wordsBySize } from "./Words";
 import generateText from "./TextGenerator";
@@ -178,6 +185,33 @@ const PlayLoop = inject("store")(
 );
 PlayLoop.propTypes = {};
 
+const TextSettings = inject("store")(
+  observer(({ store }) => (
+    <div>
+      <TextField
+        id="min"
+        label="Min length"
+        type="number"
+        min="0"
+        max="100"
+        step="1"
+        value={store.copyTrainer.minLength}
+        onChange={(value, e) => store.copyTrainer.setMinLength(value)}
+      />
+      <TextField
+        id="max"
+        label="Max length"
+        type="number"
+        min="0"
+        max="100"
+        step="1"
+        value={store.copyTrainer.maxLength}
+        onChange={(value, e) => store.copyTrainer.setMaxLength(value)}
+      />
+    </div>
+  ))
+);
+
 const CopyTrainer = inject("store", "morsePlayer")(
   observer(
     class CopyTrainer extends Component {
@@ -196,7 +230,6 @@ const CopyTrainer = inject("store", "morsePlayer")(
 
       render() {
         const { active } = this.state;
-        const store = this.props.store.copyTrainer;
 
         var button;
         if (active) {
@@ -218,7 +251,9 @@ const CopyTrainer = inject("store", "morsePlayer")(
             <Card>
               <CardTitle title="Copy Trainer" />
               <CardActions centered>{button}</CardActions>
-              <CardText />
+              <CardText>
+                <TextSettings />
+              </CardText>
             </Card>
             {active && <PlayLoop />}
           </div>

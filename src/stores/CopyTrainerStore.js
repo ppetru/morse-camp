@@ -1,9 +1,4 @@
-import { action, extendObservable, observable } from "mobx";
-import "seedrandom";
-
-import { ResultTracker } from "./ResultTracker";
-
-Math.seedrandom();
+import { action, extendObservable } from "mobx";
 
 class CopyTrainerStore {
   constructor(rootStore, transport) {
@@ -14,8 +9,26 @@ class CopyTrainerStore {
       minLength: 2,
       maxLength: 3,
 
-      setMinLength: action(l => (this.minLength = l)),
-      setMaxLength: action(l => (this.maxLength = l))
+      setMinLength: action(l => {
+        var n = parseInt(l, 10);
+        if (isNaN(n)) {
+          n = 0;
+        }
+        this.minLength = n;
+        if (this.minLength > this.maxLength) {
+          this.maxLength = this.minLength;
+        }
+      }),
+      setMaxLength: action(l => {
+        var n = parseInt(l, 10);
+        if (isNaN(n)) {
+          n = 0;
+        }
+        this.maxLength = n;
+        if (this.maxLength < this.minLength) {
+          this.minLength = this.maxLength;
+        }
+      })
     });
   }
 }
