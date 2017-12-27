@@ -56,12 +56,16 @@ class MorsePlayer {
     return 1.2 / this.store.speed;
   }
 
+  get timeConstant() {
+    return 2 / this.store.frequency;
+  }
+
   soundOn = time => {
-    this.gain.gain.setTargetAtTime(1.0, time, 1 / this.store.frequency);
+    this.gain.gain.setTargetAtTime(1.0, time, this.timeConstant);
   };
 
   soundOff = time => {
-    this.gain.gain.setTargetAtTime(0.0, time, 1 / this.store.frequency);
+    this.gain.gain.setTargetAtTime(0.0, time, this.timeConstant);
   };
 
   playChar = (t, c) => {
@@ -91,6 +95,7 @@ class MorsePlayer {
     this.playing = true;
     this.oscillator.start();
     let t = this.audioContext.currentTime;
+    t += 3 * this.ditLength;
     var i = 0;
     while (i < s.length) {
       let char;

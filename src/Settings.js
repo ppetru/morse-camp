@@ -31,7 +31,7 @@ const Settings = inject("store", "morsePlayer")(
           raised
           primary
           className="md-block-centered"
-          onClick={() => morsePlayer.playString("test")}
+          onClick={() => morsePlayer.playString("hello")}
         >
           Test
         </Button>
