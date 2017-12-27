@@ -89,7 +89,7 @@ const PlayText = inject("store", "morsePlayer")(
           if (this.playCount === 0) {
             this.playText();
           } else {
-            this.timeout = setTimeout(this.playText, 2000);
+            this.timeout = setTimeout(this.playText, 2500);
           }
         }
       };
