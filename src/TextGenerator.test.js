@@ -46,6 +46,14 @@ it("doesn't pick successful words when not enough time passed", () => {
   expect(generateText(store, wordMap, REPEAT_DELAY_MS - 10)).toEqual("bb");
 });
 
+it("doesn't pick successful words when enough time passed if there's other options", () => {
+  const store = new CopyTrainerStore(null, new FakeTransport());
+  store.setMinLength(2);
+  store.setMaxLength(2);
+  store.textFeedback("aa", 1, 1, 0);
+  expect(generateText(store, wordMap, REPEAT_DELAY_MS + 10)).toEqual("bb");
+});
+
 it("picks unsuccessful words after enough time passed", () => {
   const store = new CopyTrainerStore(null, new FakeTransport());
   store.setMinLength(3);
