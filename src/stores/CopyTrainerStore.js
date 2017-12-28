@@ -1,5 +1,6 @@
 import { action, autorun, extendObservable, observable } from "mobx";
 
+import ResultTracker from "./ResultTracker";
 import SettingsSaver from "./SettingsSaver";
 
 class CopyTrainerStore extends SettingsSaver {
@@ -12,6 +13,7 @@ class CopyTrainerStore extends SettingsSaver {
       minLength: 2,
       maxLength: 3,
       words: observable.map(),
+      texts: observable.map(),
 
       get asJson() {
         return {
@@ -45,8 +47,8 @@ class CopyTrainerStore extends SettingsSaver {
 
   setMinLength = action(l => {
     var n = parseInt(l, 10);
-    if (isNaN(n)) {
-      n = 0;
+    if (isNaN(n) || n < 2) {
+      n = 2;
     }
     this.minLength = n;
     if (this.minLength > this.maxLength) {
@@ -56,8 +58,8 @@ class CopyTrainerStore extends SettingsSaver {
 
   setMaxLength = action(l => {
     var n = parseInt(l, 10);
-    if (isNaN(n)) {
-      n = 0;
+    if (isNaN(n) || n < 2) {
+      n = 2;
     }
     this.maxLength = n;
     if (this.maxLength < this.minLength) {
@@ -73,8 +75,32 @@ class CopyTrainerStore extends SettingsSaver {
   });
 
   textFeedback = action((text, success, count, time) => {
-    const words = text.split(" ");
-    words.forEach(w => this.wordFeedback(w, success, count, time));
+    const trackerSize = 5;
+
+    text.split(" ").forEach(w => this.wordFeedback(w, success, count, time));
+
+    if (!this.texts.has(text.length)) {
+      this.texts.set(text.length, new ResultTracker(trackerSize));
+    }
+    this.texts.get(text.length).record(success, count);
+
+    let maxLenScore = this.texts.get(this.maxLength);
+    if (maxLenScore && maxLenScore.results.length === trackerSize) {
+      if (maxLenScore.trailingRatio > 0.8) {
+        this.setMaxLength(this.maxLength + 1);
+      } else if (maxLenScore.trailingRatio < 0.2) {
+        this.setMaxLength(this.maxLength - 1);
+      }
+    }
+
+    let minLenScore = this.texts.get(this.minLength);
+    if (minLenScore && minLenScore.results.length === trackerSize) {
+      if (minLenScore.trailingRatio === 1) {
+        this.setMinLength(this.minLength + 1);
+      } else if (minLenScore.trailingRatio < 0.1) {
+        this.setMinLength(this.minLength - 1);
+      }
+    }
   });
 }
 
