@@ -33,7 +33,7 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-registerServiceWorker();
+registerServiceWorker(store.appStore.notifyUpdate, store.appStore.notifyCached);
 
 window.transport = transport;
 window.store = store;
