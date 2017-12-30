@@ -258,6 +258,12 @@ const CopyTrainer = inject("store", "morsePlayer")(
               <CardTitle title="Copy Trainer" />
               <CardActions centered>{button}</CardActions>
               <CardText>
+                <p>
+                  Listen to the transmitted text until you fully decode it, then
+                  press "Show". Grade yourself and listen to the text some more
+                  if you did not copy it correctly. The difficulty automatically
+                  adjusts and problematic words keep being repeated.
+                </p>
                 <TextSettings />
               </CardText>
             </Card>

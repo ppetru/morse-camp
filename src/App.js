@@ -12,10 +12,10 @@ import About from "./About";
 
 const navItems = [
   {
-    label: "Home",
+    label: "Copy trainer",
     to: "/",
     exact: true,
-    icon: "home"
+    icon: "hearing"
   },
   {
     label: "Settings",
