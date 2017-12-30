@@ -14,19 +14,19 @@ const About = () => (
       <p>
         Knowledge of the Morse code alphabet is assumed. If you're starting from
         scratch, check out the excellent trainer at{" "}
-        <a target="_blank" href="https://lcwo.net">
+        <a target="_blank" rel="noopener noreferrer" href="https://lcwo.net">
           LCWO.net
         </a>
       </p>
       <p>
         Morse Camp is under active development with a{" "}
         <a
-          target="_blank"
+          target="_blank" rel="noopener noreferrer"
           href="https://forum.morse.camp/t/morse-camp-roadmap/16"
         >
           public roadmap
         </a>. Your feedback and suggestions would be much appreciated at{" "}
-        <a target="_blank" href="https://forum.morse.camp">
+        <a target="_blank" rel="noopener noreferrer" href="https://forum.morse.camp">
           forum.morse.camp
         </a>{" "}
         or by email at <a href="mailto:op@morse.camp">op@morse.camp</a>.
