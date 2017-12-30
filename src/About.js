@@ -12,7 +12,7 @@ const About = () => (
         phones as well as on desktop computers.
       </p>
       <p>
-        Knowledge of the Morse code alphabet is assumed. If you're starting from
+        Prior knowledge of the Morse code is assumed. If you're starting from
         scratch, check out the excellent trainer at{" "}
         <a target="_blank" rel="noopener noreferrer" href="https://lcwo.net">
           LCWO.net
@@ -21,12 +21,35 @@ const About = () => (
       <p>
         Morse Camp is under active development with a{" "}
         <a
-          target="_blank" rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
           href="https://forum.morse.camp/t/morse-camp-roadmap/16"
         >
           public roadmap
-        </a>. Your feedback and suggestions would be much appreciated at{" "}
-        <a target="_blank" rel="noopener noreferrer" href="https://forum.morse.camp">
+        </a>. New releases are also announced at{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://blog.morse.camp"
+        >
+          blog.morse.camp
+        </a>.
+      </p>
+      <h2>Mobile usage</h2>
+      <p>
+        To make it easier to come back, select the "Add to home screen" (or
+        equivalent) option from your browser menu. The resulting home screen
+        icon will then open the app in fullscreen mode and work without an
+        internet connection.
+      </p>
+      <h2>Feedback</h2>
+      <p>
+        Your feedback and suggestions would be much appreciated at{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://forum.morse.camp"
+        >
           forum.morse.camp
         </a>{" "}
         or by email at <a href="mailto:op@morse.camp">op@morse.camp</a>.
