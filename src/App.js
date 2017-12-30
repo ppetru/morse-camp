@@ -8,6 +8,7 @@ import "./App.css";
 import NavItemLink from "./NavItemLink";
 import CopyTrainer from "./CopyTrainer";
 import Settings from "./Settings";
+import About from "./About";
 
 const navItems = [
   {
@@ -18,8 +19,13 @@ const navItems = [
   },
   {
     label: "Settings",
-    to: `/settings`,
+    to: "/settings",
     icon: "settings"
+  },
+  {
+    label: "About",
+    to: "/about",
+    icon: "info"
   }
 ];
 
@@ -85,14 +91,16 @@ const App = inject("store")(
                   >
                     <Switch key={location.key}>
                       <Route
+                        path="/about"
+                        location={location}
+                        component={About}
+                      />
+                      <Route
                         path="/settings"
                         location={location}
                         component={Settings}
                       />
-                      <Route
-                        location={location}
-                        render={() => <CopyTrainer toast={this.upgradeToast} />}
-                      />
+                      <Route location={location} component={CopyTrainer} />
                     </Switch>
                   </NavigationDrawer>
                   <Snackbar
