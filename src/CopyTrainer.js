@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import PropTypes from "prop-types";
 import { autorun } from "mobx";
 import { inject, observer } from "mobx-react";
@@ -8,6 +8,7 @@ import {
   CardActions,
   CardText,
   CardTitle,
+  DialogContainer,
   TextField
 } from "react-md";
 
@@ -220,6 +221,66 @@ const TextSettings = inject("store")(
   ))
 );
 
+class HelpScreen extends PureComponent {
+  state = {
+    visible: false,
+    pageX: null,
+    pageY: null
+  };
+
+  show = e => {
+    let { pageX, pageY } = e;
+    if (e.changedTouches) {
+      pageX = e.changedTouches[0].pageX;
+      pageY = e.changedTouches[0].pageY;
+    }
+
+    this.setState({ visible: true, pageX, pageY });
+  };
+
+  hide = () => {
+    this.setState({ visible: false });
+  };
+
+  render() {
+    const { visible, pageX, pageY } = this.state;
+
+    return (
+      <div>
+        <Button raised onClick={this.show} aria-controls="instructions-dialog">
+          Instructions
+        </Button>
+        <DialogContainer
+          id="instructions-dialog"
+          visible={visible}
+          pageX={pageX}
+          pageY={pageY}
+          fullPage
+          onHide={this.hide}
+          aria-labelledby="instructions-title"
+        >
+          <p>
+            The Copy Trainer plays text of adjustable length formed from the
+            most common 5000 English and CW QSO words.
+          </p>
+          <p>
+            Listen to the transmitted text until you fully decode it, then press
+            "Show". Grade yourself and listen to the text some more if you did
+            not copy it correctly.
+          </p>
+          <p>
+            The difficulty automatically adjusts and problematic words keep
+            being repeated.
+          </p>
+          <Button raised onClick={this.hide}>
+            Close
+          </Button>
+        </DialogContainer>
+      </div>
+    );
+  }
+}
+
 const CopyTrainer = inject("store", "morsePlayer")(
   observer(
     class CopyTrainer extends Component {
@@ -258,14 +319,11 @@ const CopyTrainer = inject("store", "morsePlayer")(
           <div>
             <Card>
               <CardTitle title="Copy Trainer" />
-              <CardActions centered>{button}</CardActions>
+              <CardActions centered>
+                <HelpScreen />
+                {button}
+              </CardActions>
               <CardText>
-                <p>
-                  Listen to the transmitted text until you fully decode it, then
-                  press "Show". Grade yourself and listen to the text some more
-                  if you did not copy it correctly. The difficulty automatically
-                  adjusts and problematic words keep being repeated.
-                </p>
                 <TextSettings />
               </CardText>
             </Card>
