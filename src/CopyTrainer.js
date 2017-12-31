@@ -131,11 +131,13 @@ const PlayText = inject("store", "morsePlayer")(
         this.props.onResult(success, this.playCount);
       };
 
+      onShow = () => {
+        this.setState({ hidden: false });
+      };
+
       render() {
         if (this.state.hidden) {
-          return (
-            <PlayHiddenCard onShow={() => this.setState({ hidden: false })} />
-          );
+          return <PlayHiddenCard onShow={this.onShow} />;
         } else {
           return (
             <PlayVisibleCard
