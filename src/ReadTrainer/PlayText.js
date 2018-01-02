@@ -84,6 +84,10 @@ const PlayText = inject("store", "morsePlayer")(
         if (!this.props.store.morse.playing) {
           if (this.playCount === 0) {
             this.playText();
+          } else if (this.playCount > 20 || this.replayCount > 20) {
+            this.stop();
+            event("timeout abort");
+            this.props.onAbort();
           } else {
             this.timeout = setTimeout(this.playText, 2500);
           }
@@ -155,6 +159,7 @@ const PlayText = inject("store", "morsePlayer")(
   )
 );
 PlayText.propTypes = {
+  onAbort: PropTypes.func.isRequired,
   onResult: PropTypes.func.isRequired,
   text: PropTypes.string.isRequired
 };

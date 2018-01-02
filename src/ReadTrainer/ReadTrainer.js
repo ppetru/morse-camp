@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import {
   Button,
@@ -50,11 +51,19 @@ const PlayLoop = inject("store")(
 
     render() {
       const { text } = this.state;
-      return <PlayText text={text} onResult={this.onResult} />;
+      return (
+        <PlayText
+          text={text}
+          onResult={this.onResult}
+          onAbort={this.props.onAbort}
+        />
+      );
     }
   }
 );
-PlayLoop.propTypes = {};
+PlayLoop.propTypes = {
+  onAbort: PropTypes.func.isRequired
+};
 
 const TextSettings = inject("store")(
   observer(({ store }) => (
@@ -131,7 +140,7 @@ const ReadTrainer = inject("store", "morsePlayer")(
                 <TextSettings />
               </CardText>
             </Card>
-            {active && <PlayLoop />}
+            {active && <PlayLoop onAbort={this.stop} />}
           </div>
         );
       }
