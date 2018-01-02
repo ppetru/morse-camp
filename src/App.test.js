@@ -7,7 +7,6 @@ import App from "./App";
 import MorsePlayer from "./MorsePlayer";
 import FakeTransport from "./FakeTransport";
 import RootStore from "./stores/RootStore";
-import "./beforeTest.js";
 
 it("renders without crashing", () => {
   const transport = new FakeTransport();
