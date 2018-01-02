@@ -6,7 +6,7 @@ import { NavigationDrawer, Snackbar } from "react-md";
 
 import "./App.css";
 import NavItemLink from "./NavItemLink";
-import ReadTrainer from "./ReadTrainer";
+import ReadTrainer from "./ReadTrainer/ReadTrainer";
 import Settings from "./Settings";
 import About from "./About";
 import { ga } from "./analytics";
