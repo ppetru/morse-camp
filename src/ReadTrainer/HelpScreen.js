@@ -47,14 +47,15 @@ export default class HelpScreen extends PureComponent {
           onHide={this.hide}
           aria-labelledby="instructions-title"
         >
+          <p>This trainer teaches you to "read" text by ear.</p>
           <p>
-            The Read Trainer plays text of adjustable length formed from the
-            most common 5000 English and CW QSO words.
+            You will hear a text of adjustable length formed from the most
+            common 5000 English and CW QSO words.
           </p>
           <p>
-            Listen to the transmitted text until you fully decode it, then press
-            "Show". Grade yourself and listen to the text some more if you did
-            not read it correctly.
+            Listen to the text until you fully decode it, then press "Show".
+            Grade yourself and listen to the text some more if you did not read
+            it correctly.
           </p>
           <p>
             The difficulty automatically adjusts and problematic words keep
