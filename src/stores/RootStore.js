@@ -1,11 +1,11 @@
 import AppStore from "./AppStore";
-import CopyTrainerStore from "./CopyTrainerStore";
+import ReadTrainerStore from "./ReadTrainerStore";
 import MorseStore from "./MorseStore";
 
 class RootStore {
   constructor(transport) {
     this.appStore = new AppStore(this);
-    this.copyTrainer = new CopyTrainerStore(this, transport);
+    this.readTrainer = new ReadTrainerStore(this, transport);
     this.morse = new MorseStore(this, transport);
   }
 }

@@ -1,5 +1,5 @@
 import { generateText, REPEAT_DELAY_MS } from "./TextGenerator";
-import CopyTrainerStore from "./stores/CopyTrainerStore";
+import ReadTrainerStore from "./stores/ReadTrainerStore";
 import FakeTransport from "./FakeTransport";
 
 const wordMap = new Map([
@@ -9,28 +9,28 @@ const wordMap = new Map([
 ]);
 
 it("picks something", () => {
-  const store = new CopyTrainerStore(null, new FakeTransport());
+  const store = new ReadTrainerStore(null, new FakeTransport());
   store.setMinLength(1);
   store.setMaxLength(3);
   expect(generateText(store, wordMap)).toBeDefined();
 });
 
 it("deals with empty map", () => {
-  const store = new CopyTrainerStore(null, new FakeTransport());
+  const store = new ReadTrainerStore(null, new FakeTransport());
   store.setMinLength(1);
   store.setMaxLength(3);
   expect(generateText(store, new Map())).toBeNull();
 });
 
 it("respects the min/max length", () => {
-  const store = new CopyTrainerStore(null, new FakeTransport());
+  const store = new ReadTrainerStore(null, new FakeTransport());
   store.setMinLength(2);
   store.setMaxLength(2);
   expect(generateText(store, wordMap).length).toEqual(2);
 });
 
 it("picks successful words when enough time passed", () => {
-  const store = new CopyTrainerStore(null, new FakeTransport());
+  const store = new ReadTrainerStore(null, new FakeTransport());
   store.setMinLength(2);
   store.setMaxLength(2);
   store.textFeedback("aa", 1, 1, 0);
@@ -39,7 +39,7 @@ it("picks successful words when enough time passed", () => {
 });
 
 it("doesn't pick successful words when not enough time passed", () => {
-  const store = new CopyTrainerStore(null, new FakeTransport());
+  const store = new ReadTrainerStore(null, new FakeTransport());
   store.setMinLength(2);
   store.setMaxLength(2);
   store.textFeedback("aa", 1, 1, 0);
@@ -47,7 +47,7 @@ it("doesn't pick successful words when not enough time passed", () => {
 });
 
 it("doesn't pick successful words when enough time passed if there's other options", () => {
-  const store = new CopyTrainerStore(null, new FakeTransport());
+  const store = new ReadTrainerStore(null, new FakeTransport());
   store.setMinLength(2);
   store.setMaxLength(2);
   store.textFeedback("aa", 1, 1, 0);
@@ -55,7 +55,7 @@ it("doesn't pick successful words when enough time passed if there's other optio
 });
 
 it("picks unsuccessful words after enough time passed", () => {
-  const store = new CopyTrainerStore(null, new FakeTransport());
+  const store = new ReadTrainerStore(null, new FakeTransport());
   store.setMinLength(3);
   store.setMaxLength(3);
   store.textFeedback("ccc", 1, 2, 0);
@@ -64,7 +64,7 @@ it("picks unsuccessful words after enough time passed", () => {
 });
 
 it("doesn't pick unsuccessful words when not enough time passed", () => {
-  const store = new CopyTrainerStore(null, new FakeTransport());
+  const store = new ReadTrainerStore(null, new FakeTransport());
   store.setMinLength(3);
   store.setMaxLength(3);
   store.textFeedback("ccc", 1, 2, 0);

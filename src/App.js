@@ -6,13 +6,13 @@ import { NavigationDrawer, Snackbar } from "react-md";
 
 import "./App.css";
 import NavItemLink from "./NavItemLink";
-import CopyTrainer from "./CopyTrainer";
+import ReadTrainer from "./ReadTrainer";
 import Settings from "./Settings";
 import About from "./About";
 
 const navItems = [
   {
-    label: "Copy trainer",
+    label: "Read trainer",
     to: "/",
     exact: true,
     icon: "hearing"
@@ -100,7 +100,7 @@ const App = inject("store")(
                         location={location}
                         component={Settings}
                       />
-                      <Route location={location} component={CopyTrainer} />
+                      <Route location={location} component={ReadTrainer} />
                     </Switch>
                   </NavigationDrawer>
                   <Snackbar

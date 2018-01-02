@@ -3,7 +3,7 @@ import { action, autorun, extendObservable, observable } from "mobx";
 import ResultTracker from "./ResultTracker";
 import SettingsSaver from "./SettingsSaver";
 
-class CopyTrainerStore extends SettingsSaver {
+class ReadTrainerStore extends SettingsSaver {
   constructor(rootStore, transport, noDebounce) {
     super();
     this.rootStore = rootStore;
@@ -23,7 +23,7 @@ class CopyTrainerStore extends SettingsSaver {
       }
     });
 
-    this.setupSettings("copyTrainer", noDebounce);
+    this.setupSettings("ReadTrainer", noDebounce);
 
     this.loadWords = this.transport.iterateWords((w, d) =>
       this.setWordData(w, d)
@@ -104,4 +104,4 @@ class CopyTrainerStore extends SettingsSaver {
   });
 }
 
-export default CopyTrainerStore;
+export default ReadTrainerStore;

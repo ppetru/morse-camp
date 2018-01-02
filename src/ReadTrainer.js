@@ -15,7 +15,7 @@ import {
 import { wordsBySize } from "./Words";
 import { generateText } from "./TextGenerator";
 
-import "./CopyTrainer.css";
+import "./ReadTrainer.css";
 
 const PlayHiddenCard = inject("store")(
   observer(({ store, onShow }) => (
@@ -165,7 +165,7 @@ const PlayLoop = inject("store")(
 
     pickText = () => {
       const text = generateText(
-        this.props.store.copyTrainer,
+        this.props.store.readTrainer,
         wordsBySize,
         Date.now()
       );
@@ -177,7 +177,7 @@ const PlayLoop = inject("store")(
     }
 
     onResult = (success, count) => {
-      this.props.store.copyTrainer.textFeedback(
+      this.props.store.readTrainer.textFeedback(
         this.state.text,
         success,
         count,
@@ -204,8 +204,8 @@ const TextSettings = inject("store")(
         min="0"
         max="100"
         step="1"
-        value={store.copyTrainer.minLength}
-        onChange={(value, e) => store.copyTrainer.setMinLength(value)}
+        value={store.readTrainer.minLength}
+        onChange={(value, e) => store.readTrainer.setMinLength(value)}
       />
       <TextField
         id="max"
@@ -214,8 +214,8 @@ const TextSettings = inject("store")(
         min="0"
         max="100"
         step="1"
-        value={store.copyTrainer.maxLength}
-        onChange={(value, e) => store.copyTrainer.setMaxLength(value)}
+        value={store.readTrainer.maxLength}
+        onChange={(value, e) => store.readTrainer.setMaxLength(value)}
       />
     </div>
   ))
@@ -260,13 +260,13 @@ class HelpScreen extends PureComponent {
           aria-labelledby="instructions-title"
         >
           <p>
-            The Copy Trainer plays text of adjustable length formed from the
+            The Read Trainer plays text of adjustable length formed from the
             most common 5000 English and CW QSO words.
           </p>
           <p>
             Listen to the transmitted text until you fully decode it, then press
             "Show". Grade yourself and listen to the text some more if you did
-            not copy it correctly.
+            not read it correctly.
           </p>
           <p>
             The difficulty automatically adjusts and problematic words keep
@@ -281,9 +281,9 @@ class HelpScreen extends PureComponent {
   }
 }
 
-const CopyTrainer = inject("store", "morsePlayer")(
+const ReadTrainer = inject("store", "morsePlayer")(
   observer(
-    class CopyTrainer extends Component {
+    class ReadTrainer extends Component {
       state = {
         active: false
       };
@@ -318,7 +318,7 @@ const CopyTrainer = inject("store", "morsePlayer")(
         return (
           <div>
             <Card>
-              <CardTitle title="Copy Trainer" />
+              <CardTitle title="Read Trainer" />
               <CardActions centered>
                 <HelpScreen />
                 {button}
@@ -335,4 +335,4 @@ const CopyTrainer = inject("store", "morsePlayer")(
   )
 );
 
-export default CopyTrainer;
+export default ReadTrainer;

@@ -1,7 +1,7 @@
-import CopyTrainerStore from "./CopyTrainerStore";
+import ReadTrainerStore from "./ReadTrainerStore";
 import FakeTransport from "../FakeTransport";
 
-describe("CopyTrainerStore", () => {
+describe("ReadTrainerStore", () => {
   let testStore;
   let fakeTransport;
 
@@ -10,7 +10,7 @@ describe("CopyTrainerStore", () => {
       if (!fakeTransport) {
         fakeTransport = new FakeTransport();
       }
-      testStore = new CopyTrainerStore(
+      testStore = new ReadTrainerStore(
         null,
         fakeTransport,
         true /* noDebounce */
