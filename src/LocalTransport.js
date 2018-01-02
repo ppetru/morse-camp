@@ -30,6 +30,10 @@ class LocalTransport {
       }
     });
   }
+
+  clear() {
+    return localforage.clear();
+  }
 }
 
 export default LocalTransport;

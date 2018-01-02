@@ -4,6 +4,8 @@ import MorseStore from "./MorseStore";
 
 class RootStore {
   constructor(transport) {
+    this.transport = transport;
+
     this.appStore = new AppStore(this);
     this.readTrainer = new ReadTrainerStore(this, transport);
     this.morse = new MorseStore(this, transport);
