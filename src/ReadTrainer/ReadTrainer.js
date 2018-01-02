@@ -1,14 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardText,
-  CardTitle,
-  TextField
-} from "react-md";
+import { Button, Card, CardActions, CardText, CardTitle } from "react-md";
 
 import { wordsBySize } from "../Words";
 import { generateText } from "../TextGenerator";
@@ -68,26 +61,47 @@ PlayLoop.propTypes = {
 const TextSettings = inject("store")(
   observer(({ store }) => (
     <div>
-      <TextField
-        id="min"
-        label="Min length"
-        type="number"
-        min="0"
-        max="100"
-        step="1"
-        value={store.readTrainer.minLength}
-        onChange={(value, e) => store.readTrainer.setMinLength(value)}
-      />
-      <TextField
-        id="max"
-        label="Max length"
-        type="number"
-        min="0"
-        max="100"
-        step="1"
-        value={store.readTrainer.maxLength}
-        onChange={(value, e) => store.readTrainer.setMaxLength(value)}
-      />
+      <h3>Text length</h3>
+      <div className="md-cell">
+        Min:
+        <Button
+          icon
+          onClick={() =>
+            store.readTrainer.setMinLength(store.readTrainer.minLength - 1)
+          }
+        >
+          -
+        </Button>
+        {store.readTrainer.minLength}
+        <Button
+          icon
+          onClick={() =>
+            store.readTrainer.setMinLength(store.readTrainer.minLength + 1)
+          }
+        >
+          +
+        </Button>
+      </div>
+      <div className="md-cell">
+        Max:
+        <Button
+          icon
+          onClick={() =>
+            store.readTrainer.setMaxLength(store.readTrainer.maxLength - 1)
+          }
+        >
+          -
+        </Button>
+        {store.readTrainer.maxLength}
+        <Button
+          icon
+          onClick={() =>
+            store.readTrainer.setMaxLength(store.readTrainer.maxLength + 1)
+          }
+        >
+          +
+        </Button>
+      </div>
     </div>
   ))
 );
@@ -129,8 +143,8 @@ const ReadTrainer = inject("store", "morsePlayer")(
         }
 
         return (
-          <div>
-            <Card>
+          <div className="md-grid">
+            <Card className="md-cell md-cell--12">
               <CardTitle title="Read Trainer" />
               <CardActions centered>
                 <HelpScreen />
