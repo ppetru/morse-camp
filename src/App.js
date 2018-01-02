@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { autorun } from "mobx";
 import { inject, observer } from "mobx-react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { NavigationDrawer, Snackbar } from "react-md";
@@ -32,50 +31,10 @@ const navItems = [
 const App = inject("store")(
   observer(
     class App extends Component {
-      state = {
-        toasts: [],
-        autohide: false
-      };
-
-      addToast = (text, action, autohide = false) => {
-        this.setState(state => {
-          const toasts = state.toasts.slice();
-          toasts.push({ text, action });
-          return { toasts, autohide };
-        });
-      };
-
-      dismissToast = () => {
-        const [, ...toasts] = this.state.toasts;
-        this.setState({ toasts });
-      };
-
-      componentWillMount() {
-        this.cachedWatcher = autorun(() => {
-          if (this.props.store.appStore.appCached) {
-            this.addToast("App can now be used offline", "OK");
-          }
-        });
-
-        this.updateWatcher = autorun(() => {
-          if (this.props.store.appStore.updateAvailable) {
-            this.addToast("New app version available", {
-              children: "Reload",
-              onClick: () => {
-                window.location.reload(true);
-              }
-            });
-          }
-        });
-      }
-
-      componentWillUnmount() {
-        this.cachedWatcher();
-        this.updateWatcher();
-      }
-
       render() {
-        const { toasts, autohide } = this.state;
+        const store = this.props.store.appStore;
+        const toasts = store.toasts.slice();
+        const { autohide } = store;
 
         return (
           <Router>
@@ -107,7 +66,7 @@ const App = inject("store")(
                     id="snackbar"
                     toasts={toasts}
                     autohide={autohide}
-                    onDismiss={this.dismissToast}
+                    onDismiss={store.dismissToast}
                   />
                 </div>
               )}
