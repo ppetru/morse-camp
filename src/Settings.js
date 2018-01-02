@@ -2,6 +2,10 @@ import React, { PureComponent } from "react";
 import { Button, DialogContainer, TextField } from "react-md";
 import { inject, observer } from "mobx-react";
 
+import { makeLogger } from "./analytics";
+
+const event = makeLogger("Settings");
+
 const ClearStorage = inject("store")(
   class ClearStorage extends PureComponent {
     state = {
@@ -25,6 +29,7 @@ const ClearStorage = inject("store")(
     };
 
     delete = () => {
+      event("clear storage");
       const { store } = this.props;
       store.transport.clear().then(() => {
         store.appStore.addToast("Storage cleared");
@@ -105,7 +110,10 @@ const Settings = inject("store", "morsePlayer")(
             raised
             primary
             className="md-block-centered"
-            onClick={() => morsePlayer.playString("hello")}
+            onClick={() => {
+              event("test");
+              morsePlayer.playString("hello");
+            }}
           >
             Test
           </Button>

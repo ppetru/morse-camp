@@ -14,8 +14,11 @@ import {
 
 import { wordsBySize } from "./Words";
 import { generateText } from "./TextGenerator";
+import { makeLogger } from "./analytics";
 
 import "./ReadTrainer.css";
+
+const event = makeLogger("ReadTrainer");
 
 const PlayHiddenCard = inject("store")(
   observer(({ store, onShow }) => (
@@ -81,6 +84,8 @@ const PlayText = inject("store", "morsePlayer")(
 
         if (hidden) {
           this.playCount++;
+        } else {
+          this.replayCount++;
         }
         morsePlayer.playString(text);
       };
@@ -97,6 +102,7 @@ const PlayText = inject("store", "morsePlayer")(
 
       start = () => {
         this.playCount = 0;
+        this.replayCount = 0;
         this.autorun = autorun(this.playLoop);
       };
 
@@ -129,10 +135,16 @@ const PlayText = inject("store", "morsePlayer")(
 
       onResult = success => {
         this.stop();
+        if (success) {
+          event("success", this.props.text, this.replayCount);
+        } else {
+          event("fail", this.props.text, this.replayCount);
+        }
         this.props.onResult(success, this.playCount);
       };
 
       onShow = () => {
+        event("show", this.props.text, this.playCount);
         this.setState({ hidden: false });
       };
 
@@ -229,6 +241,8 @@ class HelpScreen extends PureComponent {
   };
 
   show = e => {
+    event("instructions");
+
     let { pageX, pageY } = e;
     if (e.changedTouches) {
       pageX = e.changedTouches[0].pageX;
@@ -289,10 +303,12 @@ const ReadTrainer = inject("store", "morsePlayer")(
       };
 
       start = () => {
+        event("start");
         this.setState({ active: true });
       };
 
       stop = () => {
+        event("stop");
         this.props.morsePlayer.forceStop();
         this.setState({ active: false });
       };
