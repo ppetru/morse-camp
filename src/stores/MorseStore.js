@@ -28,7 +28,7 @@ class MorseStore extends SettingsSaver {
       }
     });
 
-    this.setupSettings("morsePlayer", noDebounce);
+    this.setupSettings("MorsePlayer", noDebounce);
   }
 
   setFromJson = action(json => {
