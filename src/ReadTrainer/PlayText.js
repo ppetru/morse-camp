@@ -12,7 +12,7 @@ const event = makeLogger("ReadTrainer");
 
 const PlayHiddenCard = inject("store")(
   observer(({ store, onShow }) => (
-    <Card className="bottomRight">
+    <Card className="bottom-card">
       <CardTitle
         title="Listen"
         subtitle={store.morse.playing ? "Playing..." : "Waiting..."}
@@ -34,7 +34,7 @@ PlayHiddenCard.propTypes = {
 
 const PlayVisibleCard = inject("store")(
   observer(({ store, text, onCorrect, onIncorrect }) => (
-    <Card className="bottomRight">
+    <Card className="bottom-card">
       <CardTitle
         title="Listen"
         subtitle={store.morse.playing ? "Playing..." : "Waiting..."}

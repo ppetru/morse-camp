@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import { Button, Card, CardActions, CardText, CardTitle } from "react-md";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardText,
+  CardTitle,
+  Divider
+} from "react-md";
 
 import { wordsBySize } from "../Words";
 import { generateText } from "../TextGenerator";
@@ -143,8 +150,8 @@ const ReadTrainer = inject("store", "morsePlayer")(
         }
 
         return (
-          <div className="md-grid">
-            <Card className="md-cell md-cell--12">
+          <div className="vcontainer">
+            <Card>
               <CardTitle title="Read Trainer" />
               <CardActions centered>
                 <HelpScreen />
@@ -154,6 +161,7 @@ const ReadTrainer = inject("store", "morsePlayer")(
                 <TextSettings />
               </CardText>
             </Card>
+            <Divider />
             {active && <PlayLoop onAbort={this.stop} />}
           </div>
         );

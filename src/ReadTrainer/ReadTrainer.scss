@@ -1,9 +1,12 @@
 @import '../globals';
 
-.bottomRight {
-  @extend %md-block-centered;
-  bottom: 0;
-  padding-right: 1em;
-  position: fixed;
-  width: 100%;
+.vcontainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.grow {
+  margin-bottom: auto;
 }
