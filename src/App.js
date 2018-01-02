@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 import { NavigationDrawer, Snackbar } from "react-md";
 
 import "./App.css";
@@ -8,6 +9,7 @@ import NavItemLink from "./NavItemLink";
 import ReadTrainer from "./ReadTrainer";
 import Settings from "./Settings";
 import About from "./About";
+import { ga } from "./analytics";
 
 const navItems = [
   {
@@ -31,13 +33,25 @@ const navItems = [
 const App = inject("store")(
   observer(
     class App extends Component {
+      componentWillMount() {
+        this.unlisten = this.props.history.listen(location => {
+          ga("set", "page", location.pathname + location.search);
+          ga("send", "pageview");
+        });
+      }
+
+      componentWillUnmount() {
+        this.unlisten();
+      }
+
       render() {
         const store = this.props.store.appStore;
         const toasts = store.toasts.slice();
         const { autohide } = store;
+        const { history } = this.props;
 
         return (
-          <Router>
+          <Router history={history}>
             <Route
               render={({ location }) => (
                 <div>
@@ -77,4 +91,7 @@ const App = inject("store")(
     }
   )
 );
+App.propTypes = {
+  history: PropTypes.object.isRequired
+};
 export default App;

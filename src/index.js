@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { useStrict } from "mobx";
 import { Provider } from "mobx-react";
 import WebFontLoader from "webfontloader";
+import { createBrowserHistory } from "history";
 
 import "./index.css";
 import App from "./App";
@@ -23,11 +24,12 @@ const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const transport = new LocalTransport();
 const store = new RootStore(transport);
 const player = new MorsePlayer(store.morse, audioContext);
+const history = createBrowserHistory();
 
 ReactDOM.render(
   <div>
     <Provider store={store} morsePlayer={player}>
-      <App />
+      <App history={history} />
     </Provider>
   </div>,
   document.getElementById("root")
