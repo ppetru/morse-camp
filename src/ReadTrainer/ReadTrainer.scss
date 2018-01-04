@@ -21,3 +21,14 @@ html, body, #root, .fullscreen {
 .centered {
   justify-content: center;
 }
+
+.text-size-box {
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+}
+
+.text-size-container {
+  display: flex;
+  justify-content: space-between;
+}

@@ -69,45 +69,51 @@ const TextSettings = inject("store")(
   observer(({ store }) => (
     <div>
       <h3>Text length</h3>
-      <div className="md-cell">
-        Min:
-        <Button
-          icon
-          onClick={() =>
-            store.readTrainer.setMinLength(store.readTrainer.minLength - 1)
-          }
-        >
-          -
-        </Button>
-        {store.readTrainer.minLength}
-        <Button
-          icon
-          onClick={() =>
-            store.readTrainer.setMinLength(store.readTrainer.minLength + 1)
-          }
-        >
-          +
-        </Button>
-      </div>
-      <div className="md-cell">
-        Max:
-        <Button
-          icon
-          onClick={() =>
-            store.readTrainer.setMaxLength(store.readTrainer.maxLength - 1)
-          }
-        >
-          -
-        </Button>
-        {store.readTrainer.maxLength}
-        <Button
-          icon
-          onClick={() =>
-            store.readTrainer.setMaxLength(store.readTrainer.maxLength + 1)
-          }
-        >
-          +
-        </Button>
+      <div className="text-size-container">
+        <div className="text-size-box">
+          <span>Min:</span>
+          <Button
+            primary
+            icon
+            onClick={() =>
+              store.readTrainer.setMinLength(store.readTrainer.minLength - 1)
+            }
+          >
+            arrow_downward
+          </Button>
+          <span>{store.readTrainer.minLength}</span>
+          <Button
+            primary
+            icon
+            onClick={() =>
+              store.readTrainer.setMinLength(store.readTrainer.minLength + 1)
+            }
+          >
+            arrow_upward
+          </Button>
+        </div>
+        <div className="text-size-box">
+          <span>Max:</span>
+          <Button
+            primary
+            icon
+            onClick={() =>
+              store.readTrainer.setMaxLength(store.readTrainer.maxLength - 1)
+            }
+          >
+            arrow_downward
+          </Button>
+          <span>{store.readTrainer.maxLength}</span>
+          <Button
+            primary
+            icon
+            onClick={() =>
+              store.readTrainer.setMaxLength(store.readTrainer.maxLength + 1)
+            }
+          >
+            arrow_upward
+          </Button>
+        </div>
       </div>
     </div>
   ))
