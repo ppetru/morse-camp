@@ -156,19 +156,23 @@ const ReadTrainer = inject("store", "morsePlayer")(
         }
 
         return (
-          <div className="vcontainer">
-            <Card className="top-card">
-              <CardTitle title="Read Trainer" />
-              <CardActions centered>
-                <HelpScreen />
-                {button}
-              </CardActions>
-              <CardText>
-                <TextSettings />
-              </CardText>
-            </Card>
-            <Divider />
-            {active && <PlayLoop onAbort={this.stop} />}
+          <div className="column-container">
+            <div className="side-filler" />
+            <div className="vcontainer trainer-column">
+              <Card className="top-card">
+                <CardTitle title="Read Trainer" />
+                <CardActions centered>
+                  <HelpScreen />
+                  {button}
+                </CardActions>
+                <CardText>
+                  <TextSettings />
+                </CardText>
+              </Card>
+              <Divider />
+              {active && <PlayLoop onAbort={this.stop} />}
+            </div>
+            <div className="side-filler" />
           </div>
         );
       }

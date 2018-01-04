@@ -14,7 +14,10 @@
 .bottom-card {
 }
 
-html, body, #root, .fullscreen {
+html,
+body,
+#root,
+.fullscreen {
   height: 100%;
 }
 
@@ -23,12 +26,27 @@ html, body, #root, .fullscreen {
 }
 
 .text-size-box {
+  align-items: center;
   color: #fff;
   display: inline-flex;
-  align-items: center;
 }
 
 .text-size-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+}
+
+.trainer-column {
+  flex: 0 0 320px;
+}
+
+.column-container {
+  display: flex;
+  height: 100%;
+}
+
+.side-filler {
+  background-color: $md-grey-800;
+  flex: 1;
 }
