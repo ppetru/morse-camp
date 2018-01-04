@@ -151,7 +151,7 @@ const ReadTrainer = inject("store", "morsePlayer")(
 
         return (
           <div className="vcontainer">
-            <Card>
+            <Card className="top-card">
               <CardTitle title="Read Trainer" />
               <CardActions centered>
                 <HelpScreen />

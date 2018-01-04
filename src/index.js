@@ -27,11 +27,9 @@ const player = new MorsePlayer(store.morse, audioContext);
 const history = createBrowserHistory();
 
 ReactDOM.render(
-  <div>
-    <Provider store={store} morsePlayer={player}>
-      <App history={history} />
-    </Provider>
-  </div>,
+  <Provider store={store} morsePlayer={player}>
+    <App history={history} />
+  </Provider>,
   document.getElementById("root")
 );
 

@@ -54,13 +54,15 @@ const App = inject("store")(
           <Router history={history}>
             <Route
               render={({ location }) => (
-                <div>
+                <div className="fullscreen">
                   <NavigationDrawer
                     drawerTitle="Morse Camp"
                     toolbarTitle="Morse Camp"
                     navItems={navItems.map(props => (
                       <NavItemLink {...props} key={props.to} />
                     ))}
+                    className="vcontainer"
+                    contentClassName="fullscreen"
                   >
                     <Switch key={location.key}>
                       <Route

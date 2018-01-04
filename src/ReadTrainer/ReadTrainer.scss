@@ -3,10 +3,17 @@
 .vcontainer {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   height: 100%;
+  justify-content: space-between;
 }
 
-.grow {
-  margin-bottom: auto;
+.top-card {
+  flex: 1;
+}
+
+.bottom-card {
+}
+
+html, body, #root, .fullscreen {
+  height: 100%;
 }
