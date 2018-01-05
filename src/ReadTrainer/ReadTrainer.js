@@ -42,12 +42,9 @@ const PlayLoop = inject("store")(
     }
 
     onResult = (success, count) => {
-      this.props.store.readTrainer.textFeedback(
-        this.state.text,
-        success,
-        count,
-        Date.now()
-      );
+      const store = this.props.store.readTrainer;
+      store.textFeedback(this.state.text, success, count, Date.now());
+      store.adjustLengths();
       this.pickText();
     };
 

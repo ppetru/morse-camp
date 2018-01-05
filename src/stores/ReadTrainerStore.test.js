@@ -148,5 +148,79 @@ describe("ReadTrainerStore", () => {
         expect(store().lengths.get(5).score).toBeLessThan(s4);
       });
     });
+
+    describe("length adjustment", () => {
+      describe("min", () => {
+        it("increases when score is high enough", () => {
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().adjustLengths();
+          expect(store().minLength).toEqual(3);
+        });
+
+        it("decreases when score is low enough", () => {
+          store().setMinLength(3);
+          store().textFeedback("123", false, 1, 0);
+          store().textFeedback("123", false, 1, 0);
+          store().textFeedback("123", false, 1, 0);
+          store().textFeedback("123", false, 1, 0);
+          store().textFeedback("123", false, 1, 0);
+          store().adjustLengths();
+          expect(store().minLength).toEqual(2);
+        });
+
+        it("doesn't flip flop", () => {
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().adjustLengths();
+          expect(store().minLength).toEqual(3);
+          store().textFeedback("123", false, 1, 0);
+          store().adjustLengths();
+          expect(store().minLength).toEqual(3);
+        });
+      });
+
+      describe("max", () => {
+        it("increases when score is high enough", () => {
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().adjustLengths();
+          expect(store().maxLength).toEqual(3);
+        });
+
+        it("decreases when score is low enough", () => {
+          store().setMaxLength(3);
+          store().textFeedback("123", false, 1, 0);
+          store().textFeedback("123", false, 1, 0);
+          store().textFeedback("123", false, 1, 0);
+          store().textFeedback("123", false, 1, 0);
+          store().textFeedback("123", false, 1, 0);
+          store().adjustLengths();
+          expect(store().maxLength).toEqual(2);
+        });
+
+        it("doesn't flip flop", () => {
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().textFeedback("12", true, 1, 0);
+          store().adjustLengths();
+          expect(store().maxLength).toEqual(3);
+          store().textFeedback("123", false, 1, 0);
+          store().adjustLengths();
+          expect(store().maxLength).toEqual(3);
+        });
+      });
+    });
   });
 });

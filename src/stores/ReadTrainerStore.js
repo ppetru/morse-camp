@@ -18,7 +18,7 @@ class ReadTrainerStore extends SettingsSaver {
 
     extendObservable(this, {
       minLength: 2,
-      maxLength: 3,
+      maxLength: 2,
       words: observable.map(),
       lengths: observable.map(),
 
@@ -103,24 +103,68 @@ class ReadTrainerStore extends SettingsSaver {
     this.lengths.set(len, data);
   });
 
-  lengthFeedback = action((len, success, count) => {
+  lengthFeedback = action((len, success, tryCount) => {
     let avgScore;
-    let score = success / count;
+    let newCount = 1;
+    let newScore = success / tryCount;
 
     if (this.lengths.has(len)) {
-      avgScore = ewma(this.lengths.get(len).score, score);
+      const { score, count } = this.lengths.get(len);
+      avgScore = ewma(score, newScore);
+      newCount += count;
     } else {
-      avgScore = score;
+      avgScore = newScore;
     }
 
     this.setLengthData(len, {
-      score: avgScore
+      score: avgScore,
+      count: newCount
     });
   });
 
   textFeedback = action((text, success, count, time) => {
     text.split(" ").forEach(w => this.wordFeedback(w, success, count, time));
     this.lengthFeedback(text.length, success, count);
+  });
+
+  resetLengthCount = action(len => {
+    if (this.lengths.has(len)) {
+      const { score } = this.lengths.get(len);
+      this.setLengthData(len, {
+        score: score,
+        count: 0
+      });
+    }
+  });
+
+  adjustLengths = action(() => {
+    if (this.lengths.has(this.minLength)) {
+      const { score, count } = this.lengths.get(this.minLength);
+      if (count > 4) {
+        if (score > 0.8) {
+          this.setMinLength(this.minLength + 1);
+          // TODO: this resets even when minLength didn't change (bottom cap). worth fixing?
+          // (same problem for maxLength)
+          this.resetLengthCount(this.minLength);
+        } else if (score < 0.2) {
+          this.setMinLength(this.minLength - 1);
+          this.resetLengthCount(this.minLength);
+        }
+      }
+    }
+
+    if (this.lengths.has(this.maxLength)) {
+      const { score, count } = this.lengths.get(this.maxLength);
+      if (count > 4) {
+        if (score > 0.5) {
+          this.setMaxLength(this.maxLength + 1);
+          this.resetLengthCount(this.maxLength);
+        } else if (score < 0.1) {
+          this.setMaxLength(this.maxLength - 1);
+          this.resetLengthCount(this.maxLength);
+        }
+      }
+    }
   });
 }
 
