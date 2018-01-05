@@ -23,10 +23,10 @@ class LocalTransport {
     });
   }
 
-  iterateWords(func) {
+  iterateWords(prefix, func) {
     localforage.iterate((value, key, num) => {
-      if (key[0] !== "/") {
-        func(key, value);
+      if (key.startsWith(prefix)) {
+        func(key.substr(prefix.length), value);
       }
     });
   }

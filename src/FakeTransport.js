@@ -15,10 +15,10 @@ class FakeTransport {
     this.store.set(key, value);
   }
 
-  iterateWords(func) {
+  iterateWords(prefix, func) {
     this.store.forEach((value, key) => {
-      if (key[0] !== "/") {
-        func(key, value);
+      if (key.startsWith(prefix)) {
+        func(key.substr(prefix.length), value);
       }
     });
   }

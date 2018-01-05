@@ -1,9 +1,10 @@
 import { action, autorun, extendObservable, observable } from "mobx";
 
-import ResultTracker from "./ResultTracker";
 import SettingsSaver from "./SettingsSaver";
 
 class ReadTrainerStore extends SettingsSaver {
+  WORD_PREFIX = "r-";
+
   constructor(rootStore, transport, noDebounce) {
     super();
     this.rootStore = rootStore;
@@ -25,13 +26,13 @@ class ReadTrainerStore extends SettingsSaver {
 
     this.setupSettings("ReadTrainer", noDebounce);
 
-    this.loadWords = this.transport.iterateWords((w, d) =>
+    this.loadWords = this.transport.iterateWords(this.WORD_PREFIX, (w, d) =>
       this.setWordData(w, d)
     );
 
     this.wordPersister = autorun(() => {
       for (const [k, v] of this.words.entries()) {
-        this.transport.setIfDifferent(k, v);
+        this.transport.setIfDifferent(this.WORD_PREFIX + k, v);
       }
     });
   }
@@ -39,10 +40,6 @@ class ReadTrainerStore extends SettingsSaver {
   setFromJson = action(json => {
     this.setMinLength(json.minLength);
     this.setMaxLength(json.maxLength);
-  });
-
-  setWordData = action((w, data) => {
-    this.words.set(w, data);
   });
 
   setMinLength = action(l => {
@@ -67,19 +64,21 @@ class ReadTrainerStore extends SettingsSaver {
     }
   });
 
+  setWordData = action((w, data) => {
+    this.words.set(w, data);
+  });
+
   wordFeedback = action((word, success, count, time) => {
     this.setWordData(word, {
-      s: success / count,
-      t: time
+      score: success / count,
+      time: time
     });
   });
 
   textFeedback = action((text, success, count, time) => {
-    const trackerSize = 5;
-
     text.split(" ").forEach(w => this.wordFeedback(w, success, count, time));
 
-    if (!this.texts.has(text.length)) {
+    /*    if (!this.texts.has(text.length)) {
       this.texts.set(text.length, new ResultTracker(trackerSize));
     }
     this.texts.get(text.length).record(success, count);
@@ -100,7 +99,7 @@ class ReadTrainerStore extends SettingsSaver {
       } else if (minLenScore.trailingRatio < 0.1) {
         this.setMinLength(this.minLength - 1);
       }
-    }
+    }*/
   });
 }
 
