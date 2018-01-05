@@ -10,8 +10,8 @@ import {
   Divider
 } from "react-md";
 
-import { wordsBySize } from "../Words";
-import { generateText } from "../TextGenerator";
+import { wordFrequency } from "../Words";
+import { computeWordWeights, generateText } from "../TextGenerator";
 import { makeLogger } from "../analytics";
 
 import HelpScreen from "./HelpScreen";
@@ -27,11 +27,13 @@ const PlayLoop = inject("store")(
     };
 
     pickText = () => {
-      const text = generateText(
-        this.props.store.readTrainer,
-        wordsBySize,
+      const store = this.props.store.readTrainer;
+      const candidates = computeWordWeights(
+        wordFrequency,
+        store.words,
         Date.now()
       );
+      const text = generateText(candidates, store.minLength, store.maxLength);
       this.setState({ text });
     };
 

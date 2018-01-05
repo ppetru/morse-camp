@@ -5066,24 +5066,19 @@ const WORDS = [
 // preposItion, nuMber, Pronoun, interjection (U)
 
 function makeWordMaps(words) {
-  // word map: map of 'word': weight
-  var size = new Map(); // map of length: word map
+  var frequency = new Map(); // word: frequency
 
   words.forEach(([word, pos, freq]) => {
-    if (!size.has(word.length)) {
-      size.set(word.length, new Map());
-    }
-    const map = size.get(word.length);
-    if (map.has(word)) {
-      map.set(word, freq + map.get(word));
+    if (frequency.has(word)) {
+      frequency.set(word, freq + frequency.get(word));
     } else {
-      map.set(word, freq);
+      frequency.set(word, freq);
     }
   });
 
-  return [size];
+  return frequency;
 }
 
-const [wordsBySize] = makeWordMaps(WORDS);
+const wordFrequency = makeWordMaps(WORDS);
 
-export { wordsBySize };
+export { wordFrequency };
