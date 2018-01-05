@@ -8,7 +8,8 @@ const ewma = (avg, newVal, alpha = 0.1) => {
 };
 
 class ReadTrainerStore extends SettingsSaver {
-  WORD_PREFIX = "r-";
+  WORD_PREFIX = "rw-";
+  LENGTH_PREFIX = "rl-";
 
   constructor(rootStore, transport, noDebounce) {
     super();
@@ -19,7 +20,7 @@ class ReadTrainerStore extends SettingsSaver {
       minLength: 2,
       maxLength: 3,
       words: observable.map(),
-      texts: observable.map(),
+      lengths: observable.map(),
 
       get asJson() {
         return {
@@ -31,13 +32,22 @@ class ReadTrainerStore extends SettingsSaver {
 
     this.setupSettings("ReadTrainer", noDebounce);
 
-    this.loadWords = this.transport.iterateWords(this.WORD_PREFIX, (w, d) =>
+    this.loadWords = this.transport.iteratePrefix(this.WORD_PREFIX, (w, d) =>
       this.setWordData(w, d)
     );
-
     this.wordPersister = autorun(() => {
       for (const [k, v] of this.words.entries()) {
         this.transport.setIfDifferent(this.WORD_PREFIX + k, v);
+      }
+    });
+
+    this.loadLengths = this.transport.iteratePrefix(
+      this.LENGTH_PREFIX,
+      (l, d) => this.setLengthData(l, d)
+    );
+    this.lengthPersister = autorun(() => {
+      for (const [k, v] of this.lengths.entries()) {
+        this.transport.setIfDifferent(this.LENGTH_PREFIX + k, v);
       }
     });
   }
@@ -89,31 +99,28 @@ class ReadTrainerStore extends SettingsSaver {
     });
   });
 
+  setLengthData = action((len, data) => {
+    this.lengths.set(len, data);
+  });
+
+  lengthFeedback = action((len, success, count) => {
+    let avgScore;
+    let score = success / count;
+
+    if (this.lengths.has(len)) {
+      avgScore = ewma(this.lengths.get(len).score, score);
+    } else {
+      avgScore = score;
+    }
+
+    this.setLengthData(len, {
+      score: avgScore
+    });
+  });
+
   textFeedback = action((text, success, count, time) => {
     text.split(" ").forEach(w => this.wordFeedback(w, success, count, time));
-
-    /*    if (!this.texts.has(text.length)) {
-      this.texts.set(text.length, new ResultTracker(trackerSize));
-    }
-    this.texts.get(text.length).record(success, count);
-
-    let maxLenScore = this.texts.get(this.maxLength);
-    if (maxLenScore && maxLenScore.results.length === trackerSize) {
-      if (maxLenScore.trailingRatio > 0.8) {
-        this.setMaxLength(this.maxLength + 1);
-      } else if (maxLenScore.trailingRatio < 0.2) {
-        this.setMaxLength(this.maxLength - 1);
-      }
-    }
-
-    let minLenScore = this.texts.get(this.minLength);
-    if (minLenScore && minLenScore.results.length === trackerSize) {
-      if (minLenScore.trailingRatio === 1) {
-        this.setMinLength(this.minLength + 1);
-      } else if (minLenScore.trailingRatio < 0.1) {
-        this.setMinLength(this.minLength - 1);
-      }
-    }*/
+    this.lengthFeedback(text.length, success, count);
   });
 }
 

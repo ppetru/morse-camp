@@ -56,46 +56,97 @@ describe("ReadTrainerStore", () => {
   });
 
   describe("feedback", () => {
-    it("saves and restores word feedback", () => {
-      store().textFeedback("foo bar", true, 2, 0);
-      testStore = undefined;
-      return store().loadSettings.then(() => {
-        expect(store().words.keys()).toContain("foo");
-        expect(store().words.keys()).toContain("bar");
+    describe("words", () => {
+      it("saves and restores", () => {
+        store().textFeedback("foo bar", true, 2, 0);
+        testStore = undefined;
+        return store().loadSettings.then(() => {
+          expect(store().words.keys()).toContain("foo");
+          expect(store().words.keys()).toContain("bar");
+        });
+      });
+
+      it("increases score for success", () => {
+        store().textFeedback("foo", true, 2, 0);
+        store().textFeedback("bar", false, 1, 0);
+        const s_foo = store().words.get("foo").score;
+        const s_bar = store().words.get("bar").score;
+        store().textFeedback("foo bar", true, 1, 0);
+        expect(store().words.get("foo").score).toBeGreaterThan(s_foo);
+        expect(store().words.get("bar").score).toBeGreaterThan(s_bar);
+      });
+
+      it("decreases score for failure", () => {
+        store().textFeedback("foo bar", true, 1, 0);
+        const s_foo = store().words.get("foo").score;
+        const s_bar = store().words.get("bar").score;
+        store().textFeedback("foo", false, 1, 0);
+        store().textFeedback("bar", true, 2, 0);
+        expect(store().words.get("foo").score).toBeLessThan(s_foo);
+        expect(store().words.get("bar").score).toBeLessThan(s_bar);
+      });
+
+      it("changes score proportional to attempts", () => {
+        store().textFeedback("foo bar", true, 1, 0);
+        store().textFeedback("baz qux", true, 4, 0);
+        store().textFeedback("foo baz", true, 2, 0);
+        store().textFeedback("bar qux", true, 3, 0);
+        expect(store().words.get("foo").score).toBeGreaterThan(
+          store().words.get("bar").score
+        );
+        expect(store().words.get("baz").score).toBeGreaterThan(
+          store().words.get("qux").score
+        );
       });
     });
 
-    it("increases score for successful words", () => {
-      store().textFeedback("foo", true, 2, 0);
-      store().textFeedback("bar", false, 1, 0);
-      const s_foo = store().words.get("foo").score;
-      const s_bar = store().words.get("bar").score;
-      store().textFeedback("foo bar", true, 1, 0);
-      expect(store().words.get("foo").score).toBeGreaterThan(s_foo);
-      expect(store().words.get("bar").score).toBeGreaterThan(s_bar);
-    });
+    describe("text length", () => {
+      it("saves and restores", () => {
+        store().textFeedback("12", true, 2, 0);
+        store().textFeedback("123", true, 2, 0);
+        testStore = undefined;
+        return store().loadSettings.then(() => {
+          expect(store().lengths.keys()).toContain("2");
+          expect(store().lengths.keys()).toContain("3");
+        });
+      });
 
-    it("decreases score for unsuccessful words", () => {
-      store().textFeedback("foo bar", true, 1, 0);
-      const s_foo = store().words.get("foo").score;
-      const s_bar = store().words.get("bar").score;
-      store().textFeedback("foo", false, 1, 0);
-      store().textFeedback("bar", true, 2, 0);
-      expect(store().words.get("foo").score).toBeLessThan(s_foo);
-      expect(store().words.get("bar").score).toBeLessThan(s_bar);
-    });
+      it("increases score for success", () => {
+        store().textFeedback("12", true, 2, 0);
+        store().textFeedback("123", false, 1, 0);
+        const s2 = store().lengths.get(2).score;
+        const s3 = store().lengths.get(3).score;
+        store().textFeedback("12", true, 1, 0);
+        store().textFeedback("123", true, 2, 0);
+        expect(store().lengths.get(2).score).toBeGreaterThan(s2);
+        expect(store().lengths.get(3).score).toBeGreaterThan(s3);
+      });
 
-    it("changes score proportional to attempts", () => {
-      store().textFeedback("foo bar", true, 1, 0);
-      store().textFeedback("baz qux", true, 4, 0);
-      store().textFeedback("foo baz", true, 2, 0);
-      store().textFeedback("bar qux", true, 3, 0);
-      expect(store().words.get("foo").score).toBeGreaterThan(
-        store().words.get("bar").score
-      );
-      expect(store().words.get("baz").score).toBeGreaterThan(
-        store().words.get("qux").score
-      );
+      it("decreases score for failure", () => {
+        store().textFeedback("12", true, 1, 0);
+        store().textFeedback("123", true, 1, 0);
+        const s2 = store().lengths.get(2).score;
+        const s3 = store().lengths.get(3).score;
+        store().textFeedback("12", false, 1, 0);
+        store().textFeedback("123", true, 2, 0);
+        expect(store().lengths.get(2).score).toBeLessThan(s2);
+        expect(store().lengths.get(3).score).toBeLessThan(s3);
+      });
+
+      it("changes score proportional to attempts", () => {
+        store().textFeedback("12", true, 1, 0);
+        store().textFeedback("123", true, 1, 0);
+        store().textFeedback("1234", true, 4, 0);
+        store().textFeedback("12345", true, 4, 0);
+        const s2 = store().lengths.get(2).score;
+        const s4 = store().lengths.get(3).score;
+        store().textFeedback("12", true, 2, 0);
+        store().textFeedback("123", true, 3, 0);
+        store().textFeedback("1234", true, 2, 0);
+        store().textFeedback("12345", true, 3, 0);
+        expect(store().lengths.get(3).score).toBeLessThan(s2);
+        expect(store().lengths.get(5).score).toBeLessThan(s4);
+      });
     });
   });
 });

@@ -23,7 +23,7 @@ class LocalTransport {
     });
   }
 
-  iterateWords(prefix, func) {
+  iteratePrefix(prefix, func) {
     localforage.iterate((value, key, num) => {
       if (key.startsWith(prefix)) {
         func(key.substr(prefix.length), value);

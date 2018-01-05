@@ -15,7 +15,7 @@ class FakeTransport {
     this.store.set(key, value);
   }
 
-  iterateWords(prefix, func) {
+  iteratePrefix(prefix, func) {
     this.store.forEach((value, key) => {
       if (key.startsWith(prefix)) {
         func(key.substr(prefix.length), value);
