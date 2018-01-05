@@ -7,8 +7,8 @@ const About = () => (
     <h1 className="md-cell md-cell--12 md-text-container">About</h1>
     <div className="md-cell md-cell--12 md-text-container">
       <p>
-        Morse Camp trains people to have fluent conversations in Morse code. It
-        can be used offline without installing anything and works on mobile
+        Morse Camp trains you to have fluent conversations in Morse code. You
+        can use it offline without installing anything, and it works on mobile
         phones as well as on desktop computers.
       </p>
       <p>
