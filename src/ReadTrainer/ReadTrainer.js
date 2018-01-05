@@ -171,6 +171,7 @@ const ReadTrainer = inject("store", "morsePlayer")(
               </Card>
               <Divider />
               {active && <PlayLoop onAbort={this.stop} />}
+              <div className="filler-card" />
             </div>
             <div className="side-filler" />
           </div>

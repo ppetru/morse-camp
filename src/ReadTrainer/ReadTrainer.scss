@@ -14,6 +14,11 @@
 .bottom-card {
 }
 
+.filler-card {
+  background-color: $md-grey-800;
+  flex: 0 0 60px;
+}
+
 html,
 body,
 #root,
