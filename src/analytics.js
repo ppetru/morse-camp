@@ -1,6 +1,6 @@
 const ga = () => {
   if (process.env.NODE_ENV === "production") {
-    window.dataLayer = window.dataLayer || [];
+    console.log("analytics", window.dataLayer, arguments);
     window.dataLayer.push(arguments);
   }
 };
