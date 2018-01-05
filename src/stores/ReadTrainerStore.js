@@ -2,6 +2,11 @@ import { action, autorun, extendObservable, observable } from "mobx";
 
 import SettingsSaver from "./SettingsSaver";
 
+// https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
+const ewma = (avg, newVal, alpha = 0.1) => {
+  return alpha * newVal + (1 - alpha) * avg;
+};
+
 class ReadTrainerStore extends SettingsSaver {
   WORD_PREFIX = "r-";
 
@@ -69,8 +74,17 @@ class ReadTrainerStore extends SettingsSaver {
   });
 
   wordFeedback = action((word, success, count, time) => {
+    let avgScore;
+    let score = success / count;
+
+    if (this.words.has(word)) {
+      avgScore = ewma(this.words.get(word).score, score);
+    } else {
+      avgScore = score;
+    }
+
     this.setWordData(word, {
-      score: success / count,
+      score: avgScore,
       time: time
     });
   });
