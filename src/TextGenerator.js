@@ -4,47 +4,48 @@ const weighted = require("weighted");
 Math.seedrandom();
 
 const REPEAT_DELAY_MS = 30 * 1000;
+const ELAPSED_WEIGHT = 1 / 1000;
+const SCORE_WEIGHT = 10;
 
-const computeWordWeights = (words, state, time) => {
-  var candidates = new Map();
-  var successful_words = new Map();
-  for (let [word, data] of state.entries()) {
-    if (time - data.t > REPEAT_DELAY_MS) {
-      if (data.s < 1) {
-        candidates.set(word, 1 - data.s);
+const computeWordWeights = (words, state, timeNow) => {
+  let result = new Map(words);
+
+  result.forEach((freq, word) => {
+    if (state.has(word)) {
+      const { score, time } = state.get(word);
+      const elapsed = timeNow - time;
+      let weight = freq;
+
+      weight *= Math.max(0, 1 + (elapsed - REPEAT_DELAY_MS) * ELAPSED_WEIGHT);
+      weight *= 1 + (1 - score) * SCORE_WEIGHT;
+
+      if (isNaN(weight) || weight < 0) {
+        result.set(word, freq);
       } else {
-        successful_words.set(word, time - data.t);
+        result.set(word, weight);
       }
     }
-  }
-  if (candidates.size === 0) {
-    for (let [word, freq] of words) {
-      if (!state.has(word)) {
-        candidates.set(word, freq);
-      }
-    }
-  }
-  if (candidates.size === 0) {
-    candidates = successful_words;
-  }
+  });
 
-  return candidates;
+  return result;
 };
 
-function generateText(dictionary, minLength, maxLength) {
-  var words = [];
-  var weights = [];
+const generateText = (dictionary, minLength, maxLength) => {
+  let words = [];
+  let weights = [];
+
   dictionary.forEach((freq, word) => {
     if (word.length >= minLength && word.length <= maxLength) {
       words.push(word);
       weights.push(freq);
     }
   });
+
   if (words.length > 0) {
     return weighted.select(words, weights);
   } else {
     return null;
   }
-}
+};
 
 export { computeWordWeights, generateText, REPEAT_DELAY_MS };
