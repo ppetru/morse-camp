@@ -34,7 +34,7 @@ export default class HelpScreen extends PureComponent {
     const { visible, pageX, pageY } = this.state;
 
     return (
-      <div>
+      <div className="horizontal-box">
         <Button
           raised
           onClick={this.show}
@@ -48,40 +48,33 @@ export default class HelpScreen extends PureComponent {
           visible={visible}
           pageX={pageX}
           pageY={pageY}
-          fullPage
           onHide={this.hide}
           aria-labelledby="instructions-title"
         >
-          <div className="column-container">
-            <div className="side-filler" />
-            <div className="trainer-column">
-              <h1>Read Trainer</h1>
-              <div className="md-text-container">
-                <p>This trainer teaches you to "read" text by ear.</p>
-                <p>
-                  You will hear a text of adjustable length formed from the most
-                  common 5000 English and CW QSO words.
-                </p>
-                <p>
-                  Listen to the text until you fully decode it, then press
-                  "Show". Grade yourself and listen to the text some more if you
-                  did not read it correctly.
-                </p>
-                <p>
-                  The difficulty adjusts automatically and problematic words
-                  repeat until learned.
-                </p>
-              </div>
-              <Button
-                raised
-                onClick={this.hide}
-                iconEl={<FontIcon>close</FontIcon>}
-              >
-                Close
-              </Button>
-            </div>
-            <div className="side-filler" />
+          <h1>Read Trainer</h1>
+          <div className="md-text-container md-text-justify">
+            <p>This trainer teaches you to "read" text by ear.</p>
+            <p>
+              You will hear a text of adjustable length formed from the most
+              common 5000 English and CW QSO words.
+            </p>
+            <p>
+              Listen to the text until you fully decode it, then press "Show".
+              Grade yourself and listen to the text some more if you did not
+              read it correctly.
+            </p>
+            <p>
+              The difficulty adjusts automatically and problematic words repeat
+              until learned.
+            </p>
           </div>
+          <Button
+            raised
+            onClick={this.hide}
+            iconEl={<FontIcon>close</FontIcon>}
+          >
+            Close
+          </Button>
         </DialogContainer>
       </div>
     );
