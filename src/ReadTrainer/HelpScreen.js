@@ -52,32 +52,35 @@ export default class HelpScreen extends PureComponent {
           onHide={this.hide}
           aria-labelledby="instructions-title"
         >
-          <div className="md-grid centered">
-            <h1>Read Trainer</h1>
-            <div className="md-cell md-cell--12 md-text-container">
-              <p>This trainer teaches you to "read" text by ear.</p>
-              <p>
-                You will hear a text of adjustable length formed from the most
-                common 5000 English and CW QSO words.
-              </p>
-              <p>
-                Listen to the text until you fully decode it, then press "Show".
-                Grade yourself and listen to the text some more if you did not
-                read it correctly.
-              </p>
-              <p>
-                The difficulty adjusts automatically and problematic words
-                repeat until learned.
-              </p>
+          <div className="column-container">
+            <div className="side-filler" />
+            <div className="trainer-column">
+              <h1>Read Trainer</h1>
+              <div className="md-text-container">
+                <p>This trainer teaches you to "read" text by ear.</p>
+                <p>
+                  You will hear a text of adjustable length formed from the most
+                  common 5000 English and CW QSO words.
+                </p>
+                <p>
+                  Listen to the text until you fully decode it, then press
+                  "Show". Grade yourself and listen to the text some more if you
+                  did not read it correctly.
+                </p>
+                <p>
+                  The difficulty adjusts automatically and problematic words
+                  repeat until learned.
+                </p>
+              </div>
+              <Button
+                raised
+                onClick={this.hide}
+                iconEl={<FontIcon>close</FontIcon>}
+              >
+                Close
+              </Button>
             </div>
-            <Button
-              className="md-cell"
-              raised
-              onClick={this.hide}
-              iconEl={<FontIcon>close</FontIcon>}
-            >
-              Close
-            </Button>
+            <div className="side-filler" />
           </div>
         </DialogContainer>
       </div>
