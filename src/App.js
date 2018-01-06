@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Router, Route, Switch } from "react-router-dom";
-import { NavigationDrawer, Snackbar } from "react-md";
+import { Drawer, NavigationDrawer, Snackbar } from "react-md";
 
 import "./App.css";
 import NavItemLink from "./NavItemLink";
@@ -56,6 +56,7 @@ const App = inject("store")(
                 <div className="fullscreen">
                   <NavigationDrawer
                     toolbarTitle="Morse Camp"
+                    desktopDrawerType={Drawer.DrawerTypes.CLIPPED}
                     navItems={navItems.map(props => (
                       <NavItemLink {...props} key={props.to} />
                     ))}
