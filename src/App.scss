@@ -1,19 +1,21 @@
 @import "globals";
 
-.App {
-  text-align: center;
+html,
+body,
+#root,
+.fullscreen {
+  height: 100%;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-
-  h2 {
-    color: $md-white-base;
-  }
+.trainer-column {
+  flex: 0 0 320px;
 }
 
-.App-intro {
-  font-size: large;
+.column-container {
+  display: flex;
+  height: 100%;
+}
+
+.side-filler {
+  flex: 1;
 }

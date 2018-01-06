@@ -67,53 +67,50 @@ PlayLoop.propTypes = {
 
 const TextSettings = inject("store")(
   observer(({ store }) => (
-    <div>
-      <h3>Text length</h3>
-      <div className="text-size-container">
-        <div className="text-size-box">
-          <span>Min:</span>
-          <Button
-            primary
-            icon
-            onClick={() =>
-              store.readTrainer.setMinLength(store.readTrainer.minLength - 1)
-            }
-          >
-            arrow_downward
-          </Button>
-          <span>{store.readTrainer.minLength}</span>
-          <Button
-            primary
-            icon
-            onClick={() =>
-              store.readTrainer.setMinLength(store.readTrainer.minLength + 1)
-            }
-          >
-            arrow_upward
-          </Button>
-        </div>
-        <div className="text-size-box">
-          <span>Max:</span>
-          <Button
-            primary
-            icon
-            onClick={() =>
-              store.readTrainer.setMaxLength(store.readTrainer.maxLength - 1)
-            }
-          >
-            arrow_downward
-          </Button>
-          <span>{store.readTrainer.maxLength}</span>
-          <Button
-            primary
-            icon
-            onClick={() =>
-              store.readTrainer.setMaxLength(store.readTrainer.maxLength + 1)
-            }
-          >
-            arrow_upward
-          </Button>
-        </div>
+    <div className="text-size-container">
+      <div className="text-size-box">
+        <span>Min:</span>
+        <Button
+          primary
+          icon
+          onClick={() =>
+            store.readTrainer.setMinLength(store.readTrainer.minLength - 1)
+          }
+        >
+          arrow_downward
+        </Button>
+        <span>{store.readTrainer.minLength}</span>
+        <Button
+          primary
+          icon
+          onClick={() =>
+            store.readTrainer.setMinLength(store.readTrainer.minLength + 1)
+          }
+        >
+          arrow_upward
+        </Button>
+      </div>
+      <div className="text-size-box">
+        <span>Max:</span>
+        <Button
+          primary
+          icon
+          onClick={() =>
+            store.readTrainer.setMaxLength(store.readTrainer.maxLength - 1)
+          }
+        >
+          arrow_downward
+        </Button>
+        <span>{store.readTrainer.maxLength}</span>
+        <Button
+          primary
+          icon
+          onClick={() =>
+            store.readTrainer.setMaxLength(store.readTrainer.maxLength + 1)
+          }
+        >
+          arrow_upward
+        </Button>
       </div>
     </div>
   ))
@@ -166,24 +163,21 @@ const ReadTrainer = inject("store", "morsePlayer")(
         }
 
         return (
-          <div className="column-container">
-            <div className="side-filler" />
-            <div className="vcontainer trainer-column">
-              <Card className="top-card">
-                <CardTitle title="Read Trainer" />
-                <CardActions centered>
-                  <HelpScreen />
-                  {button}
-                </CardActions>
-                <CardText>
-                  <TextSettings />
-                </CardText>
-              </Card>
-              <Divider />
-              {active && <PlayLoop onAbort={this.stop} />}
-              <div className="filler-card" />
-            </div>
-            <div className="side-filler" />
+          <div className="vcontainer">
+            <h1>Read Trainer</h1>
+            <Card className="top-card">
+              <CardTitle title="Text length" />
+              <CardText>
+                <TextSettings />
+              </CardText>
+              <CardActions centered>
+                <HelpScreen />
+                {button}
+              </CardActions>
+            </Card>
+            <Divider />
+            {active && <PlayLoop onAbort={this.stop} />}
+            <div className="filler-card" />
           </div>
         );
       }

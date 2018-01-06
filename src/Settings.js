@@ -82,9 +82,9 @@ const ClearStorage = inject("store")(
 
 const Settings = inject("store", "morsePlayer")(
   observer(({ store, morsePlayer }) => (
-    <div className="md-grid">
+    <div>
       <h1>Settings</h1>
-      <div className="md-cell md-cell--12 md-text-container">
+      <div>
         <h2>Morse tone</h2>
         <div>
           <Slider
@@ -121,6 +121,7 @@ const Settings = inject("store", "morsePlayer")(
             Test
           </Button>
         </div>
+
         <h2>Internals</h2>
         <div>
           <ClearStorage />

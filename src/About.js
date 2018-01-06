@@ -3,9 +3,9 @@ import React from "react";
 import "./About.css";
 
 const About = () => (
-  <div className="md-grid">
-    <h1 className="md-cell md-cell--12 md-text-container">About</h1>
-    <div className="md-cell md-cell--12 md-text-container">
+  <div>
+    <h1>About</h1>
+    <div className="md-text-container md-text-justify">
       <p>
         Morse Camp trains you to have fluent conversations in Morse code. You
         can use it offline without installing anything, and it works on mobile
@@ -16,7 +16,7 @@ const About = () => (
         scratch, check out the excellent trainer at{" "}
         <a target="_blank" rel="noopener noreferrer" href="https://lcwo.net">
           LCWO.net
-        </a>
+        </a>.
       </p>
       <p>
         Morse Camp is under active development with a{" "}

@@ -55,7 +55,6 @@ const App = inject("store")(
               render={({ location }) => (
                 <div className="fullscreen">
                   <NavigationDrawer
-                    drawerTitle="Morse Camp"
                     toolbarTitle="Morse Camp"
                     navItems={navItems.map(props => (
                       <NavItemLink {...props} key={props.to} />
@@ -63,19 +62,25 @@ const App = inject("store")(
                     className="vcontainer"
                     contentClassName="fullscreen"
                   >
-                    <Switch key={location.key}>
-                      <Route
-                        path="/about"
-                        location={location}
-                        component={About}
-                      />
-                      <Route
-                        path="/settings"
-                        location={location}
-                        component={Settings}
-                      />
-                      <Route location={location} component={ReadTrainer} />
-                    </Switch>
+                    <div className="column-container">
+                      <div className="side-filler" />
+                      <div className="trainer-column">
+                        <Switch key={location.key}>
+                          <Route
+                            path="/about"
+                            location={location}
+                            component={About}
+                          />
+                          <Route
+                            path="/settings"
+                            location={location}
+                            component={Settings}
+                          />
+                          <Route location={location} component={ReadTrainer} />
+                        </Switch>
+                      </div>
+                      <div className="side-filler" />
+                    </div>
                   </NavigationDrawer>
                   <Snackbar
                     id="snackbar"
