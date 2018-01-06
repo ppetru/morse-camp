@@ -86,7 +86,7 @@ const PlayText = inject("store", "morsePlayer")(
             this.playText();
           } else if (this.playCount > 20 || this.replayCount > 20) {
             this.stop();
-            event("timeout abort");
+            event("timeout abort", null, null, true);
             this.props.onAbort();
           } else {
             this.timeout = setTimeout(this.playText, 2500);
@@ -130,15 +130,15 @@ const PlayText = inject("store", "morsePlayer")(
       onResult = success => {
         this.stop();
         if (success) {
-          event("success", this.props.text, this.replayCount);
+          event("success", this.props.text.length, this.replayCount);
         } else {
-          event("fail", this.props.text, this.replayCount);
+          event("fail", this.props.text.length, this.replayCount);
         }
         this.props.onResult(success, this.playCount);
       };
 
       onShow = () => {
-        event("show", this.props.text, this.playCount);
+        event("show", this.props.text.length, this.playCount);
         this.setState({ hidden: false });
       };
 
