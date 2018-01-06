@@ -2,7 +2,6 @@
 
 @include react-md-everything;
 
-body {
+body, html {
   background-color: $md-grey-800;
-  margin: 0;
 }
