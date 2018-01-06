@@ -9,7 +9,7 @@ import NavItemLink from "./NavItemLink";
 import ReadTrainer from "./ReadTrainer/ReadTrainer";
 import Settings from "./Settings";
 import About from "./About";
-import { ga } from "./analytics";
+import { pageview } from "./analytics";
 
 const navItems = [
   {
@@ -35,8 +35,7 @@ const App = inject("store")(
     class App extends Component {
       componentWillMount() {
         this.unlisten = this.props.history.listen(location => {
-          ga("set", "page", location.pathname + location.search);
-          ga("send", "pageview");
+          pageview(location.pathname + location.search);
         });
       }
 

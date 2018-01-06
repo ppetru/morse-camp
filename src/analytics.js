@@ -1,15 +1,19 @@
-const ga = () => {
+import ReactGA from "react-ga";
+
+const pageview = url => {
   if (process.env.NODE_ENV === "production") {
-    console.log("analytics", window.dataLayer, arguments);
-    window.dataLayer.push(arguments);
+    ReactGA.pageview(url);
   }
 };
 
 // category and action are required
-const logEvent = (category, action, label, value) =>
-  ga("send", "event", category, action, label, value);
+const logEvent = (category, action, label, value, nonInteraction) => {
+  if (process.env.NODE_ENV === "production") {
+    ReactGA.event({ category, action, label, value });
+  }
+};
 
-const makeLogger = category => (action, label, value) =>
-  logEvent(category, action, label, value);
+const makeLogger = category => (action, label, value, nonInteraction) =>
+  logEvent(category, action, label, value, nonInteraction);
 
-export { ga, logEvent, makeLogger };
+export { pageview, makeLogger };

@@ -4,6 +4,7 @@ import { useStrict } from "mobx";
 import { Provider } from "mobx-react";
 import WebFontLoader from "webfontloader";
 import { createBrowserHistory } from "history";
+import ReactGA from "react-ga";
 
 import "./index.css";
 import App from "./App";
@@ -17,6 +18,8 @@ WebFontLoader.load({
     families: ["Roboto:300,400,500,700", "Material Icons"]
   }
 });
+
+ReactGA.initialize("UA-111651933-2");
 
 useStrict(true);
 
