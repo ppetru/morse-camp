@@ -89,6 +89,9 @@ class MorsePlayer {
   };
 
   playString = s => {
+    if (this.playing) {
+      return;
+    }
     s = s.toUpperCase();
     this.store.startedPlaying();
     this.makeOscillator();
