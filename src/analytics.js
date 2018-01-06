@@ -9,7 +9,9 @@ const pageview = url => {
 // category and action are required
 const logEvent = (category, action, label, value, nonInteraction) => {
   if (process.env.NODE_ENV === "production") {
-    ReactGA.event({ category, action, label, value });
+    ReactGA.ga("send", "event", category, action, label, value, {
+      nonInteraction
+    });
   }
 };
 
