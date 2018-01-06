@@ -18,18 +18,19 @@
   flex: 0 0 60px;
 }
 
-.centered {
-  justify-content: center;
-}
-
-.text-size-box {
+.horizontal-box {
   align-items: center;
   color: #fff;
   display: inline-flex;
 }
 
-.text-size-container {
+.horizontal-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
+  padding-bottom: 2em;
+}
+
+.center-justify {
+  justify-content: center;
 }

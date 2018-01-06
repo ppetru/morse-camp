@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardText,
-  CardTitle,
-  Divider,
-  FontIcon
-} from "react-md";
+import { Button, FontIcon } from "react-md";
 
 import { wordFrequency } from "../Words";
 import { computeWordWeights, generateText } from "../TextGenerator";
@@ -67,8 +59,8 @@ PlayLoop.propTypes = {
 
 const TextSettings = inject("store")(
   observer(({ store }) => (
-    <div className="text-size-container">
-      <div className="text-size-box">
+    <div className="horizontal-container">
+      <div className="horizontal-box">
         <span>Min:</span>
         <Button
           primary
@@ -90,7 +82,7 @@ const TextSettings = inject("store")(
           arrow_upward
         </Button>
       </div>
-      <div className="text-size-box">
+      <div className="horizontal-box">
         <span>Max:</span>
         <Button
           primary
@@ -165,17 +157,14 @@ const ReadTrainer = inject("store", "morsePlayer")(
         return (
           <div className="vcontainer">
             <h1>Read Trainer</h1>
-            <Card className="top-card">
-              <CardTitle title="Text length" />
-              <CardText>
-                <TextSettings />
-              </CardText>
-              <CardActions centered>
+            <div className="top-card">
+              <div className="horizontal-container center-justify">
                 <HelpScreen />
                 {button}
-              </CardActions>
-            </Card>
-            <Divider />
+              </div>
+              <h2>Text length</h2>
+              <TextSettings />
+            </div>
             {active && <PlayLoop onAbort={this.stop} />}
             <div className="filler-card" />
           </div>
