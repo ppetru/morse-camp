@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Button, DialogContainer, FontIcon, TextField } from "react-md";
+import { Button, DialogContainer, FontIcon, Slider } from "react-md";
 import { inject, observer } from "mobx-react";
 
 import { makeLogger } from "./analytics";
@@ -87,25 +87,26 @@ const Settings = inject("store", "morsePlayer")(
       <div className="md-cell md-cell--12 md-text-container">
         <h2>Morse tone</h2>
         <div>
-          <TextField
+          <Slider
             id="speed"
             label="Speed (WPM)"
-            type="number"
+            editable
             max={80}
-            min={20}
-            step={1}
+            min={15}
             value={store.morse.speed}
-            onChange={(value, e) => store.morse.setSpeed(value)}
+            onChange={value => store.morse.setSpeed(value)}
+            leftIcon={<FontIcon>fast_forward</FontIcon>}
           />
-          <TextField
+          <Slider
             id="frequency"
             label="Frequency (Hz)"
-            type="number"
-            max={5000}
+            editable
+            max={1000}
             min={200}
             step={10}
             value={store.morse.frequency}
-            onChange={(value, e) => store.morse.setFrequency(value)}
+            onChange={value => store.morse.setFrequency(value)}
+            leftIcon={<FontIcon>audiotrack</FontIcon>}
           />
           <Button
             raised
