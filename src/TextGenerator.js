@@ -5,7 +5,7 @@ Math.seedrandom();
 
 const REPEAT_DELAY_MS = 60 * 1000;
 const ELAPSED_WEIGHT = 1 / 1000;
-const SCORE_WEIGHT = 2;
+const SCORE_WEIGHT = 1;
 
 const computeWordWeights = (words, state, timeNow) => {
   let result = new Map(words);
