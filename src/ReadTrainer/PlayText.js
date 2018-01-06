@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { autorun } from "mobx";
 import { inject, observer } from "mobx-react";
-import { Button, Card, CardActions, CardText, CardTitle } from "react-md";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardText,
+  CardTitle,
+  FontIcon
+} from "react-md";
 
 import { makeLogger } from "../analytics";
 
@@ -21,7 +28,12 @@ const PlayHiddenCard = inject("store")(
         <p>Decode the text and press 'Show' when ready</p>
       </CardText>
       <CardActions centered>
-        <Button raised primary onClick={onShow}>
+        <Button
+          raised
+          primary
+          onClick={onShow}
+          iconEl={<FontIcon>visibility</FontIcon>}
+        >
           Show
         </Button>
       </CardActions>
@@ -45,10 +57,20 @@ const PlayVisibleCard = inject("store")(
         </p>
       </CardText>
       <CardActions centered>
-        <Button raised primary onClick={onCorrect}>
+        <Button
+          raised
+          primary
+          onClick={onCorrect}
+          iconEl={<FontIcon>thumb_up</FontIcon>}
+        >
           Correct
         </Button>
-        <Button raised primary onClick={onIncorrect}>
+        <Button
+          raised
+          primary
+          onClick={onIncorrect}
+          iconEl={<FontIcon>thumb_down</FontIcon>}
+        >
           Incorrect
         </Button>
       </CardActions>

@@ -7,7 +7,8 @@ import {
   CardActions,
   CardText,
   CardTitle,
-  Divider
+  Divider,
+  FontIcon
 } from "react-md";
 
 import { wordFrequency } from "../Words";
@@ -142,13 +143,23 @@ const ReadTrainer = inject("store", "morsePlayer")(
         var button;
         if (active) {
           button = (
-            <Button raised primary onClick={this.stop}>
+            <Button
+              raised
+              primary
+              onClick={this.stop}
+              iconEl={<FontIcon>stop</FontIcon>}
+            >
               Stop
             </Button>
           );
         } else {
           button = (
-            <Button raised primary onClick={this.start}>
+            <Button
+              raised
+              primary
+              onClick={this.start}
+              iconEl={<FontIcon>play_arrow</FontIcon>}
+            >
               Start
             </Button>
           );

@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Button, DialogContainer, TextField } from "react-md";
+import { Button, DialogContainer, FontIcon, TextField } from "react-md";
 import { inject, observer } from "mobx-react";
 
 import { makeLogger } from "./analytics";
@@ -58,6 +58,7 @@ const ClearStorage = inject("store")(
             raised
             onClick={this.show}
             aria-controls="clear-storage-dialog"
+            iconEl={<FontIcon>delete</FontIcon>}
           >
             Clear storage
           </Button>
@@ -110,6 +111,7 @@ const Settings = inject("store", "morsePlayer")(
             raised
             primary
             className="md-block-centered"
+            iconEl={<FontIcon>play_arrow</FontIcon>}
             onClick={() => {
               event("test");
               morsePlayer.playString("hello");

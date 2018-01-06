@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Button, DialogContainer } from "react-md";
+import { Button, DialogContainer, FontIcon } from "react-md";
 
 import { makeLogger } from "../analytics";
 
@@ -35,7 +35,12 @@ export default class HelpScreen extends PureComponent {
 
     return (
       <div>
-        <Button raised onClick={this.show} aria-controls="instructions-dialog">
+        <Button
+          raised
+          onClick={this.show}
+          aria-controls="instructions-dialog"
+          iconEl={<FontIcon>info</FontIcon>}
+        >
           Instructions
         </Button>
         <DialogContainer
@@ -65,7 +70,12 @@ export default class HelpScreen extends PureComponent {
                 repeat until learned.
               </p>
             </div>
-            <Button className="md-cell" raised onClick={this.hide}>
+            <Button
+              className="md-cell"
+              raised
+              onClick={this.hide}
+              iconEl={<FontIcon>close</FontIcon>}
+            >
               Close
             </Button>
           </div>
