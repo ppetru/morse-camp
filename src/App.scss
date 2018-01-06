@@ -8,12 +8,13 @@ body,
 }
 
 .trainer-column {
-  flex: 0 0 320px;
+  flex: 0 1 400px;
 }
 
 .column-container {
   display: flex;
   height: 100%;
+  padding-top: 1em;
 }
 
 .side-filler {
