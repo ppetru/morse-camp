@@ -72,6 +72,7 @@ export default class HelpScreen extends PureComponent {
             raised
             onClick={this.hide}
             iconEl={<FontIcon>close</FontIcon>}
+            className="md-block-centered"
           >
             Close
           </Button>
