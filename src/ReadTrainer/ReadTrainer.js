@@ -116,7 +116,7 @@ const ReadTrainer = inject("store", "morsePlayer")(
       };
 
       start = () => {
-        event("start");
+        event("start", this.props.store.morse.speed);
         this.setState({ active: true });
       };
 
