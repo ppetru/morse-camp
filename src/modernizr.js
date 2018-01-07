@@ -22,7 +22,8 @@
  * of control over the experience.
 */
 
-;(function(window, document, undefined){
+/* eslint eqeqeq: "off", no-shadow-restricted-names: "off", no-new-wrappers: "off" */
+function build(window, document, undefined) {
   var tests = [];
   
 
@@ -870,7 +871,9 @@ Detects support for the Flexible Box Layout model, a.k.a. Flexbox, which allows 
   // Leak Modernizr namespace
   window.Modernizr = Modernizr;
 
+  return Modernizr;
+}
 
-;
+const modernizr = window.Modernizr || build(window, document);
 
-})(window, document);
+export default modernizr;
