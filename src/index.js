@@ -14,6 +14,10 @@ import MorsePlayer from "./MorsePlayer";
 import RootStore from "./stores/RootStore";
 import LocalTransport from "./LocalTransport";
 import registerServiceWorker from "./registerServiceWorker";
+import modernizr from "./modernizr";
+import UnsupportedBrowser from "./UnsupportedBrowser";
+
+ReactGA.initialize("UA-111651933-2");
 
 WebFontLoader.load({
   google: {
@@ -21,25 +25,44 @@ WebFontLoader.load({
   }
 });
 
-ReactGA.initialize("UA-111651933-2");
-
 useStrict(true);
 
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const transport = new LocalTransport();
-const store = new RootStore(transport);
-const player = new MorsePlayer(store.morse, audioContext);
-const history = createBrowserHistory();
+const requiredFeatures = {
+  "Web Audio API": modernizr.webaudio,
+  "Web Storage API": modernizr.localstorage,
+  "CSS Flexible Box Layout": modernizr.flexbox
+};
+let rootElement;
+let missingFeatures = [];
 
-ReactDOM.render(
-  <Provider store={store} morsePlayer={player}>
-    <App history={history} />
-  </Provider>,
-  document.getElementById("root")
-);
+for (const [name, present] of Object.entries(requiredFeatures)) {
+  if (!present) {
+    missingFeatures.push(name);
+  }
+}
 
-registerServiceWorker(store.appStore.notifyUpdate, store.appStore.notifyCached);
+if (missingFeatures.length === 0) {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const transport = new LocalTransport();
+  const store = new RootStore(transport);
+  const player = new MorsePlayer(store.morse, audioContext);
+  const history = createBrowserHistory();
+  rootElement = (
+    <Provider store={store} morsePlayer={player}>
+      <App history={history} />
+    </Provider>
+  );
 
-window.transport = transport;
-window.store = store;
-window.player = player;
+  registerServiceWorker(
+    store.appStore.notifyUpdate,
+    store.appStore.notifyCached
+  );
+
+  window.transport = transport;
+  window.store = store;
+  window.player = player;
+} else {
+  rootElement = <UnsupportedBrowser missingFeatures={missingFeatures} />;
+}
+
+ReactDOM.render(rootElement, document.getElementById("root"));
