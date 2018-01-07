@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "localforage": "^1.5.5",
     "mobx": "^3.3.1",
     "mobx-react": "^4.3.3",
