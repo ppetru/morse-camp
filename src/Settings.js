@@ -92,7 +92,7 @@ const Settings = inject("store", "morsePlayer")(
             label="Speed (WPM)"
             editable
             max={80}
-            min={15}
+            min={10}
             value={store.morse.speed}
             onChange={value => store.morse.setSpeed(value)}
             leftIcon={<FontIcon>fast_forward</FontIcon>}
