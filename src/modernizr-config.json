@@ -1,0 +1,9 @@
+{
+  "minify": false,
+  "options": [],
+  "feature-detects": [
+    "test/audio/webaudio",
+    "test/css/flexbox",
+    "test/storage/localstorage"
+  ]
+}
