@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Router, Route, Switch } from "react-router-dom";
 import { Drawer, NavigationDrawer, Snackbar } from "react-md";
+import { Helmet } from "react-helmet";
 
 import "./App.css";
 import NavItemLink from "./NavItemLink";
@@ -54,6 +55,10 @@ const App = inject("store")(
             <Route
               render={({ location }) => (
                 <div className="fullscreen">
+                  <Helmet
+                    titleTemplate="Morse Camp - %s"
+                    defaultTitle="Morse Camp"
+                  />
                   <NavigationDrawer
                     toolbarTitle="Morse Camp"
                     desktopDrawerType={Drawer.DrawerTypes.CLIPPED}

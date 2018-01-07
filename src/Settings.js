@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import { Button, DialogContainer, FontIcon, Slider } from "react-md";
 import { inject, observer } from "mobx-react";
+import { Helmet } from "react-helmet";
 
 import { makeLogger } from "./analytics";
 
@@ -83,6 +84,9 @@ const ClearStorage = inject("store")(
 const Settings = inject("store", "morsePlayer")(
   observer(({ store, morsePlayer }) => (
     <div>
+      <Helmet>
+        <title>Settings</title>
+      </Helmet>
       <h1>Settings</h1>
       <div>
         <h2>Morse tone</h2>

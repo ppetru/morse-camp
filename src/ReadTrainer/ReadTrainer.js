@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Button, FontIcon } from "react-md";
+import { Helmet } from "react-helmet";
 
 import { wordFrequency } from "../Words";
 import { computeWordWeights, generateText } from "../TextGenerator";
@@ -156,6 +157,9 @@ const ReadTrainer = inject("store", "morsePlayer")(
 
         return (
           <div className="vcontainer">
+            <Helmet>
+              <title>Read Trainer</title>
+            </Helmet>
             <h1>Read Trainer</h1>
             <div className="top-card">
               <div className="horizontal-container center-justify">
