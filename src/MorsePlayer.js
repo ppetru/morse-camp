@@ -95,8 +95,8 @@ class MorsePlayer {
     s = s.toUpperCase();
     this.store.startedPlaying();
     this.makeOscillator();
-    this.playing = true;
     this.oscillator.start();
+    this.playing = true;
     let t = this.audioContext.currentTime;
     t += 3 * this.ditLength;
     var i = 0;
@@ -136,7 +136,11 @@ class MorsePlayer {
       const t = this.audioContext.currentTime;
       this.gain.gain.cancelScheduledValues(t);
       this.soundOff(t + this.ditLength); // gracefully ramp down in case the tone was on
-      this.oscillator.stop(t + 7 * this.ditLength); // leave some space between words
+      // TODO: this is not necessary until/unless we do something more
+      // interesting in the ended event listener. Meanwhile, it causes Safari
+      // to throw an invalid state exception (because somehow mobx ends up
+      // calling things twice and/or takes a while to propagate values.
+      //this.oscillator.stop(t + 7 * this.ditLength); // leave some space between words
     }
   };
 
