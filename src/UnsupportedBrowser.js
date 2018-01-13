@@ -3,7 +3,7 @@ import React from "react";
 const UnsupportedBrowser = ({ missingFeatures }) => (
   <div>
     <h1>Unsupported browser</h1>
-    <div className="md-text-container md-text-justify white-text">
+    <div className="md-text-container md-text-justify">
       Morse Camp relies on the following features not supported by your browser:
       <ul>{missingFeatures.map((n, i) => <li key={i}>{n}</li>)}</ul>
       Please try upgrading or using a recent version of any of the following
