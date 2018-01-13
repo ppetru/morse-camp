@@ -48,6 +48,31 @@ const pickWord = (wordsByLength, minLength, maxLength) => {
   }
 };
 
+const makeText = (wordsByLength, minLength, maxLength) => {
+  if (maxLength < 5 /* 2 2-char words and 1 space */) {
+    return null;
+  }
+  /* pick first word and make sure there's room for at least one more */
+  var text = pickWord(
+    wordsByLength,
+    2,
+    maxLength - /* space */ 1 - /* min word length */ 2
+  );
+  var remainingLength = maxLength - text.length;
+
+  while (remainingLength >= 3) {
+    let word = pickWord(wordsByLength, 2, remainingLength);
+    text = text + " " + word;
+    remainingLength -= word.length + 1;
+  }
+
+  if (text.length >= minLength) {
+    return text;
+  } else {
+    return null;
+  }
+};
+
 const generateText = (dictionary, minLength, maxLength) => {
   const wordsByLength = new Map();
 
@@ -58,7 +83,18 @@ const generateText = (dictionary, minLength, maxLength) => {
     wordsByLength.get(word.length).set(word, freq);
   });
 
-  return pickWord(wordsByLength, minLength, maxLength);
+  var candidates = [];
+  var t;
+  t = pickWord(wordsByLength, minLength, maxLength);
+  if (t) {
+    candidates.push(t);
+  }
+  t = makeText(wordsByLength, minLength, maxLength);
+  if (t) {
+    candidates.push(t);
+  }
+
+  return candidates[Math.floor(Math.random() * candidates.length)];
 };
 
 export { computeWordWeights, generateText, REPEAT_DELAY_MS };
