@@ -1,4 +1,6 @@
 import "seedrandom";
+import { minWordLength, maxWordLength, partOfSpeech } from "./Words";
+
 const weighted = require("weighted");
 
 Math.seedrandom();
@@ -30,16 +32,19 @@ const computeWordWeights = (words, state, timeNow) => {
   return result;
 };
 
-const pickWord = (wordsByLength, minLength, maxLength) => {
+const pickWord = (dictionary, minLength, maxLength, pos = null) => {
   let words = [];
   let weights = [];
 
-  for (let i = minLength; i <= maxLength; i++) {
-    if (wordsByLength.has(i)) {
-      words = words.concat(Array.from(wordsByLength.get(i).keys()));
-      weights = weights.concat(Array.from(wordsByLength.get(i).values()));
+  dictionary.forEach((freq, word) => {
+    if (word.length >= minLength && word.length <= maxLength) {
+      if (pos && !partOfSpeech.get(pos).has(word)) {
+        return;
+      }
+      words.push(word);
+      weights.push(freq);
     }
-  }
+  });
 
   if (words.length > 0) {
     return weighted.select(words, weights);
@@ -48,25 +53,39 @@ const pickWord = (wordsByLength, minLength, maxLength) => {
   }
 };
 
-const makeText = (wordsByLength, minLength, maxLength) => {
-  if (maxLength < 5 /* 2 2-char words and 1 space */) {
+const makeText = (dictionary, pattern, minLength, maxLength) => {
+  if (
+    pattern.length < 2 ||
+    maxLength < pattern.length - 1 + minWordLength * pattern.length ||
+    minLength > pattern.length - 1 + maxWordLength * pattern.length
+  ) {
     return null;
   }
-  /* pick first word and make sure there's room for at least one more */
-  var text = pickWord(
-    wordsByLength,
-    2,
-    maxLength - /* space */ 1 - /* min word length */ 2
-  );
-  var remainingLength = maxLength - text.length;
 
-  while (remainingLength >= 3) {
-    let word = pickWord(wordsByLength, 2, remainingLength);
-    text = text + " " + word;
+  var words = [];
+  var remainingLength = maxLength;
+
+  while (pattern.length) {
+    let pos = pattern.shift();
+    let word = pickWord(
+      dictionary,
+      minWordLength,
+      remainingLength -
+        (pattern.length ? pattern.length - 1 : 0) -
+        pattern.length * minWordLength,
+      pos
+    );
+    console.log(pos, word);
+    if (!word) {
+      return null;
+    }
+    words.push(word);
     remainingLength -= word.length + 1;
   }
 
-  if (text.length >= minLength) {
+  const text = words.join(" ");
+  console.log(text, text.length);
+  if (text.length >= minLength && text.length <= maxLength) {
     return text;
   } else {
     return null;
@@ -74,26 +93,20 @@ const makeText = (wordsByLength, minLength, maxLength) => {
 };
 
 const generateText = (dictionary, minLength, maxLength) => {
-  const wordsByLength = new Map();
-
-  dictionary.forEach((freq, word) => {
-    if (!wordsByLength.has(word.length)) {
-      wordsByLength.set(word.length, new Map());
-    }
-    wordsByLength.get(word.length).set(word, freq);
-  });
-
   var candidates = [];
+
   var t;
-  t = pickWord(wordsByLength, minLength, maxLength);
+  /*t = pickWord(dictionary, minLength, maxLength);
   if (t) {
     candidates.push(t);
-  }
-  t = makeText(wordsByLength, minLength, maxLength);
+  }*/
+
+  t = makeText(dictionary, ["j", "n"], minLength, maxLength);
   if (t) {
     candidates.push(t);
   }
 
+  console.log(candidates);
   return candidates[Math.floor(Math.random() * candidates.length)];
 };
 
