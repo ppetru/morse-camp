@@ -10,6 +10,7 @@ import NavItemLink from "./NavItemLink";
 import ReadTrainer from "./ReadTrainer/ReadTrainer";
 import Settings from "./Settings";
 import About from "./About";
+import WhatsNew from "./WhatsNew";
 import { pageview } from "./analytics";
 
 const navItems = [
@@ -23,6 +24,11 @@ const navItems = [
     label: "Settings",
     to: "/settings",
     icon: "settings"
+  },
+  {
+    label: "What's new",
+    to: "/whatsnew",
+    icon: "new_releases"
   },
   {
     label: "About",
@@ -81,6 +87,11 @@ const App = inject("store")(
                             path="/settings"
                             location={location}
                             component={Settings}
+                          />
+                          <Route
+                            path="/whatsnew"
+                            location={location}
+                            component={WhatsNew}
                           />
                           <Route location={location} component={ReadTrainer} />
                         </Switch>
