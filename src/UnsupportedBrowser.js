@@ -2,9 +2,10 @@ import React from "react";
 
 const UnsupportedBrowser = ({ missingFeatures }) => (
   <div>
-    <h1>Unsupported browser</h1>
+    <h1>Unsupported web browser</h1>
     <div className="md-text-container md-text-justify">
-      Morse Camp relies on the following features not supported by your browser:
+      Morse Camp relies on the following features not supported by your web
+      browser:
       <ul>{missingFeatures.map((n, i) => <li key={i}>{n}</li>)}</ul>
       Please try upgrading or using a recent version of any of the following
       instead:
@@ -15,7 +16,7 @@ const UnsupportedBrowser = ({ missingFeatures }) => (
         <li>Apple Safari</li>
         <li>Opera</li>
       </ul>
-      If your browser supports the features above, we apologize for the error.
+      If your web browser supports the features above, we apologize for the error.
       Please <a href="https://blog.morse.camp/contact">contact us</a> to let us
       know and we'll try to fix it. Thank you.
     </div>
