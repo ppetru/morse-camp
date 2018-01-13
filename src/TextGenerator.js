@@ -30,22 +30,35 @@ const computeWordWeights = (words, state, timeNow) => {
   return result;
 };
 
-const generateText = (dictionary, minLength, maxLength) => {
+const pickWord = (wordsByLength, minLength, maxLength) => {
   let words = [];
   let weights = [];
 
-  dictionary.forEach((freq, word) => {
-    if (word.length >= minLength && word.length <= maxLength) {
-      words.push(word);
-      weights.push(freq);
+  for (let i = minLength; i <= maxLength; i++) {
+    if (wordsByLength.has(i)) {
+      words = words.concat(Array.from(wordsByLength.get(i).keys()));
+      weights = weights.concat(Array.from(wordsByLength.get(i).values()));
     }
-  });
+  }
 
   if (words.length > 0) {
     return weighted.select(words, weights);
   } else {
     return null;
   }
+};
+
+const generateText = (dictionary, minLength, maxLength) => {
+  const wordsByLength = new Map();
+
+  dictionary.forEach((freq, word) => {
+    if (!wordsByLength.has(word.length)) {
+      wordsByLength.set(word.length, new Map());
+    }
+    wordsByLength.get(word.length).set(word, freq);
+  });
+
+  return pickWord(wordsByLength, minLength, maxLength);
 };
 
 export { computeWordWeights, generateText, REPEAT_DELAY_MS };
