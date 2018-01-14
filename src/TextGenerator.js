@@ -1,6 +1,4 @@
 import "seedrandom";
-import { minWordLength, maxWordLength, partOfSpeech } from "./Words";
-
 const weighted = require("weighted");
 
 Math.seedrandom();
@@ -32,19 +30,16 @@ const computeWordWeights = (words, state, timeNow) => {
   return result;
 };
 
-const pickWord = (dictionary, minLength, maxLength, pos = null) => {
+const pickWord = (wordsByLength, minLength, maxLength) => {
   let words = [];
   let weights = [];
 
-  dictionary.forEach((freq, word) => {
-    if (word.length >= minLength && word.length <= maxLength) {
-      if (pos && !partOfSpeech.get(pos).has(word)) {
-        return;
-      }
-      words.push(word);
-      weights.push(freq);
+  for (let i = minLength; i <= maxLength; i++) {
+    if (wordsByLength.has(i)) {
+      words = words.concat(Array.from(wordsByLength.get(i).keys()));
+      weights = weights.concat(Array.from(wordsByLength.get(i).values()));
     }
-  });
+  }
 
   if (words.length > 0) {
     return weighted.select(words, weights);
@@ -53,83 +48,52 @@ const pickWord = (dictionary, minLength, maxLength, pos = null) => {
   }
 };
 
-const makeText = (dictionary, inputPattern, minLength, maxLength) => {
-  if (
-    inputPattern.length < 2 ||
-    maxLength < inputPattern.length - 1 + minWordLength * inputPattern.length ||
-    minLength > inputPattern.length - 1 + maxWordLength * inputPattern.length
-  ) {
+const makeText = (wordsByLength, minLength, maxLength) => {
+  if (maxLength < 5 /* 2 2-char words and 1 space */) {
     return null;
   }
+  /* pick first word and make sure there's room for at least one more */
+  var text = pickWord(
+    wordsByLength,
+    2,
+    maxLength - /* space */ 1 - /* min word length */ 2
+  );
+  var remainingLength = maxLength - text.length;
 
-  var pattern = Array.from(inputPattern);
-  var words = [];
-  var remainingLength = maxLength;
-
-  while (pattern.length) {
-    let pos = pattern.shift();
-    let word = pickWord(
-      dictionary,
-      minWordLength,
-      remainingLength -
-        (pattern.length ? pattern.length - 1 : 0) -
-        pattern.length * minWordLength,
-      pos
-    );
-    if (!word) {
-      return null;
-    }
-    words.push(word);
+  while (remainingLength >= 3) {
+    let word = pickWord(wordsByLength, 2, remainingLength);
+    text = text + " " + word;
     remainingLength -= word.length + 1;
   }
 
-  const text = words.join(" ");
-  if (text.length >= minLength && text.length <= maxLength) {
+  if (text.length >= minLength) {
     return text;
   } else {
     return null;
   }
 };
 
-// Verb, Noun, adJective, adveRb, Article, Conjunction, Demonstrative,
-// preposItion, nuMber, Pronoun, interjection (U)
-const PATTERNS = [
-  ["j", "n"], // good food
-  ["v", "n"], // eat food
-  ["a", "n"], // the food
-  ["d", "n"], // this food
-  ["i", "n"], // from food
-  ["c", "j"], // and good
-  ["v", "j"], // eat good
-  ["v", "i"], // eat from
-  ["p", "v"], // you eat
-  ["u", "p"], // hey you
-  ["r", "j"], // very good
-  ["a", "j", "n"], // the good food
-  ["r", "j", "n"], // very good food
-  ["c", "v", "n"], // and eat food
-  ["p", "v", "n"], // you eat food
-  ["j", "n", "i", "j", "n"], // good food from better drink
-  ["p", "v", "j", "n", "c", "v", "j", "n"] // you eat good food and drink sweet juice
-];
-
 const generateText = (dictionary, minLength, maxLength) => {
-  var candidates = [];
+  const wordsByLength = new Map();
 
+  dictionary.forEach((freq, word) => {
+    if (!wordsByLength.has(word.length)) {
+      wordsByLength.set(word.length, new Map());
+    }
+    wordsByLength.get(word.length).set(word, freq);
+  });
+
+  var candidates = [];
   var t;
-  t = pickWord(dictionary, minLength, maxLength);
+  t = pickWord(wordsByLength, minLength, maxLength);
+  if (t) {
+    candidates.push(t);
+  }
+  t = makeText(wordsByLength, minLength, maxLength);
   if (t) {
     candidates.push(t);
   }
 
-  for (let pattern of PATTERNS) {
-    t = makeText(dictionary, pattern, minLength, maxLength);
-    if (t) {
-      candidates.push(t);
-    }
-  }
-
-  console.log(candidates);
   return candidates[Math.floor(Math.random() * candidates.length)];
 };
 
