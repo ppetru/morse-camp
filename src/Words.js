@@ -5066,20 +5066,23 @@ const WORDS = [
 // Verb, Noun, adJective, adveRb, Article, Conjunction, Demonstrative,
 // preposItion, nuMber, Pronoun, interjection (U)
 
-function makeWordMaps(words) {
-  var frequency = new Map(); // word: frequency
+var wordFrequency = new Map(); // word: frequency
+var minWordLength = WORDS[0][0].length;
+var maxWordLength = WORDS[0][0].length;
 
-  words.forEach(([word, pos, freq]) => {
-    if (frequency.has(word)) {
-      frequency.set(word, freq + frequency.get(word));
-    } else {
-      frequency.set(word, freq);
-    }
-  });
+WORDS.forEach(([word, pos, freq]) => {
+  if (wordFrequency.has(word)) {
+    wordFrequency.set(word, freq + wordFrequency.get(word));
+  } else {
+    wordFrequency.set(word, freq);
+  }
 
-  return frequency;
-}
+  if (word.length < minWordLength) {
+    minWordLength = word.length;
+  }
+  if (word.length > maxWordLength) {
+    maxWordLength = word.length;
+  }
+});
 
-const wordFrequency = makeWordMaps(WORDS);
-
-export { wordFrequency };
+export { minWordLength, maxWordLength, wordFrequency };

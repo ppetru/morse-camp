@@ -1,4 +1,6 @@
 import "seedrandom";
+import { minWordLength } from "./Words";
+
 const weighted = require("weighted");
 
 Math.seedrandom();
@@ -30,16 +32,20 @@ const computeWordWeights = (words, state, timeNow) => {
   return result;
 };
 
-const pickWord = (wordsByLength, minLength, maxLength) => {
+const pickWord = (dictionary, minLength, maxLength, blacklist = []) => {
   let words = [];
   let weights = [];
 
-  for (let i = minLength; i <= maxLength; i++) {
-    if (wordsByLength.has(i)) {
-      words = words.concat(Array.from(wordsByLength.get(i).keys()));
-      weights = weights.concat(Array.from(wordsByLength.get(i).values()));
+  dictionary.forEach((freq, word) => {
+    if (
+      word.length >= minLength &&
+      word.length <= maxLength &&
+      !blacklist.includes(word)
+    ) {
+      words.push(word);
+      weights.push(freq * word.length); // avoid short, frequent words dominating everything
     }
-  }
+  });
 
   if (words.length > 0) {
     return weighted.select(words, weights);
@@ -48,25 +54,33 @@ const pickWord = (wordsByLength, minLength, maxLength) => {
   }
 };
 
-const makeText = (wordsByLength, minLength, maxLength) => {
-  if (maxLength < 5 /* 2 2-char words and 1 space */) {
+const makeText = (dictionary, minLength, maxLength) => {
+  if (maxLength < 2 * minWordLength + 1) {
     return null;
   }
-  /* pick first word and make sure there's room for at least one more */
-  var text = pickWord(
-    wordsByLength,
-    2,
-    maxLength - /* space */ 1 - /* min word length */ 2
-  );
-  var remainingLength = maxLength - text.length;
 
-  while (remainingLength >= 3) {
-    let word = pickWord(wordsByLength, 2, remainingLength);
-    text = text + " " + word;
+  let word = pickWord(
+    dictionary,
+    minWordLength,
+    maxLength - (1 + minWordLength)
+  );
+  if (!word) {
+    return null;
+  }
+  let words = [word];
+  var remainingLength = maxLength - word.length;
+
+  while (remainingLength > minWordLength) {
+    word = pickWord(dictionary, minWordLength, remainingLength - 1, words);
+    if (!word) {
+      break;
+    }
+    words.push(word);
     remainingLength -= word.length + 1;
   }
 
-  if (text.length >= minLength) {
+  const text = words.join(" ");
+  if (text.length >= minLength && text.length <= maxLength) {
     return text;
   } else {
     return null;
@@ -74,22 +88,13 @@ const makeText = (wordsByLength, minLength, maxLength) => {
 };
 
 const generateText = (dictionary, minLength, maxLength) => {
-  const wordsByLength = new Map();
-
-  dictionary.forEach((freq, word) => {
-    if (!wordsByLength.has(word.length)) {
-      wordsByLength.set(word.length, new Map());
-    }
-    wordsByLength.get(word.length).set(word, freq);
-  });
-
   var candidates = [];
   var t;
-  t = pickWord(wordsByLength, minLength, maxLength);
+  t = pickWord(dictionary, minLength, maxLength);
   if (t) {
     candidates.push(t);
   }
-  t = makeText(wordsByLength, minLength, maxLength);
+  t = makeText(dictionary, minLength, maxLength);
   if (t) {
     candidates.push(t);
   }
