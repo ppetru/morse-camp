@@ -8,7 +8,7 @@ const WhatsNew = () => (
     </Helmet>
     <h1>What's new</h1>
     <div className="md-text-container">
-      <h2>January XX, 2018</h2>
+      <h2>January 18, 2018</h2>
       <ul>
         <li>
           Good results on text of a given length now also count towards stats
@@ -16,7 +16,7 @@ const WhatsNew = () => (
         </li>
         <li>Less aggressively repeat difficult words</li>
         <li>Generate text from random multi-word combinations</li>
-        <li>Implemented what's new page</li>
+        <li>Implemented this what's new page</li>
       </ul>
       <h2>January 7, 2018</h2>
       <ul>
