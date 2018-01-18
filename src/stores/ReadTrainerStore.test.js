@@ -122,6 +122,17 @@ describe("ReadTrainerStore", () => {
         expect(store().lengths.get(3).score).toBeGreaterThan(s3);
       });
 
+      it("credits good results to lower lengths too", () => {
+        store().textFeedback("12", true, 1, 0);
+        store().textFeedback("123", true, 3, 0);
+        store().textFeedback("12345", true, 3, 0);
+        store().textFeedback("1234", true, 2, 0);
+        expect(store().lengths.get(2).score).toEqual(1); // shouldn't be changed by less good result on 4
+        expect(store().lengths.get(3).score).toBeGreaterThan(1 / 3); // should get boost from good above
+        expect(store().lengths.get(4).score).toEqual(1 / 2);
+        expect(store().lengths.get(5).score).toEqual(1 / 3); // shouldn't be boosted by good result below
+      });
+
       it("decreases score for failure", () => {
         store().textFeedback("12", true, 1, 0);
         store().textFeedback("123", true, 1, 0);
