@@ -3,7 +3,7 @@ import { action, autorun, extendObservable, observable } from "mobx";
 import SettingsSaver from "./SettingsSaver";
 
 // https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
-const ewma = (avg, newVal, alpha = 0.25) => {
+const ewma = (avg, newVal, alpha = 0.3) => {
   return alpha * newVal + (1 - alpha) * avg;
 };
 

@@ -6,7 +6,7 @@ const weighted = require("weighted");
 Math.seedrandom();
 
 const REPEAT_DELAY_MS = 60 * 1000;
-const ELAPSED_WEIGHT = 1 / 1000;
+const ELAPSED_WEIGHT = 1 / 10000;
 const SCORE_WEIGHT = 1;
 
 const computeWordWeights = (words, state, timeNow) => {
@@ -18,7 +18,11 @@ const computeWordWeights = (words, state, timeNow) => {
       const elapsed = timeNow - time;
       let weight = freq;
 
-      weight *= Math.max(0, 1 + (elapsed - REPEAT_DELAY_MS) * ELAPSED_WEIGHT);
+      if (elapsed < REPEAT_DELAY_MS) {
+        weight = 0;
+      } else {
+        weight *= 1 + (elapsed - REPEAT_DELAY_MS) * ELAPSED_WEIGHT;
+      }
       weight *= 1 + (1 - score) * SCORE_WEIGHT;
 
       if (isNaN(weight) || weight < 0) {

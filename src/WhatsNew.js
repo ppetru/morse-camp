@@ -10,6 +10,7 @@ const WhatsNew = () => (
     <div className="md-text-container">
       <h2>January XX, 2018</h2>
       <ul>
+        <li>Less aggressively repeat difficult words</li>
         <li>Generate text from random multi-word combinations</li>
         <li>Implemented what's new page</li>
       </ul>
