@@ -43,7 +43,7 @@ const pickWord = (dictionary, minLength, maxLength, blacklist = []) => {
       !blacklist.includes(word)
     ) {
       words.push(word);
-      weights.push(freq * word.length); // avoid short, frequent words dominating everything
+      weights.push(freq * Math.pow(2, word.length)); // avoid short, frequent words dominating everything
     }
   });
 
