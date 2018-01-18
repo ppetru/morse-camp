@@ -84,7 +84,7 @@ class ReadTrainerStore extends SettingsSaver {
     this.words.set(w, data);
   });
 
-  wordFeedback = action((word, success, count, time) => {
+  wordFeedback = (word, success, count, time) => {
     let avgScore;
     let score = success / count;
 
@@ -98,13 +98,13 @@ class ReadTrainerStore extends SettingsSaver {
       score: avgScore,
       time: time
     });
-  });
+  };
 
   setLengthData = action((len, data) => {
     this.lengths.set(len, data);
   });
 
-  lengthFeedback = action((len, success, tryCount) => {
+  lengthFeedback = (len, success, tryCount) => {
     let avgScore;
     let newCount = 1;
     let newScore = success / tryCount;
@@ -132,14 +132,14 @@ class ReadTrainerStore extends SettingsSaver {
         }
       }
     }
-  });
+  };
 
-  textFeedback = action((text, success, count, time) => {
+  textFeedback = (text, success, count, time) => {
     text.split(" ").forEach(w => this.wordFeedback(w, success, count, time));
     this.lengthFeedback(text.length, success, count);
-  });
+  };
 
-  resetLengthCount = action(len => {
+  resetLengthCount = len => {
     if (this.lengths.has(len)) {
       const { score } = this.lengths.get(len);
       this.setLengthData(len, {
@@ -147,9 +147,9 @@ class ReadTrainerStore extends SettingsSaver {
         count: 0
       });
     }
-  });
+  };
 
-  adjustLengths = action(() => {
+  adjustLengths = () => {
     if (this.lengths.has(this.minLength)) {
       const { score, count } = this.lengths.get(this.minLength);
       if (count > 4) {
@@ -177,7 +177,7 @@ class ReadTrainerStore extends SettingsSaver {
         }
       }
     }
-  });
+  };
 }
 
 export default ReadTrainerStore;
