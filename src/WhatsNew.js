@@ -8,7 +8,7 @@ const WhatsNew = () => (
     </Helmet>
     <h1>What's new</h1>
     <div className="md-text-container">
-      <h2>XXX, 2018</h2>
+      <h2>January 20, 2018</h2>
       <ul>
         <li>Play numbers in common formats (years, ages, RST reports)</li>
         <li>
