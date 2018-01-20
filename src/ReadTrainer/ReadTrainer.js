@@ -66,9 +66,10 @@ const TextSettings = inject("store")(
         <Button
           primary
           icon
-          onClick={() =>
-            store.readTrainer.setMinLength(store.readTrainer.minLength - 1)
-          }
+          onClick={() => {
+            store.readTrainer.setMinLength(store.readTrainer.minLength - 1);
+            store.readTrainer.resetLengthCount(store.readTrainer.minLength);
+          }}
         >
           arrow_downward
         </Button>
@@ -76,9 +77,10 @@ const TextSettings = inject("store")(
         <Button
           primary
           icon
-          onClick={() =>
-            store.readTrainer.setMinLength(store.readTrainer.minLength + 1)
-          }
+          onClick={() => {
+            store.readTrainer.setMinLength(store.readTrainer.minLength + 1);
+            store.readTrainer.resetLengthCount(store.readTrainer.minLength);
+          }}
         >
           arrow_upward
         </Button>
@@ -88,9 +90,10 @@ const TextSettings = inject("store")(
         <Button
           primary
           icon
-          onClick={() =>
-            store.readTrainer.setMaxLength(store.readTrainer.maxLength - 1)
-          }
+          onClick={() => {
+            store.readTrainer.setMaxLength(store.readTrainer.maxLength - 1);
+            store.readTrainer.resetLengthCount(store.readTrainer.maxLength);
+          }}
         >
           arrow_downward
         </Button>
@@ -98,9 +101,10 @@ const TextSettings = inject("store")(
         <Button
           primary
           icon
-          onClick={() =>
-            store.readTrainer.setMaxLength(store.readTrainer.maxLength + 1)
-          }
+          onClick={() => {
+            store.readTrainer.setMaxLength(store.readTrainer.maxLength + 1);
+            store.readTrainer.resetLengthCount(store.readTrainer.maxLength);
+          }}
         >
           arrow_upward
         </Button>

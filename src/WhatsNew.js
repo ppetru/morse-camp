@@ -11,6 +11,10 @@ const WhatsNew = () => (
       <h2>XXX, 2018</h2>
       <ul>
         <li>Play numbers in common formats (years, ages, RST reports)</li>
+        <li>
+          Bug fix: when manually changing min/max length, no longer
+          automatically change it again right away
+        </li>
       </ul>
       <h2>January 18, 2018</h2>
       <ul>
