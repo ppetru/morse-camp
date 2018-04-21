@@ -23,21 +23,22 @@ const About = () => (
         </a>.
       </p>
       <p>
-        Morse Camp is under active development with a{" "}
+        Morse Camp is{" "}
         <a
+          href="https://www.fsf.org/about/what-is-free-software"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://forum.morse.camp/t/morse-camp-roadmap/16"
         >
-          public roadmap
-        </a>. New releases are also announced at{" "}
+          Free Software
+        </a>. You can check out the{" "}
         <a
+          href="https://github.com/ppetru/morse-camp"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://blog.morse.camp"
         >
-          blog.morse.camp
-        </a>.
+          source code
+        </a>{" "}
+        and make changes yourself.
       </p>
       <h2>Mobile usage</h2>
       <p>
@@ -49,6 +50,13 @@ const About = () => (
       <h2>Feedback</h2>
       <p>
         Your feedback and suggestions would be much appreciated at{" "}
+        <a
+          href="https://github.com/ppetru/morse-camp/issues"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Github
+        </a>,{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
