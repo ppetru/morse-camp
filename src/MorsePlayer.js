@@ -92,6 +92,11 @@ class MorsePlayer {
     if (this.playing) {
       return;
     }
+    // in case this is the first user gesture and the context is suspended
+    // (https://goo.gl/7K7WLu)
+    if (this.audioContext.state !== "running") {
+      this.audioContext.resume();
+    }
     s = s.toUpperCase();
     this.store.startedPlaying();
     this.makeOscillator();
