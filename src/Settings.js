@@ -119,6 +119,16 @@ const Settings = inject("store", "morsePlayer")(
                         <h2>Morse tone</h2>
                         <div>
                             <Slider
+                                id="volume"
+                                label="Voume"
+                                editable
+                                max={100}
+                                min={0}
+                                value={this.props.store.morse.volume}
+                                onChange={value => this.props.store.morse.setVolume(value)}
+                                leftIcon={<FontIcon>build</FontIcon>}
+                            />
+                            <Slider
                                 id="speed"
                                 label="Speed (WPM)"
                                 editable
