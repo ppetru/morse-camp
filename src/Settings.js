@@ -91,11 +91,13 @@ const Settings = inject("store", "morsePlayer")(
         playLoop = () => {
             if(!this.props.store.morse.playing) {
                 if(this.playCount === 0) {
+                    this.playCount++;
                     this.playHello();
-                } else if(this.playCount >= 2) {
+                } else if(this.playCount > 1) {
                     clearInterval(this.playInterval);
                     this.playInterval = undefined;
                 } else {
+                    this.playCount++;
                     setTimeout(() => {
                         this.playHello();
                     }, this.props.store.morse.delay);
@@ -104,7 +106,6 @@ const Settings = inject("store", "morsePlayer")(
         };
 
         playHello = () => {
-            this.playCount++;
             this.props.morsePlayer.playString("hello");
         };
 
