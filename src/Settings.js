@@ -198,7 +198,6 @@ const Settings = inject("store", "morsePlayer")(
             );
         }
     })
-      //({ store, morsePlayer, playCount }) => ())
 );
 Settings.propTypes = {
     playCount: PropTypes.number

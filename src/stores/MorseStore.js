@@ -13,8 +13,8 @@ class MorseStore extends SettingsSaver {
       playing: false,
       speed: 30,
       frequency: 500,
-      delay: 2000,
-      maxRepeats: 5,
+      delay: 2500,
+      maxRepeats: 15,
 
       startedPlaying: action(() => {
         this.playing = true;
