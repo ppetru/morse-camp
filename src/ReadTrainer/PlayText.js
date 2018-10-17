@@ -185,4 +185,9 @@ const PlayText = inject("store", "morsePlayer")(
   )
 );
 
+PlayText.propTypes = {
+  onResult: PropTypes.func.isRequired,
+  text: PropTypes.string.isRequired
+};
+
 export default PlayText;
