@@ -56,16 +56,15 @@ class MorseStore extends SettingsSaver {
     frequency => (this.frequency = parseInt(frequency, 10))
   );
 
-  setDelay = action(
-    delay => (this.delay = parseInt(delay, 10))
-  );
+  setDelay = action(delay => (this.delay = parseInt(delay, 10)));
 
   setMaxRepeats = action(
     maxRepeats => (this.maxRepeats = parseInt(maxRepeats, 10))
   );
 
   setActiveDictionarySize = action(
-    activeDictionarySize => (this.activeDictionarySize = parseInt(activeDictionarySize, 10))
+    activeDictionarySize =>
+      (this.activeDictionarySize = parseInt(activeDictionarySize, 10))
   );
 }
 

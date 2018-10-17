@@ -138,7 +138,7 @@ const Settings = inject("store", "morsePlayer")(
       </Helmet>
       <h1>Settings</h1>
       <div>
-        <br/>
+        <br />
         <h2>Global</h2>
         <div>
           <Slider
@@ -173,7 +173,8 @@ const Settings = inject("store", "morsePlayer")(
             leftIcon={<FontIcon>audiotrack</FontIcon>}
           />
         </div>
-        <br/><br/>
+        <br />
+        <br />
         <div>
           <h2>Read Trainer</h2>
           <Slider
@@ -188,31 +189,32 @@ const Settings = inject("store", "morsePlayer")(
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <Slider
-              id="max repeats"
-              label="Max Repeats"
-              editable
-              max={20}
-              min={1}
-              step={1}
-              value={store.morse.maxRepeats}
-              onChange={value => store.morse.setMaxRepeats(value)}
-              leftIcon={<FontIcon>build</FontIcon>}
+            id="max repeats"
+            label="Max Repeats"
+            editable
+            max={20}
+            min={1}
+            step={1}
+            value={store.morse.maxRepeats}
+            onChange={value => store.morse.setMaxRepeats(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
           />
           <Slider
-              id="activeDictionarySize"
-              label="Words in active dictionary"
-              editable
-              max={wordFrequency.size}
-              min={100}
-              step={1}
-              value={store.morse.activeDictionarySize}
-              onChange={value => store.morse.setActiveDictionarySize(value)}
-              leftIcon={<FontIcon>build</FontIcon>}
+            id="activeDictionarySize"
+            label="Words in active dictionary"
+            editable
+            max={wordFrequency.size}
+            min={100}
+            step={1}
+            value={store.morse.activeDictionarySize}
+            onChange={value => store.morse.setActiveDictionarySize(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
           />
-          <br/>
+          <br />
           <TestButton />
         </div>
-        <br/><br/>
+        <br />
+        <br />
         <h2>Internals</h2>
         <div>
           <ClearStorage />

@@ -1,5 +1,5 @@
 import "seedrandom";
-import {minWordLength} from "./Words";
+import { minWordLength } from "./Words";
 
 const weighted = require("weighted");
 
@@ -12,21 +12,23 @@ const SCORE_WEIGHT = 1;
 const trimDictionary = (dictionary, maxWords) => {
   let freqs = [];
   dictionary.forEach((freq, word) => {
-      freqs.push(freq);
-  })
-  freqs = freqs.sort(function(a, b){return b-a}); //highest to lowest
+    freqs.push(freq);
+  });
+  freqs = freqs.sort(function(a, b) {
+    return b - a;
+  }); //highest to lowest
 
-  let minFrequency = freqs[maxWords-1];
+  let minFrequency = freqs[maxWords - 1];
 
   let result = new Map();
   dictionary.forEach((freq, word) => {
-    if(freq >= minFrequency && result.size < maxWords) {
+    if (freq >= minFrequency && result.size < maxWords) {
       result.set(word, freq);
     }
   });
 
   return result;
-}
+};
 
 const computeWordWeights = (words, state, timeNow) => {
   let result = new Map(words);

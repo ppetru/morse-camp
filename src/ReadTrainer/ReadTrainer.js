@@ -5,7 +5,11 @@ import { Button, FontIcon } from "react-md";
 import { Helmet } from "react-helmet";
 
 import { wordFrequency } from "../Words";
-import { trimDictionary, computeWordWeights, generateText } from "../TextGenerator";
+import {
+  trimDictionary,
+  computeWordWeights,
+  generateText
+} from "../TextGenerator";
 import { makeLogger } from "../analytics";
 
 import HelpScreen from "./HelpScreen";
@@ -22,7 +26,10 @@ const PlayLoop = inject("store")(
 
     pickText = () => {
       const store = this.props.store.readTrainer;
-      const trimmedDictionary = trimDictionary(wordFrequency, this.props.store.morse.activeDictionarySize)
+      const trimmedDictionary = trimDictionary(
+        wordFrequency,
+        this.props.store.morse.activeDictionarySize
+      );
 
       const candidates = computeWordWeights(
         trimmedDictionary,
