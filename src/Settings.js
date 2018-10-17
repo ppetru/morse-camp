@@ -85,122 +85,125 @@ const ClearStorage = inject("store")(
 const Settings = inject("store", "morsePlayer")(
   observer(
     class Settings extends Component {
-        playCount = 0;
-        playInterval;
+      playCount = 0;
+      playInterval;
 
-        playLoop = () => {
-            if(!this.props.store.morse.playing) {
-                if(this.playCount === 0) {
-                    this.playCount++;
-                    this.playHello();
-                } else if(this.playCount > 1) {
-                    clearInterval(this.playInterval);
-                    this.playInterval = undefined;
-                } else {
-                    this.playCount++;
-                    setTimeout(() => {
-                        this.playHello();
-                    }, this.props.store.morse.delay);
-                }
-            }
-        };
-
-        playHello = () => {
-            this.props.morsePlayer.playString("hello");
-        };
-
-        render() {
-            return (
-                <div>
-                    <Helmet>
-                        <title>Settings</title>
-                    </Helmet>
-                    <h1>Settings</h1>
-                    <div>
-                        <h2>Morse tone</h2>
-                        <div>
-                            <Slider
-                                id="volume"
-                                label="Voume"
-                                editable
-                                max={100}
-                                min={0}
-                                value={this.props.store.morse.volume}
-                                onChange={value => this.props.store.morse.setVolume(value)}
-                                leftIcon={<FontIcon>build</FontIcon>}
-                            />
-                            <Slider
-                                id="speed"
-                                label="Speed (WPM)"
-                                editable
-                                max={80}
-                                min={10}
-                                value={this.props.store.morse.speed}
-                                onChange={value => this.props.store.morse.setSpeed(value)}
-                                leftIcon={<FontIcon>fast_forward</FontIcon>}
-                            />
-                            <Slider
-                                id="frequency"
-                                label="Frequency (Hz)"
-                                editable
-                                max={1000}
-                                min={200}
-                                step={10}
-                                value={this.props.store.morse.frequency}
-                                onChange={value => this.props.store.morse.setFrequency(value)}
-                                leftIcon={<FontIcon>audiotrack</FontIcon>}
-                            />
-                            <Slider
-                                id="delay"
-                                label="Delay Before Repeat (ms)"
-                                editable
-                                max={5000}
-                                min={10}
-                                step={10}
-                                value={this.props.store.morse.delay}
-                                onChange={value => this.props.store.morse.setDelay(value)}
-                                leftIcon={<FontIcon>build</FontIcon>}
-                            />
-                            <Slider
-                                id="max repeats"
-                                label="Max Repeats"
-                                editable
-                                max={20}
-                                min={1}
-                                step={1}
-                                value={this.props.store.morse.maxRepeats}
-                                onChange={value => this.props.store.morse.setMaxRepeats(value)}
-                                leftIcon={<FontIcon>build</FontIcon>}
-                            />
-                            <Button
-                                raised
-                                primary
-                                className="md-block-centered"
-                                iconEl={<FontIcon>play_arrow</FontIcon>}
-                                onClick={() => {
-                                    event("test");
-                                    if(this.playInterval === undefined) {
-                                      this.playCount = 0;
-                                      this.playInterval = setInterval(this.playLoop, 50);
-                                    }
-                                }}
-                            >
-                                Test
-                            </Button>
-                        </div>
-
-                        <h2>Internals</h2>
-                        <div>
-                            <ClearStorage />
-                        </div>
-                    </div>
-                </div>
-            );
+      playLoop = () => {
+        if (!this.props.store.morse.playing) {
+          if (this.playCount === 0) {
+            this.playCount++;
+            this.playHello();
+          } else if (this.playCount > 1) {
+            clearInterval(this.playInterval);
+            this.playInterval = undefined;
+          } else {
+            this.playCount++;
+            setTimeout(() => {
+              this.playHello();
+            }, this.props.store.morse.delay);
+          }
         }
-    })
+      };
+
+      playHello = () => {
+        this.props.morsePlayer.playString("hello");
+      };
+
+      render() {
+        return (
+          <div>
+            <Helmet>
+              <title>Settings</title>
+            </Helmet>
+            <h1>Settings</h1>
+            <div>
+              <h2>Morse tone</h2>
+              <div>
+                <Slider
+                  id="volume"
+                  label="Voume"
+                  editable
+                  max={100}
+                  min={0}
+                  value={this.props.store.morse.volume}
+                  onChange={value => this.props.store.morse.setVolume(value)}
+                  leftIcon={<FontIcon>build</FontIcon>}
+                />
+                <Slider
+                  id="speed"
+                  label="Speed (WPM)"
+                  editable
+                  max={80}
+                  min={10}
+                  value={this.props.store.morse.speed}
+                  onChange={value => this.props.store.morse.setSpeed(value)}
+                  leftIcon={<FontIcon>fast_forward</FontIcon>}
+                />
+                <Slider
+                  id="frequency"
+                  label="Frequency (Hz)"
+                  editable
+                  max={1000}
+                  min={200}
+                  step={10}
+                  value={this.props.store.morse.frequency}
+                  onChange={value => this.props.store.morse.setFrequency(value)}
+                  leftIcon={<FontIcon>audiotrack</FontIcon>}
+                />
+                <Slider
+                  id="delay"
+                  label="Delay Before Repeat (ms)"
+                  editable
+                  max={5000}
+                  min={10}
+                  step={10}
+                  value={this.props.store.morse.delay}
+                  onChange={value => this.props.store.morse.setDelay(value)}
+                  leftIcon={<FontIcon>build</FontIcon>}
+                />
+                <Slider
+                  id="max repeats"
+                  label="Max Repeats"
+                  editable
+                  max={20}
+                  min={1}
+                  step={1}
+                  value={this.props.store.morse.maxRepeats}
+                  onChange={value =>
+                    this.props.store.morse.setMaxRepeats(value)
+                  }
+                  leftIcon={<FontIcon>build</FontIcon>}
+                />
+                <Button
+                  raised
+                  primary
+                  className="md-block-centered"
+                  iconEl={<FontIcon>play_arrow</FontIcon>}
+                  onClick={() => {
+                    event("test");
+                    if (this.playInterval === undefined) {
+                      this.playCount = 0;
+                      this.playInterval = setInterval(this.playLoop, 50);
+                    }
+                  }}
+                >
+                  Test
+                </Button>
+              </div>
+
+              <h2>Internals</h2>
+              <div>
+                <ClearStorage />
+              </div>
+            </div>
+          </div>
+        );
+      }
+    }
+  )
 );
 Settings.propTypes = {
-    playCount: PropTypes.number
-}
+  playCount: PropTypes.number
+};
 
 export default Settings;
