@@ -1,5 +1,5 @@
 import { action, extendObservable } from "mobx";
-
+import { wordFrequency } from "../Words";
 import SettingsSaver from "./SettingsSaver";
 
 class MorseStore extends SettingsSaver {
@@ -15,6 +15,7 @@ class MorseStore extends SettingsSaver {
       frequency: 500,
       delay: 2500,
       maxRepeats: 15,
+      activeDictionarySize: wordFrequency.size,
 
       startedPlaying: action(() => {
         this.playing = true;
@@ -29,7 +30,8 @@ class MorseStore extends SettingsSaver {
           speed: this.speed,
           frequency: this.frequency,
           delay: this.delay,
-          maxRepeats: this.maxRepeats
+          maxRepeats: this.maxRepeats,
+          activeDictionarySize: this.activeDictionarySize
         };
       }
     });
@@ -43,6 +45,7 @@ class MorseStore extends SettingsSaver {
     this.setFrequency(json.frequency);
     this.setDelay(json.delay);
     this.setMaxRepeats(json.maxRepeats);
+    this.setActiveDictionarySize(json.activeDictionarySize);
   });
 
   setVolume = action(volume => (this.volume = parseInt(volume, 10)));
@@ -59,6 +62,10 @@ class MorseStore extends SettingsSaver {
 
   setMaxRepeats = action(
     maxRepeats => (this.maxRepeats = parseInt(maxRepeats, 10))
+  );
+
+  setActiveDictionarySize = action(
+    activeDictionarySize => (this.activeDictionarySize = parseInt(activeDictionarySize, 10))
   );
 }
 

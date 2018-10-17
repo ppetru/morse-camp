@@ -2,6 +2,7 @@ import React, { PureComponent, Component } from "react";
 import { Button, DialogContainer, FontIcon, Slider } from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
+import { wordFrequency } from "./Words";
 
 import { makeLogger } from "./analytics";
 
@@ -137,7 +138,8 @@ const Settings = inject("store", "morsePlayer")(
       </Helmet>
       <h1>Settings</h1>
       <div>
-        <h2>Morse tone</h2>
+        <br/>
+        <h2>Global</h2>
         <div>
           <Slider
             id="volume"
@@ -170,6 +172,10 @@ const Settings = inject("store", "morsePlayer")(
             onChange={value => store.morse.setFrequency(value)}
             leftIcon={<FontIcon>audiotrack</FontIcon>}
           />
+        </div>
+        <br/><br/>
+        <div>
+          <h2>Read Trainer</h2>
           <Slider
             id="delay"
             label="Delay Before Repeat (ms)"
@@ -182,19 +188,31 @@ const Settings = inject("store", "morsePlayer")(
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <Slider
-            id="max repeats"
-            label="Max Repeats"
-            editable
-            max={20}
-            min={1}
-            step={1}
-            value={store.morse.maxRepeats}
-            onChange={value => store.morse.setMaxRepeats(value)}
-            leftIcon={<FontIcon>build</FontIcon>}
+              id="max repeats"
+              label="Max Repeats"
+              editable
+              max={20}
+              min={1}
+              step={1}
+              value={store.morse.maxRepeats}
+              onChange={value => store.morse.setMaxRepeats(value)}
+              leftIcon={<FontIcon>build</FontIcon>}
           />
+          <Slider
+              id="activeDictionarySize"
+              label="Words in active dictionary"
+              editable
+              max={wordFrequency.size}
+              min={100}
+              step={1}
+              value={store.morse.activeDictionarySize}
+              onChange={value => store.morse.setActiveDictionarySize(value)}
+              leftIcon={<FontIcon>build</FontIcon>}
+          />
+          <br/>
           <TestButton />
         </div>
-
+        <br/><br/>
         <h2>Internals</h2>
         <div>
           <ClearStorage />
