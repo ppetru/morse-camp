@@ -28,6 +28,7 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch-css start-js",
     "build": "yarn run build-css && react-scripts build",
+    "pretest": "yarn run build-css",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy": "react-scripts build && firebase deploy"
