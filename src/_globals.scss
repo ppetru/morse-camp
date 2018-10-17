@@ -4,6 +4,8 @@
 // Variable overrides
 
 $md-light-theme: false;
+// Disable warning, see https://react-md.mlaursen.com/sassdoc/#sliders-variable-md-slider-warn-md
+$md-slider-warn-md: false;
 
 $md-primary-color: $md-light-green-400;
 $md-secondary-color: $md-orange-a-200;

@@ -20,7 +20,8 @@ const About = () => (
         scratch, check out the excellent trainer at{" "}
         <a target="_blank" rel="noopener noreferrer" href="https://lcwo.net">
           LCWO.net
-        </a>.
+        </a>
+        .
       </p>
       <p>
         Morse Camp is{" "}
@@ -30,7 +31,8 @@ const About = () => (
           rel="noopener noreferrer"
         >
           Free Software
-        </a>. You can check out the{" "}
+        </a>
+        . You can check out the{" "}
         <a
           href="https://github.com/ppetru/morse-camp"
           target="_blank"
@@ -56,7 +58,8 @@ const About = () => (
           rel="noopener noreferrer"
         >
           Github
-        </a>,{" "}
+        </a>
+        ,{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
