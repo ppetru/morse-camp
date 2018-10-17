@@ -142,16 +142,6 @@ const Settings = inject("store", "morsePlayer")(
         <h2>Global</h2>
         <div>
           <Slider
-            id="volume"
-            label="Voume"
-            editable
-            max={100}
-            min={0}
-            value={store.morse.volume}
-            onChange={value => store.morse.setVolume(value)}
-            leftIcon={<FontIcon>build</FontIcon>}
-          />
-          <Slider
             id="speed"
             label="Speed (WPM)"
             editable
@@ -177,6 +167,19 @@ const Settings = inject("store", "morsePlayer")(
         <br />
         <div>
           <h2>Read Trainer</h2>
+          <Slider
+            id="volume"
+            label="Voume"
+            editable
+            max={100}
+            min={0}
+            value={store.morse.volume}
+            onChange={value => store.morse.setVolume(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
+        </div>
+        <h2>Read Trainer</h2>
+        <div>
           <Slider
             id="delay"
             label="Delay Before Repeat (ms)"

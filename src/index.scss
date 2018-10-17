@@ -2,15 +2,16 @@
 
 @include react-md-everything;
 
-body, html {
+body,
+html {
   background-color: $md-grey-800;
   color: #fff;
 }
 
 a {
-    color: #9ccc65;
+  color: #9ccc65;
 }
 
 .md-slider-editor {
-    width: 130%;
+  width: 130%;
 }
