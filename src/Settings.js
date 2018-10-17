@@ -2,7 +2,6 @@ import React, { PureComponent, Component } from "react";
 import { Button, DialogContainer, FontIcon, Slider } from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
-import PropTypes from "prop-types";
 
 import { makeLogger } from "./analytics";
 
@@ -202,8 +201,5 @@ const Settings = inject("store", "morsePlayer")(
     }
   )
 );
-Settings.propTypes = {
-  playCount: PropTypes.number
-};
 
 export default Settings;
