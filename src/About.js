@@ -69,6 +69,11 @@ const About = () => (
         </a>{" "}
         or by email at <a href="mailto:op@morse.camp">op@morse.camp</a>.
       </p>
+      <h2>Code contributors</h2>
+      <ul>
+        <li>Kurt Zoglmann, AD0WE</li>
+        <li>Petru Paler, HB9GKP</li>
+      </ul>
     </div>
   </div>
 );
