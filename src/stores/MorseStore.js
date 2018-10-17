@@ -9,9 +9,12 @@ class MorseStore extends SettingsSaver {
     this.transport = transport;
 
     extendObservable(this, {
+      volume: 80,
       playing: false,
       speed: 30,
       frequency: 500,
+      delay: 2500,
+      maxRepeats: 15,
 
       startedPlaying: action(() => {
         this.playing = true;
@@ -22,8 +25,11 @@ class MorseStore extends SettingsSaver {
 
       get asJson() {
         return {
+          volume: this.volume,
           speed: this.speed,
-          frequency: this.frequency
+          frequency: this.frequency,
+          delay: this.delay,
+          maxRepeats: this.maxRepeats
         };
       }
     });
@@ -32,14 +38,27 @@ class MorseStore extends SettingsSaver {
   }
 
   setFromJson = action(json => {
+    this.setVolume(json.volume);
     this.setSpeed(json.speed);
     this.setFrequency(json.frequency);
+    this.setDelay(json.delay);
+    this.setMaxRepeats(json.maxRepeats);
   });
+
+  setVolume = action(volume => (this.volume = parseInt(volume, 10)));
 
   setSpeed = action(speed => (this.speed = parseInt(speed, 10)));
 
   setFrequency = action(
     frequency => (this.frequency = parseInt(frequency, 10))
+  );
+
+  setDelay = action(
+    delay => (this.delay = parseInt(delay, 10))
+  );
+
+  setMaxRepeats = action(
+    maxRepeats => (this.maxRepeats = parseInt(maxRepeats, 10))
   );
 }
 

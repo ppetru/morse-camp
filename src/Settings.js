@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, Component } from "react";
 import { Button, DialogContainer, FontIcon, Slider } from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
@@ -81,6 +81,54 @@ const ClearStorage = inject("store")(
   }
 );
 
+const TestButton = inject("store", "morsePlayer")(
+  class TestButton extends Component {
+    playCount = 0;
+    playInterval;
+
+    playLoop = () => {
+      if (!this.props.store.morse.playing) {
+        if (this.playCount === 0) {
+          this.playCount++;
+          this.playHello();
+        } else if (this.playCount > 1) {
+          clearInterval(this.playInterval);
+          this.playInterval = undefined;
+        } else {
+          this.playCount++;
+          setTimeout(() => {
+            this.playHello();
+          }, this.props.store.morse.delay);
+        }
+      }
+    };
+
+    playHello = () => {
+      this.props.morsePlayer.playString("hello");
+    };
+
+    render() {
+      return (
+        <Button
+          raised
+          primary
+          className="md-block-centered"
+          iconEl={<FontIcon>play_arrow</FontIcon>}
+          onClick={() => {
+            event("test");
+            if (this.playInterval === undefined) {
+              this.playCount = 0;
+              this.playInterval = setInterval(this.playLoop, 50);
+            }
+          }}
+        >
+          Test
+        </Button>
+      );
+    }
+  }
+);
+
 const Settings = inject("store", "morsePlayer")(
   observer(({ store, morsePlayer }) => (
     <div>
@@ -91,6 +139,16 @@ const Settings = inject("store", "morsePlayer")(
       <div>
         <h2>Morse tone</h2>
         <div>
+          <Slider
+            id="volume"
+            label="Voume"
+            editable
+            max={100}
+            min={0}
+            value={store.morse.volume}
+            onChange={value => store.morse.setVolume(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
           <Slider
             id="speed"
             label="Speed (WPM)"
@@ -112,18 +170,29 @@ const Settings = inject("store", "morsePlayer")(
             onChange={value => store.morse.setFrequency(value)}
             leftIcon={<FontIcon>audiotrack</FontIcon>}
           />
-          <Button
-            raised
-            primary
-            className="md-block-centered"
-            iconEl={<FontIcon>play_arrow</FontIcon>}
-            onClick={() => {
-              event("test");
-              morsePlayer.playString("hello");
-            }}
-          >
-            Test
-          </Button>
+          <Slider
+            id="delay"
+            label="Delay Before Repeat (ms)"
+            editable
+            max={5000}
+            min={10}
+            step={10}
+            value={store.morse.delay}
+            onChange={value => store.morse.setDelay(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
+          <Slider
+            id="max repeats"
+            label="Max Repeats"
+            editable
+            max={20}
+            min={1}
+            step={1}
+            value={store.morse.maxRepeats}
+            onChange={value => store.morse.setMaxRepeats(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
+          <TestButton />
         </div>
 
         <h2>Internals</h2>

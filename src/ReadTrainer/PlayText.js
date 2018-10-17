@@ -106,12 +106,10 @@ const PlayText = inject("store", "morsePlayer")(
         if (!this.props.store.morse.playing) {
           if (this.playCount === 0) {
             this.playText();
-          } else if (this.playCount > 20 || this.replayCount > 20) {
+          } else if (this.playCount >= this.props.store.morse.maxRepeats || this.replayCount >= this.props.store.morse.maxRepeats) {
             this.stop();
-            event("timeout abort", null, null, true);
-            this.props.onAbort();
           } else {
-            this.timeout = setTimeout(this.playText, 2500);
+            this.timeout = setTimeout(this.playText, this.props.store.morse.delay);
           }
         }
       };
@@ -180,10 +178,5 @@ const PlayText = inject("store", "morsePlayer")(
     }
   )
 );
-PlayText.propTypes = {
-  onAbort: PropTypes.func.isRequired,
-  onResult: PropTypes.func.isRequired,
-  text: PropTypes.string.isRequired
-};
 
 export default PlayText;

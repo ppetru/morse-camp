@@ -61,7 +61,11 @@ class MorsePlayer {
   }
 
   soundOn = time => {
-    this.gain.gain.setTargetAtTime(1.0, time, this.timeConstant);
+    this.gain.gain.setTargetAtTime(
+      this.store.volume / 100.0,
+      time,
+      this.timeConstant
+    );
   };
 
   soundOff = time => {
