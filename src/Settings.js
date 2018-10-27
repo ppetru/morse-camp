@@ -1,8 +1,16 @@
 import React, { PureComponent, Component } from "react";
-import { Button, DialogContainer, FontIcon, Slider, List, Checkbox, ListItemControl } from "react-md";
+import {
+  Button,
+  DialogContainer,
+  FontIcon,
+  Slider,
+  List,
+  Checkbox,
+  ListItemControl
+} from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
-import { wordFrequency } from "./Words";
+import { dictionary } from "./Words";
 
 import { makeLogger } from "./analytics";
 
@@ -163,14 +171,14 @@ const Settings = inject("store", "morsePlayer")(
             leftIcon={<FontIcon>audiotrack</FontIcon>}
           />
           <Slider
-              id="volume"
-              label="Voume"
-              editable
-              max={100}
-              min={0}
-              value={store.morse.volume}
-              onChange={value => store.morse.setVolume(value)}
-              leftIcon={<FontIcon>build</FontIcon>}
+            id="volume"
+            label="Voume"
+            editable
+            max={100}
+            min={0}
+            value={store.morse.volume}
+            onChange={value => store.morse.setVolume(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
           />
         </div>
         <br />
@@ -203,75 +211,75 @@ const Settings = inject("store", "morsePlayer")(
             id="activeDictionarySize"
             label="Dictionary Size"
             editable
-            max={wordFrequency.size}
+            max={dictionary.wordFrequency.size}
             min={100}
             step={1}
             value={store.morse.activeDictionarySize}
             onChange={value => store.morse.setActiveDictionarySize(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
-            <h4>Dictionary Options</h4>
-            <List className={'md-cell md-cell--6 md-paper md-paper--2'}>
-                <ListItemControl
-                    primaryAction={
-                        <Checkbox
-                            id="list-control-primary-1"
-                            name="list-control-primary"
-                            label="English Words"
-                            defaultChecked
-                        />
-                    }
+          <h4>Dictionary Options</h4>
+          <List className={"md-cell md-cell--6 md-paper md-paper--2"}>
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id="list-control-primary-1"
+                  name="list-control-primary"
+                  label="English Words"
+                  defaultChecked
                 />
-                <ListItemControl
-                    primaryAction={
-                        <Checkbox
-                            id="list-control-primary-2"
-                            name="list-control-primary"
-                            label="Abbreviations"
-                            defaultChecked
-                        />
-                    }
+              }
+            />
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id="list-control-primary-2"
+                  name="list-control-primary"
+                  label="Abbreviations"
+                  defaultChecked
                 />
-                <ListItemControl
-                    primaryAction={
-                        <Checkbox
-                            id="list-control-primary-3"
-                            name="list-control-primary"
-                            label="Q Codes"
-                            defaultChecked
-                        />
-                    }
+              }
+            />
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id="list-control-primary-3"
+                  name="list-control-primary"
+                  label="Q Codes"
+                  defaultChecked
                 />
-                <ListItemControl
-                    primaryAction={
-                        <Checkbox
-                            id="list-control-primary-4"
-                            name="list-control-primary"
-                            label="Numbers"
-                            defaultChecked
-                        />
-                    }
+              }
+            />
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id="list-control-primary-4"
+                  name="list-control-primary"
+                  label="Numbers"
+                  defaultChecked
                 />
-                <ListItemControl
-                    primaryAction={
-                        <Checkbox
-                            id="list-control-primary-5"
-                            name="list-control-primary"
-                            label="Years"
-                            defaultChecked
-                        />
-                    }
+              }
+            />
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id="list-control-primary-5"
+                  name="list-control-primary"
+                  label="Years"
+                  defaultChecked
                 />
-                <ListItemControl
-                    primaryAction={
-                        <Checkbox
-                            id="list-control-primary-6"
-                            name="list-control-primary"
-                            label="US Names"
-                        />
-                    }
+              }
+            />
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id="list-control-primary-6"
+                  name="list-control-primary"
+                  label="US Names"
                 />
-            </List>
+              }
+            />
+          </List>
           <br />
           <TestButton />
         </div>

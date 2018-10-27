@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { Button, FontIcon } from "react-md";
 import { Helmet } from "react-helmet";
 
-import { wordFrequency } from "../Words";
+import { dictionary } from "../Words";
 import {
   trimDictionary,
   computeWordWeights,
@@ -26,7 +26,7 @@ const PlayLoop = inject("store")(
     pickText = () => {
       const store = this.props.store.readTrainer;
       const trimmedDictionary = trimDictionary(
-        wordFrequency,
+        dictionary.wordFrequency,
         this.props.store.morse.activeDictionarySize
       );
 

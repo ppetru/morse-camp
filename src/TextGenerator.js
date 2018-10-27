@@ -1,5 +1,4 @@
 import "seedrandom";
-import { minWordLength } from "./Words";
 
 const weighted = require("weighted");
 
@@ -8,7 +7,6 @@ Math.seedrandom();
 const REPEAT_DELAY_MS = 60 * 1000;
 const ELAPSED_WEIGHT = 1 / 10000;
 const SCORE_WEIGHT = 1;
-
 
 const trimDictionary = (dictionary, maxWords) => {
   let freqs = [];
@@ -81,14 +79,14 @@ const pickWord = (dictionary, minLength, maxLength, blacklist = []) => {
 };
 
 const makeText = (dictionary, minLength, maxLength) => {
-  if (maxLength < 2 * minWordLength + 1) {
+  if (maxLength < 2 * dictionary.minWordLength + 1) {
     return null;
   }
 
   let word = pickWord(
     dictionary,
-    minWordLength,
-    maxLength - (1 + minWordLength)
+    dictionary.minWordLength,
+    maxLength - (1 + dictionary.minWordLength)
   );
   if (!word) {
     return null;
@@ -96,8 +94,13 @@ const makeText = (dictionary, minLength, maxLength) => {
   let words = [word];
   var remainingLength = maxLength - word.length;
 
-  while (remainingLength > minWordLength) {
-    word = pickWord(dictionary, minWordLength, remainingLength - 1, words);
+  while (remainingLength > dictionary.minWordLength) {
+    word = pickWord(
+      dictionary,
+      dictionary.minWordLength,
+      remainingLength - 1,
+      words
+    );
     if (!word) {
       break;
     }

@@ -1,5 +1,5 @@
 import { action, extendObservable } from "mobx";
-import { wordFrequency } from "../Words";
+import { dictionary } from "../Words";
 import SettingsSaver from "./SettingsSaver";
 
 class MorseStore extends SettingsSaver {
@@ -15,7 +15,7 @@ class MorseStore extends SettingsSaver {
       frequency: 500,
       delay: 2500,
       maxRepeats: 15,
-      activeDictionarySize: wordFrequency.size,
+      activeDictionarySize: dictionary.wordFrequency.size,
 
       startedPlaying: action(() => {
         this.playing = true;

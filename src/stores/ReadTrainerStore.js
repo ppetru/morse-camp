@@ -1,7 +1,7 @@
 import { action, autorun, extendObservable, observable } from "mobx";
 
 import SettingsSaver from "./SettingsSaver";
-import { minWordLength } from "../Words";
+import { dictionary } from "../Words";
 
 // https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
 const ewma = (avg, newVal, alpha = 0.3) => {
@@ -121,7 +121,7 @@ class ReadTrainerStore extends SettingsSaver {
       count: newCount
     });
 
-    while (--len >= minWordLength) {
+    while (--len >= dictionary.minWordLength) {
       if (this.lengths.has(len)) {
         const { score, count } = this.lengths.get(len);
         if (newScore >= score) {

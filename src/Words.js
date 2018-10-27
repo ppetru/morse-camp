@@ -5453,12 +5453,11 @@ const WORDS = [
   ["vfb", "n", 154468, "Abbreviation"],
   ["vy", "r", 391821, "Abbreviation"],
   ["vy", "j", 31807, "Abbreviation"],
-  ["wx", "n", 22586, "Abbreviation"],
+  ["wx", "n", 22586, "Abbreviation"]
 ];
 
 // Verb, Noun, adJective, adveRb, Article, Conjunction, Demonstrative,
 // preposItion, nuMber, Pronoun, interjection (U), diGits
-
 
 class Dictionary {
   allWords = null; // Contains all the words in the dictionary
@@ -5471,75 +5470,51 @@ class Dictionary {
   maxWordLength = 0;
 
   constructor(allWords) {
-      this.allWords = allWords;
-      this.allTypes = [];
+    this.allWords = allWords;
+    this.allTypes = [];
 
-      const types = new Map();
-      allWords.forEach(([word, pos, freq, type]) => {
-        types.set(type, true);
-        if(!this.allTypes.includes(type)) {
-          this.allTypes.push(type);
-        }
-      });
+    const types = new Map();
+    allWords.forEach(([word, pos, freq, type]) => {
+      types.set(type, true);
+      if (!this.allTypes.includes(type)) {
+        this.allTypes.push(type);
+      }
+    });
 
-      this.setActiveWords(Array.from( types.keys() ));
+    this.setActiveWords(Array.from(types.keys()));
   }
 
   setActiveWords(types) {
-      this.minWordLength = Number.MAX_SAFE_INTEGER;
-      this.maxWordLength = 0;
-      this.wordFrequency = new Map();
-      this.wordType = new Map();
+    this.minWordLength = Number.MAX_SAFE_INTEGER;
+    this.maxWordLength = 0;
+    this.wordFrequency = new Map();
+    this.wordType = new Map();
 
-      this.allWords.forEach(([word, pos, freq, type]) => {
-          if(types.includes(type)) {
-              if (this.wordFrequency.has(word)) {
-                  this.wordFrequency.set(word, freq + this.wordFrequency.get(word));
-              } else {
-                  this.wordFrequency.set(word, freq);
-              }
+    this.allWords.forEach(([word, pos, freq, type]) => {
+      if (types.includes(type)) {
+        if (this.wordFrequency.has(word)) {
+          this.wordFrequency.set(word, freq + this.wordFrequency.get(word));
+        } else {
+          this.wordFrequency.set(word, freq);
+        }
 
-              this.wordType.set(word, type);
+        this.wordType.set(word, type);
 
-              if (word.length < this.minWordLength) {
-                  this.minWordLength = word.length;
-              }
-              if (word.length > this.maxWordLength) {
-                  this.maxWordLength = word.length;
-              }
-          }
-      });
-
-      if(this.minWordLength > this.maxWordLength) {
-          this.minWordLength = this.maxWordLength;
+        if (word.length < this.minWordLength) {
+          this.minWordLength = word.length;
+        }
+        if (word.length > this.maxWordLength) {
+          this.maxWordLength = word.length;
+        }
       }
-  }
+    });
 
+    if (this.minWordLength > this.maxWordLength) {
+      this.minWordLength = this.maxWordLength;
+    }
+  }
 }
 
 var dictionary = new Dictionary(WORDS);
 
-
-var wordFrequency = new Map(); // word: frequency
-var wordType = new Map();
-var minWordLength = WORDS[0][0].length;
-var maxWordLength = WORDS[0][0].length;
-
-WORDS.forEach(([word, pos, freq, type]) => {
-  if (wordFrequency.has(word)) {
-    wordFrequency.set(word, freq + wordFrequency.get(word));
-  } else {
-    wordFrequency.set(word, freq);
-  }
-
-  wordType.set(word, type);
-
-  if (word.length < minWordLength) {
-    minWordLength = word.length;
-  }
-  if (word.length > maxWordLength) {
-    maxWordLength = word.length;
-  }
-});
-
-export { minWordLength, maxWordLength, wordFrequency, wordType };
+export { dictionary };
