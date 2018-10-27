@@ -1,5 +1,5 @@
 import React, { PureComponent, Component } from "react";
-import { Button, DialogContainer, FontIcon, Slider } from "react-md";
+import { Button, DialogContainer, FontIcon, Slider, List, Checkbox, ListItemControl } from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 import { wordFrequency } from "./Words";
@@ -201,7 +201,7 @@ const Settings = inject("store", "morsePlayer")(
           />
           <Slider
             id="activeDictionarySize"
-            label="Words in active dictionary"
+            label="Dictionary Size"
             editable
             max={wordFrequency.size}
             min={100}
@@ -210,6 +210,68 @@ const Settings = inject("store", "morsePlayer")(
             onChange={value => store.morse.setActiveDictionarySize(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
+            <h4>Dictionary Options</h4>
+            <List className={'md-cell md-cell--6 md-paper md-paper--2'}>
+                <ListItemControl
+                    primaryAction={
+                        <Checkbox
+                            id="list-control-primary-1"
+                            name="list-control-primary"
+                            label="English Words"
+                            defaultChecked
+                        />
+                    }
+                />
+                <ListItemControl
+                    primaryAction={
+                        <Checkbox
+                            id="list-control-primary-2"
+                            name="list-control-primary"
+                            label="Abbreviations"
+                            defaultChecked
+                        />
+                    }
+                />
+                <ListItemControl
+                    primaryAction={
+                        <Checkbox
+                            id="list-control-primary-3"
+                            name="list-control-primary"
+                            label="Q Codes"
+                            defaultChecked
+                        />
+                    }
+                />
+                <ListItemControl
+                    primaryAction={
+                        <Checkbox
+                            id="list-control-primary-4"
+                            name="list-control-primary"
+                            label="Numbers"
+                            defaultChecked
+                        />
+                    }
+                />
+                <ListItemControl
+                    primaryAction={
+                        <Checkbox
+                            id="list-control-primary-5"
+                            name="list-control-primary"
+                            label="Years"
+                            defaultChecked
+                        />
+                    }
+                />
+                <ListItemControl
+                    primaryAction={
+                        <Checkbox
+                            id="list-control-primary-6"
+                            name="list-control-primary"
+                            label="US Names"
+                        />
+                    }
+                />
+            </List>
           <br />
           <TestButton />
         </div>

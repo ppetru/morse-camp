@@ -9,6 +9,7 @@ const REPEAT_DELAY_MS = 60 * 1000;
 const ELAPSED_WEIGHT = 1 / 10000;
 const SCORE_WEIGHT = 1;
 
+
 const trimDictionary = (dictionary, maxWords) => {
   let freqs = [];
   dictionary.forEach((freq, word) => {
