@@ -78,26 +78,42 @@ const pickWord = (dictionary, minLength, maxLength, blacklist = []) => {
   }
 };
 
-const makeText = (dictionary, minLength, maxLength) => {
-  if (maxLength < 2 * dictionary.minWordLength + 1) {
-    return null;
+const permissivelyPickWord = (dictionary, minLength, maxLength) => {
+  //allow smaller
+  var minLengthSmaller = minLength - 1;
+  var t;
+  while (minLengthSmaller >= 1) {
+    t = pickWord(dictionary, minLengthSmaller, maxLength);
+    if (t) {
+      return t;
+    }
+    minLengthSmaller--;
   }
 
-  let word = pickWord(
-    dictionary,
-    dictionary.minWordLength,
-    maxLength - (1 + dictionary.minWordLength)
-  );
+  //allow larger
+  var maxLengthLarger = maxLength + 1;
+  while (true) {
+    t = pickWord(dictionary, minLength, maxLengthLarger);
+    if (t) {
+      return t;
+    }
+    maxLengthLarger++;
+  }
+};
+
+const makeText = (dictionary, minLength, maxLength) => {
+  let word = pickWord(dictionary, minLength, maxLength - (1 + minLength));
   if (!word) {
-    return null;
+    word = permissivelyPickWord(dictionary, minLength, maxLength);
   }
   let words = [word];
   var remainingLength = maxLength - word.length;
 
-  while (remainingLength > dictionary.minWordLength) {
+  const additionalMinLength = 2;
+  while (remainingLength > additionalMinLength) {
     word = pickWord(
       dictionary,
-      dictionary.minWordLength,
+      additionalMinLength,
       remainingLength - 1,
       words
     );
