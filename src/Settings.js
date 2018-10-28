@@ -225,8 +225,18 @@ const Settings = inject("store", "morsePlayer")(
                 <Checkbox
                   id="list-control-primary-1"
                   name="list-control-primary"
-                  label="English Words"
+                  label="Words"
                   defaultChecked
+                  onChange={value => {
+                    if (value) {
+                      dictionary.addType("Word");
+                    } else {
+                      dictionary.removeType("Word");
+                    }
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordFrequency.size
+                    );
+                  }}
                 />
               }
             />
@@ -237,6 +247,16 @@ const Settings = inject("store", "morsePlayer")(
                   name="list-control-primary"
                   label="Abbreviations"
                   defaultChecked
+                  onChange={value => {
+                    if (value) {
+                      dictionary.addType("Abbreviation");
+                    } else {
+                      dictionary.removeType("Abbreviation");
+                    }
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordFrequency.size
+                    );
+                  }}
                 />
               }
             />
@@ -247,6 +267,16 @@ const Settings = inject("store", "morsePlayer")(
                   name="list-control-primary"
                   label="Q Codes"
                   defaultChecked
+                  onChange={value => {
+                    if (value) {
+                      dictionary.addType("Q Code");
+                    } else {
+                      dictionary.removeType("Q Code");
+                    }
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordFrequency.size
+                    );
+                  }}
                 />
               }
             />
@@ -257,6 +287,16 @@ const Settings = inject("store", "morsePlayer")(
                   name="list-control-primary"
                   label="Numbers"
                   defaultChecked
+                  onChange={value => {
+                    if (value) {
+                      dictionary.addType("Number");
+                    } else {
+                      dictionary.removeType("Number");
+                    }
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordFrequency.size
+                    );
+                  }}
                 />
               }
             />
@@ -267,6 +307,16 @@ const Settings = inject("store", "morsePlayer")(
                   name="list-control-primary"
                   label="Years"
                   defaultChecked
+                  onChange={value => {
+                    if (value) {
+                      dictionary.addType("Year");
+                    } else {
+                      dictionary.removeType("Year");
+                    }
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordFrequency.size
+                    );
+                  }}
                 />
               }
             />
@@ -276,6 +326,16 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-6"
                   name="list-control-primary"
                   label="US Names"
+                  onChange={value => {
+                    if (value) {
+                      dictionary.addType("US Name");
+                    } else {
+                      dictionary.removeType("US Name");
+                    }
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordFrequency.size
+                    );
+                  }}
                 />
               }
             />

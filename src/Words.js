@@ -5464,6 +5464,7 @@ class Dictionary {
   allTypes = null; // Array containing all types in the dictionary
 
   words = null;
+  types = null;
   wordFrequency = null; // Map where key=word and value=frequency
   wordType = null; // Map where key=word and value=type
   minWordLength = 0;
@@ -5484,11 +5485,27 @@ class Dictionary {
     this.setActiveWords(Array.from(types.keys()));
   }
 
+  addType(type) {
+    if (!this.types.includes(type)) {
+      this.types.push(type);
+      this.setActiveWords(this.types);
+    }
+  }
+
+  removeType(type) {
+    if (this.types.includes(type)) {
+      const indexOfType = this.types.indexOf(type);
+      this.types.splice(indexOfType, 1);
+      this.setActiveWords(this.types);
+    }
+  }
+
   setActiveWords(types) {
     this.minWordLength = Number.MAX_SAFE_INTEGER;
     this.maxWordLength = 0;
     this.wordFrequency = new Map();
     this.wordType = new Map();
+    this.types = types.slice(0);
 
     this.allWords.forEach(([word, pos, freq, type]) => {
       if (types.includes(type)) {
