@@ -212,7 +212,7 @@ const Settings = inject("store", "morsePlayer")(
             label="Dictionary Size"
             editable
             max={dictionary.wordFrequency.size}
-            min={100}
+            min={1}
             step={1}
             value={store.morse.activeDictionarySize}
             onChange={value => store.morse.setActiveDictionarySize(value)}
@@ -226,7 +226,7 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-1"
                   name="list-control-primary"
                   label="Words"
-                  defaultChecked
+                  checked={store.morse.includeWords}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Word");
@@ -236,6 +236,7 @@ const Settings = inject("store", "morsePlayer")(
                     store.morse.setActiveDictionarySize(
                       dictionary.wordFrequency.size
                     );
+                    store.morse.setIncludeWords(value);
                   }}
                 />
               }
@@ -246,7 +247,7 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-2"
                   name="list-control-primary"
                   label="Abbreviations"
-                  defaultChecked
+                  checked={store.morse.includeAbbreviations}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Abbreviation");
@@ -256,6 +257,7 @@ const Settings = inject("store", "morsePlayer")(
                     store.morse.setActiveDictionarySize(
                       dictionary.wordFrequency.size
                     );
+                    store.morse.setIncludeAbbreviations(value);
                   }}
                 />
               }
@@ -266,7 +268,7 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-3"
                   name="list-control-primary"
                   label="Q Codes"
-                  defaultChecked
+                  checked={store.morse.includeQCodes}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Q Code");
@@ -276,6 +278,7 @@ const Settings = inject("store", "morsePlayer")(
                     store.morse.setActiveDictionarySize(
                       dictionary.wordFrequency.size
                     );
+                    store.morse.setIncludeQCodes(value);
                   }}
                 />
               }
@@ -286,7 +289,7 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-4"
                   name="list-control-primary"
                   label="Numbers"
-                  defaultChecked
+                  checked={store.morse.includeNumbers}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Number");
@@ -296,6 +299,7 @@ const Settings = inject("store", "morsePlayer")(
                     store.morse.setActiveDictionarySize(
                       dictionary.wordFrequency.size
                     );
+                    store.morse.setIncludeNumbers(value);
                   }}
                 />
               }
@@ -306,7 +310,7 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-5"
                   name="list-control-primary"
                   label="Years"
-                  defaultChecked
+                  checked={store.morse.includeYears}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Year");
@@ -316,6 +320,7 @@ const Settings = inject("store", "morsePlayer")(
                     store.morse.setActiveDictionarySize(
                       dictionary.wordFrequency.size
                     );
+                    store.morse.setIncludeYears(value);
                   }}
                 />
               }
@@ -326,6 +331,7 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-6"
                   name="list-control-primary"
                   label="US Names"
+                  checked={store.morse.includeUSNames}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("US Name");
@@ -335,6 +341,7 @@ const Settings = inject("store", "morsePlayer")(
                     store.morse.setActiveDictionarySize(
                       dictionary.wordFrequency.size
                     );
+                    store.morse.setIncludeUSNames(value);
                   }}
                 />
               }

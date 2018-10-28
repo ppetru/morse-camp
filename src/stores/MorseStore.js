@@ -16,6 +16,12 @@ class MorseStore extends SettingsSaver {
       delay: 2500,
       maxRepeats: 15,
       activeDictionarySize: dictionary.wordFrequency.size,
+      includeWords: true,
+      includeAbbreviations: true,
+      includeQCodes: true,
+      includeNumbers: true,
+      includeYears: true,
+      includeUSNames: false,
 
       startedPlaying: action(() => {
         this.playing = true;
@@ -31,7 +37,13 @@ class MorseStore extends SettingsSaver {
           frequency: this.frequency,
           delay: this.delay,
           maxRepeats: this.maxRepeats,
-          activeDictionarySize: this.activeDictionarySize
+          activeDictionarySize: this.activeDictionarySize,
+          includeWords: this.includeWords,
+          includeAbbreviations: this.includeAbbreviations,
+          includeQCodes: this.includeQCodes,
+          includeNumbers: this.includeNumbers,
+          includeYears: this.includeYears,
+          includeUSNames: this.includeUSNames
         };
       }
     });
@@ -46,6 +58,33 @@ class MorseStore extends SettingsSaver {
     this.setDelay(json.delay);
     this.setMaxRepeats(json.maxRepeats);
     this.setActiveDictionarySize(json.activeDictionarySize);
+    this.setIncludeWords(json.includeWords);
+    this.setIncludeAbbreviations(json.includeAbbreviations);
+    this.setIncludeQCodes(json.includeQCodes);
+    this.setIncludeNumbers(json.includeNumbers);
+    this.setIncludeYears(json.includeYears);
+    this.setIncludeUSNames(json.includeUSNames);
+
+    const include = [];
+    if (this.includeWords) {
+      include.push("Word");
+    }
+    if (this.includeAbbreviations) {
+      include.push("abbreviation");
+    }
+    if (this.includeQCodes) {
+      include.push("Q Code");
+    }
+    if (this.includeNumbers) {
+      include.push("Number");
+    }
+    if (this.includeYears) {
+      include.push("Year");
+    }
+    if (this.includeUSNames) {
+      include.push("US Name");
+    }
+    dictionary.setActiveWords(include);
   });
 
   setVolume = action(volume => (this.volume = parseInt(volume, 10)));
@@ -65,6 +104,26 @@ class MorseStore extends SettingsSaver {
   setActiveDictionarySize = action(
     activeDictionarySize =>
       (this.activeDictionarySize = parseInt(activeDictionarySize, 10))
+  );
+
+  setIncludeWords = action(includeWords => (this.includeWords = includeWords));
+
+  setIncludeAbbreviations = action(
+    includeAbbreviations => (this.includeAbbreviations = includeAbbreviations)
+  );
+
+  setIncludeQCodes = action(
+    includeQCodes => (this.includeQCodes = includeQCodes)
+  );
+
+  setIncludeNumbers = action(
+    includeNumbers => (this.includeNumbers = includeNumbers)
+  );
+
+  setIncludeYears = action(includeYears => (this.includeYears = includeYears));
+
+  setIncludeUSNames = action(
+    includeUSNames => (this.includeUSNames = includeUSNames)
   );
 }
 
