@@ -23,7 +23,7 @@ const PlayLoop = inject("store")(
       text: ""
     };
 
-    pickText = () => {
+    pickText = (previousText = "") => {
       const store = this.props.store.readTrainer;
       const trimmedDictionary = trimDictionary(
         dictionary.wordFrequency,
@@ -36,7 +36,14 @@ const PlayLoop = inject("store")(
         Date.now()
       );
 
-      const text = generateText(candidates, store.minLength, store.maxLength);
+      var text = generateText(candidates, store.minLength, store.maxLength);
+
+      // When the same word is selected twice in a row (which can be caused
+      // by a limited number of entries in the dictionary), adding a space
+      // allows the word to be used immediately again.
+      if (previousText === text) {
+        text += " ";
+      }
       this.setState({ text });
     };
 
@@ -48,7 +55,7 @@ const PlayLoop = inject("store")(
       const store = this.props.store.readTrainer;
       store.textFeedback(this.state.text, success, count, Date.now());
       store.adjustLengths();
-      this.pickText();
+      this.pickText(this.state.text);
     };
 
     render() {
