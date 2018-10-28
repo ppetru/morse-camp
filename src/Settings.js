@@ -219,7 +219,7 @@ const Settings = inject("store", "morsePlayer")(
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <h4>Dictionary Options</h4>
-          <List className={"md-cell md-cell--6 md-paper md-paper--2"}>
+          <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
             <ListItemControl
               primaryAction={
                 <Checkbox
@@ -342,6 +342,27 @@ const Settings = inject("store", "morsePlayer")(
                       dictionary.wordFrequency.size
                     );
                     store.morse.setIncludeUSNames(value);
+                  }}
+                />
+              }
+            />
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id="list-control-primary-7"
+                  name="list-control-primary"
+                  label="US State Abbreviations"
+                  checked={store.morse.includeUSStateAbbreviations}
+                  onChange={value => {
+                    if (value) {
+                      dictionary.addType("US State Abbreviation");
+                    } else {
+                      dictionary.removeType("US State Abbreviation");
+                    }
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordFrequency.size
+                    );
+                    store.morse.setIncludeUSStateAbbreviations(value);
                   }}
                 />
               }
