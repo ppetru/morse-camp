@@ -59,6 +59,7 @@ const computeWordWeights = (words, state, timeNow) => {
 const pickWord = (dictionary, minLength, maxLength, blacklist = []) => {
   let words = [];
   let weights = [];
+  let allNonZeroWeights = true;
 
   dictionary.forEach((freq, word) => {
     if (
@@ -67,11 +68,19 @@ const pickWord = (dictionary, minLength, maxLength, blacklist = []) => {
       !blacklist.includes(word)
     ) {
       words.push(word);
-      weights.push(freq * Math.pow(2, word.length)); // avoid short, frequent words dominating everything
+
+      const weight = freq * Math.pow(2, word.length);
+      weights.push(weight); // avoid short, frequent words dominating everything
+      if (weight > 0) {
+        allNonZeroWeights = false;
+      }
     }
   });
 
-  if (words.length > 0) {
+  // if all words previously used
+  if (allNonZeroWeights) {
+    return words[Math.floor(Math.random() * words.length)];
+  } else if (words.length > 0) {
     return weighted.select(words, weights);
   } else {
     return null;
