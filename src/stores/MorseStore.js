@@ -22,6 +22,7 @@ class MorseStore extends SettingsSaver {
       includeNumbers: true,
       includeYears: true,
       includeUSNames: false,
+      includeCountries: false,
 
       startedPlaying: action(() => {
         this.playing = true;
@@ -44,7 +45,8 @@ class MorseStore extends SettingsSaver {
           includeNumbers: this.includeNumbers,
           includeYears: this.includeYears,
           includeUSNames: this.includeUSNames,
-          includeUSStateAbbreviations: this.includeUSStateAbbreviations
+          includeUSStateAbbreviations: this.includeUSStateAbbreviations,
+          includeCountries: this.includeCountries
         };
       }
     });
@@ -66,6 +68,7 @@ class MorseStore extends SettingsSaver {
     this.setIncludeYears(json.includeYears);
     this.setIncludeUSNames(json.includeUSNames);
     this.setIncludeUSStateAbbreviations(json.includeUSStateAbbreviations);
+    this.setIncludeCountries(json.includeCountries);
 
     const include = [];
     if (this.includeWords) {
@@ -88,6 +91,9 @@ class MorseStore extends SettingsSaver {
     }
     if (this.includeUSStateAbbreviations) {
       include.push("US State Abbreviation");
+    }
+    if (this.includeCountries) {
+      include.push("Country");
     }
     dictionary.setActiveWords(include);
   });
@@ -134,6 +140,10 @@ class MorseStore extends SettingsSaver {
   setIncludeUSStateAbbreviations = action(
     includeUSStateAbbreviations =>
       (this.includeUSStateAbbreviations = includeUSStateAbbreviations)
+  );
+
+  setIncludeCountries = action(
+    includeCountries => (this.includeCountries = includeCountries)
   );
 }
 

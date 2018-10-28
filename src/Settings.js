@@ -367,6 +367,27 @@ const Settings = inject("store", "morsePlayer")(
                 />
               }
             />
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id="list-control-primary-8"
+                  name="list-control-primary"
+                  label="Countries"
+                  checked={store.morse.includeCountries}
+                  onChange={value => {
+                    if (value) {
+                      dictionary.addType("Country");
+                    } else {
+                      dictionary.removeType("Country");
+                    }
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordFrequency.size
+                    );
+                    store.morse.setIncludeCountries(value);
+                  }}
+                />
+              }
+            />
           </List>
           <br />
           <TestButton />
