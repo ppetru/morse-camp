@@ -51,25 +51,11 @@ class MorseStore extends SettingsSaver {
       }
     });
 
+    this.setActiveDictionary();
     this.setupSettings("MorsePlayer", noDebounce);
   }
 
-  setFromJson = action(json => {
-    this.setVolume(json.volume);
-    this.setSpeed(json.speed);
-    this.setFrequency(json.frequency);
-    this.setDelay(json.delay);
-    this.setMaxRepeats(json.maxRepeats);
-    this.setActiveDictionarySize(json.activeDictionarySize);
-    this.setIncludeWords(json.includeWords);
-    this.setIncludeAbbreviations(json.includeAbbreviations);
-    this.setIncludeQCodes(json.includeQCodes);
-    this.setIncludeNumbers(json.includeNumbers);
-    this.setIncludeYears(json.includeYears);
-    this.setIncludeUSNames(json.includeUSNames);
-    this.setIncludeUSStateAbbreviations(json.includeUSStateAbbreviations);
-    this.setIncludeCountries(json.includeCountries);
-
+  setActiveDictionary = () => {
     const include = [];
     if (this.includeWords) {
       include.push("Word");
@@ -96,6 +82,29 @@ class MorseStore extends SettingsSaver {
       include.push("Country");
     }
     dictionary.setActiveWords(include);
+
+    if (this.activeDictionarySize > dictionary.wordType.size) {
+      this.setActiveDictionarySize(dictionary.wordType.size);
+    }
+  };
+
+  setFromJson = action(json => {
+    this.setVolume(json.volume);
+    this.setSpeed(json.speed);
+    this.setFrequency(json.frequency);
+    this.setDelay(json.delay);
+    this.setMaxRepeats(json.maxRepeats);
+    this.setActiveDictionarySize(json.activeDictionarySize);
+    this.setIncludeWords(json.includeWords);
+    this.setIncludeAbbreviations(json.includeAbbreviations);
+    this.setIncludeQCodes(json.includeQCodes);
+    this.setIncludeNumbers(json.includeNumbers);
+    this.setIncludeYears(json.includeYears);
+    this.setIncludeUSNames(json.includeUSNames);
+    this.setIncludeUSStateAbbreviations(json.includeUSStateAbbreviations);
+    this.setIncludeCountries(json.includeCountries);
+
+    this.setActiveDictionary();
   });
 
   setVolume = action(volume => (this.volume = parseInt(volume, 10)));
