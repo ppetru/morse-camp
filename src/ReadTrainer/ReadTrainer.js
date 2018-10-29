@@ -36,7 +36,17 @@ const PlayLoop = inject("store")(
         Date.now()
       );
 
-      var text = generateText(candidates, store.minLength, store.maxLength);
+      var text;
+      while (text === undefined || text === null) {
+        text = generateText(candidates, store.minLength, store.maxLength);
+
+        // With small dictionaries we may need to bump up the max size to find
+        // one or more words.
+        if (text === undefined || text === null) {
+          //console.log('current max length: '+store.readTrainer.maxLength);
+          store.setMaxLength(store.maxLength + 1);
+        }
+      }
 
       // When the same word is selected twice in a row (which can be caused
       // by a limited number of entries in the dictionary), adding a space
