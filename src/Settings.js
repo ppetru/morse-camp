@@ -210,18 +210,10 @@ const Settings = inject("store", "morsePlayer")(
             onChange={value => store.morse.setMaxRepeats(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
-          <Slider
-            id="activeDictionarySize"
-            label="Dictionary Size"
-            editable
-            max={dictionary.wordFrequency.size}
-            min={1}
-            step={1}
-            value={store.morse.activeDictionarySize}
-            onChange={value => store.morse.setActiveDictionarySize(value)}
-            leftIcon={<FontIcon>build</FontIcon>}
-          />
-          <h4>Dictionary Options</h4>
+          <h4>
+            <b>Dictionary Options</b>
+          </h4>
+          Include
           <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
             <ListItemControl
               primaryAction={
@@ -405,6 +397,17 @@ const Settings = inject("store", "morsePlayer")(
               }
             />
           </List>
+          <Slider
+            id="activeDictionarySize"
+            label="Size"
+            editable
+            max={dictionary.wordFrequency.size}
+            min={1}
+            step={1}
+            value={store.morse.activeDictionarySize}
+            onChange={value => store.morse.setActiveDictionarySize(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
           <br />
           <TestButton />
         </div>
