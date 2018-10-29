@@ -55,13 +55,63 @@ class MorseStore extends SettingsSaver {
     this.setupSettings("MorsePlayer", noDebounce);
   }
 
+  includeCount = () => {
+    var cnt = 0;
+
+    if (this.includeWords) {
+      cnt++;
+    }
+
+    if (this.includeAbbreviations) {
+      cnt++;
+    }
+
+    if (this.includeQCodes) {
+      cnt++;
+    }
+
+    if (this.includeNumbers) {
+      cnt++;
+    }
+
+    if (this.includeYears) {
+      cnt++;
+    }
+
+    if (this.includeUSNames) {
+      cnt++;
+    }
+
+    if (this.includeUSStateAbbreviations) {
+      cnt++;
+    }
+
+    if (this.includeCountries) {
+      cnt++;
+    }
+
+    return cnt;
+  };
+
+  sanityCheckActiveDictionarySize = () => {
+    if (this.activeDictionarySize >= dictionary.wordType.size) {
+      this.setActiveDictionarySize(dictionary.wordType.size);
+    } else {
+      //The Slider component needs a little bit of time to pickup the change
+      this.setActiveDictionarySize(this.activeDictionarySize + 1);
+      setTimeout(() => {
+        this.setActiveDictionarySize(this.activeDictionarySize - 1);
+      }, 10);
+    }
+  };
+
   setActiveDictionary = () => {
     const include = [];
     if (this.includeWords) {
       include.push("Word");
     }
     if (this.includeAbbreviations) {
-      include.push("abbreviation");
+      include.push("Abbreviation");
     }
     if (this.includeQCodes) {
       include.push("Q Code");

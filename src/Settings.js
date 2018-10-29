@@ -229,6 +229,9 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-1"
                   name="list-control-primary"
                   label="Words"
+                  disabled={
+                    store.morse.includeCount() <= 1 && store.morse.includeWords
+                  }
                   checked={store.morse.includeWords}
                   onChange={value => {
                     if (value) {
@@ -236,10 +239,8 @@ const Settings = inject("store", "morsePlayer")(
                     } else {
                       dictionary.removeType("Word");
                     }
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordFrequency.size
-                    );
                     store.morse.setIncludeWords(value);
+                    store.morse.sanityCheckActiveDictionarySize();
                   }}
                 />
               }
@@ -250,6 +251,10 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-2"
                   name="list-control-primary"
                   label="Abbreviations"
+                  disabled={
+                    store.morse.includeCount() <= 1 &&
+                    store.morse.includeAbbreviations
+                  }
                   checked={store.morse.includeAbbreviations}
                   onChange={value => {
                     if (value) {
@@ -257,10 +262,8 @@ const Settings = inject("store", "morsePlayer")(
                     } else {
                       dictionary.removeType("Abbreviation");
                     }
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordFrequency.size
-                    );
                     store.morse.setIncludeAbbreviations(value);
+                    store.morse.sanityCheckActiveDictionarySize();
                   }}
                 />
               }
@@ -271,6 +274,9 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-3"
                   name="list-control-primary"
                   label="Q Codes"
+                  disabled={
+                    store.morse.includeCount() <= 1 && store.morse.includeQCodes
+                  }
                   checked={store.morse.includeQCodes}
                   onChange={value => {
                     if (value) {
@@ -278,10 +284,8 @@ const Settings = inject("store", "morsePlayer")(
                     } else {
                       dictionary.removeType("Q Code");
                     }
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordFrequency.size
-                    );
                     store.morse.setIncludeQCodes(value);
+                    store.morse.sanityCheckActiveDictionarySize();
                   }}
                 />
               }
@@ -292,6 +296,10 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-4"
                   name="list-control-primary"
                   label="Numbers"
+                  disabled={
+                    store.morse.includeCount() <= 1 &&
+                    store.morse.includeNumbers
+                  }
                   checked={store.morse.includeNumbers}
                   onChange={value => {
                     if (value) {
@@ -299,10 +307,8 @@ const Settings = inject("store", "morsePlayer")(
                     } else {
                       dictionary.removeType("Number");
                     }
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordFrequency.size
-                    );
                     store.morse.setIncludeNumbers(value);
+                    store.morse.sanityCheckActiveDictionarySize();
                   }}
                 />
               }
@@ -313,6 +319,9 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-5"
                   name="list-control-primary"
                   label="Years"
+                  disabled={
+                    store.morse.includeCount() <= 1 && store.morse.includeYears
+                  }
                   checked={store.morse.includeYears}
                   onChange={value => {
                     if (value) {
@@ -320,10 +329,8 @@ const Settings = inject("store", "morsePlayer")(
                     } else {
                       dictionary.removeType("Year");
                     }
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordFrequency.size
-                    );
                     store.morse.setIncludeYears(value);
+                    store.morse.sanityCheckActiveDictionarySize();
                   }}
                 />
               }
@@ -334,6 +341,10 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-6"
                   name="list-control-primary"
                   label="US Names"
+                  disabled={
+                    store.morse.includeCount() <= 1 &&
+                    store.morse.includeUSNames
+                  }
                   checked={store.morse.includeUSNames}
                   onChange={value => {
                     if (value) {
@@ -341,10 +352,8 @@ const Settings = inject("store", "morsePlayer")(
                     } else {
                       dictionary.removeType("US Name");
                     }
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordFrequency.size
-                    );
                     store.morse.setIncludeUSNames(value);
+                    store.morse.sanityCheckActiveDictionarySize();
                   }}
                 />
               }
@@ -355,6 +364,10 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-7"
                   name="list-control-primary"
                   label="US State Abbreviations"
+                  disabled={
+                    store.morse.includeCount() <= 1 &&
+                    store.morse.includeUSStateAbbreviations
+                  }
                   checked={store.morse.includeUSStateAbbreviations}
                   onChange={value => {
                     if (value) {
@@ -362,10 +375,8 @@ const Settings = inject("store", "morsePlayer")(
                     } else {
                       dictionary.removeType("US State Abbreviation");
                     }
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordFrequency.size
-                    );
                     store.morse.setIncludeUSStateAbbreviations(value);
+                    store.morse.sanityCheckActiveDictionarySize();
                   }}
                 />
               }
@@ -376,6 +387,10 @@ const Settings = inject("store", "morsePlayer")(
                   id="list-control-primary-8"
                   name="list-control-primary"
                   label="Countries"
+                  disabled={
+                    store.morse.includeCount() <= 1 &&
+                    store.morse.includeCountries
+                  }
                   checked={store.morse.includeCountries}
                   onChange={value => {
                     if (value) {
@@ -383,10 +398,8 @@ const Settings = inject("store", "morsePlayer")(
                     } else {
                       dictionary.removeType("Country");
                     }
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordFrequency.size
-                    );
                     store.morse.setIncludeCountries(value);
+                    store.morse.sanityCheckActiveDictionarySize();
                   }}
                 />
               }
