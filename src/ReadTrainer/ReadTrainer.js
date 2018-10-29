@@ -43,7 +43,6 @@ const PlayLoop = inject("store")(
         // With small dictionaries we may need to bump up the max size to find
         // one or more words.
         if (text === undefined || text === null) {
-          //console.log('current max length: '+store.readTrainer.maxLength);
           store.setMaxLength(store.maxLength + 1);
         }
       }
