@@ -16,6 +16,7 @@ class MorseStore extends SettingsSaver {
       delay: 2500,
       maxRepeats: 15,
       activeDictionarySize: dictionary.wordFrequency.size,
+      maxDictionarySize: dictionary.wordFrequency.size,
       types: dictionary.typesToIncludeByDefault,
 
       startedPlaying: action(() => {
@@ -38,7 +39,7 @@ class MorseStore extends SettingsSaver {
       }
     });
 
-    this.setActiveDictionary();
+    this.setupActiveDictionary();
     this.setupSettings("MorsePlayer", noDebounce);
   }
 
@@ -54,19 +55,7 @@ class MorseStore extends SettingsSaver {
     return count;
   };
 
-  sanityCheckActiveDictionarySize = () => {
-    if (this.activeDictionarySize >= dictionary.wordType.size) {
-      this.setActiveDictionarySize(dictionary.wordType.size);
-    } else {
-      //The Slider component needs a little bit of time to pickup the change
-      this.setActiveDictionarySize(this.activeDictionarySize + 1);
-      setTimeout(() => {
-        this.setActiveDictionarySize(this.activeDictionarySize - 1);
-      }, 10);
-    }
-  };
-
-  setActiveDictionary = () => {
+  setupActiveDictionary = () => {
     var types = [];
 
     for (var type in this.types) {
@@ -76,10 +65,8 @@ class MorseStore extends SettingsSaver {
     }
 
     dictionary.setActiveWords(types);
-
-    if (this.activeDictionarySize > dictionary.wordType.size) {
-      this.setActiveDictionarySize(dictionary.wordType.size);
-    }
+    this.setActiveDictionarySize(dictionary.wordType.size);
+    this.setMaxDictionarySize(dictionary.wordType.size);
   };
 
   setFromJson = action(json => {
@@ -91,7 +78,7 @@ class MorseStore extends SettingsSaver {
     this.setActiveDictionarySize(json.activeDictionarySize);
     this.setTypes(json.types);
 
-    this.setActiveDictionary();
+    this.setupActiveDictionary();
   });
 
   setVolume = action(volume => (this.volume = parseInt(volume, 10)));
@@ -113,36 +100,13 @@ class MorseStore extends SettingsSaver {
       (this.activeDictionarySize = parseInt(activeDictionarySize, 10))
   );
 
+  setMaxDictionarySize = action(
+    maxDictionarySize =>
+      (this.maxDictionarySize = parseInt(maxDictionarySize, 10))
+  );
+
   setTypes = action(types => (this.types = types));
   setType = action((type, value) => (this.types[type] = value));
-
-  setIncludeWords = action(includeWords => this.setType("Word", includeWords));
-
-  setIncludeAbbreviations = action(includeAbbreviations =>
-    this.setType("Abbreviation", includeAbbreviations)
-  );
-
-  setIncludeQCodes = action(includeQCodes =>
-    this.setType("Q Code", includeQCodes)
-  );
-
-  setIncludeNumbers = action(includeNumbers =>
-    this.setType("Number", includeNumbers)
-  );
-
-  setIncludeYears = action(includeYears => this.setType("Year", includeYears));
-
-  setIncludeUSNames = action(includeUSNames =>
-    this.setType("US Name", includeUSNames)
-  );
-
-  setIncludeUSStateAbbreviations = action(includeUSStateAbbreviations =>
-    this.setType("US State Abbreviation", includeUSStateAbbreviations)
-  );
-
-  setIncludeCountries = action(includeCountries =>
-    this.setType("Country", includeCountries)
-  );
 }
 
 export default MorseStore;

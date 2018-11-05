@@ -42,7 +42,7 @@ const ClearStorage = inject("store")(
       event("clear storage");
       const { store } = this.props;
       store.transport.clear().then(() => {
-        store.morse.setActiveDictionary();
+        store.morse.setupActiveDictionary();
         store.appStore.addToast("Storage cleared");
         window.location.reload();
       });
@@ -141,6 +141,51 @@ const TestButton = inject("store", "morsePlayer")(
   }
 );
 
+const DictionaryOptions = inject("store", "morsePlayer")(
+  observer(({ store, morsePlayer }) => (
+    <div>
+      <h4>
+        <b>Dictionary Options</b>
+      </h4>
+      Include
+      <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
+        {dictionary.allTypes.map(type => (
+          <div key={type}>
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id={"list-control-primary-" + type}
+                  name="list-control-primary"
+                  label={type}
+                  disabled={
+                    store.morse.includeCount() <= 1 && store.morse.types[type]
+                  }
+                  checked={store.morse.types[type]}
+                  onChange={value => {
+                    store.morse.setType(type, value);
+                    store.morse.setupActiveDictionary();
+                  }}
+                />
+              }
+            />
+          </div>
+        ))}
+      </List>
+      <Slider
+        id="activeDictionarySize"
+        label="Number Of Entries"
+        editable
+        max={store.morse.maxDictionarySize}
+        min={1}
+        step={1}
+        value={store.morse.activeDictionarySize}
+        onChange={value => store.morse.setActiveDictionarySize(value)}
+        leftIcon={<FontIcon>build</FontIcon>}
+      />
+    </div>
+  ))
+);
+
 const Settings = inject("store", "morsePlayer")(
   observer(({ store, morsePlayer }) => (
     <div>
@@ -210,205 +255,7 @@ const Settings = inject("store", "morsePlayer")(
             onChange={value => store.morse.setMaxRepeats(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
-          <h4>
-            <b>Dictionary Options</b>
-          </h4>
-          Include
-          <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id="list-control-primary-1"
-                  name="list-control-primary"
-                  label="Words"
-                  disabled={
-                    store.morse.includeCount() <= 1 && store.morse.types["Word"]
-                  }
-                  checked={store.morse.types["Word"]}
-                  onChange={value => {
-                    if (value) {
-                      dictionary.addType("Word");
-                    } else {
-                      dictionary.removeType("Word");
-                    }
-                    store.morse.setIncludeWords(value);
-                    store.morse.sanityCheckActiveDictionarySize();
-                  }}
-                />
-              }
-            />
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id="list-control-primary-2"
-                  name="list-control-primary"
-                  label="Abbreviations"
-                  disabled={
-                    store.morse.includeCount() <= 1 &&
-                    store.morse.types["Abbreviation"]
-                  }
-                  checked={store.morse.types["Abbreviation"]}
-                  onChange={value => {
-                    if (value) {
-                      dictionary.addType("Abbreviation");
-                    } else {
-                      dictionary.removeType("Abbreviation");
-                    }
-                    store.morse.setIncludeAbbreviations(value);
-                    store.morse.sanityCheckActiveDictionarySize();
-                  }}
-                />
-              }
-            />
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id="list-control-primary-3"
-                  name="list-control-primary"
-                  label="Q Codes"
-                  disabled={
-                    store.morse.includeCount() <= 1 &&
-                    store.morse.types["Q Code"]
-                  }
-                  checked={store.morse.types["Q Code"]}
-                  onChange={value => {
-                    if (value) {
-                      dictionary.addType("Q Code");
-                    } else {
-                      dictionary.removeType("Q Code");
-                    }
-                    store.morse.setIncludeQCodes(value);
-                    store.morse.sanityCheckActiveDictionarySize();
-                  }}
-                />
-              }
-            />
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id="list-control-primary-4"
-                  name="list-control-primary"
-                  label="Numbers"
-                  disabled={
-                    store.morse.includeCount() <= 1 &&
-                    store.morse.types["Number"]
-                  }
-                  checked={store.morse.types["Number"]}
-                  onChange={value => {
-                    if (value) {
-                      dictionary.addType("Number");
-                    } else {
-                      dictionary.removeType("Number");
-                    }
-                    store.morse.setIncludeNumbers(value);
-                    store.morse.sanityCheckActiveDictionarySize();
-                  }}
-                />
-              }
-            />
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id="list-control-primary-5"
-                  name="list-control-primary"
-                  label="Years"
-                  disabled={
-                    store.morse.includeCount() <= 1 && store.morse.types["Year"]
-                  }
-                  checked={store.morse.types["Year"]}
-                  onChange={value => {
-                    if (value) {
-                      dictionary.addType("Year");
-                    } else {
-                      dictionary.removeType("Year");
-                    }
-                    store.morse.setIncludeYears(value);
-                    store.morse.sanityCheckActiveDictionarySize();
-                  }}
-                />
-              }
-            />
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id="list-control-primary-6"
-                  name="list-control-primary"
-                  label="US Names"
-                  disabled={
-                    store.morse.includeCount() <= 1 &&
-                    store.morse.types["US Name"]
-                  }
-                  checked={store.morse.types["US Name"]}
-                  onChange={value => {
-                    if (value) {
-                      dictionary.addType("US Name");
-                    } else {
-                      dictionary.removeType("US Name");
-                    }
-                    store.morse.setIncludeUSNames(value);
-                    store.morse.sanityCheckActiveDictionarySize();
-                  }}
-                />
-              }
-            />
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id="list-control-primary-7"
-                  name="list-control-primary"
-                  label="US State Abbreviations"
-                  disabled={
-                    store.morse.includeCount() <= 1 &&
-                    store.morse.types["US State Abbreviation"]
-                  }
-                  checked={store.morse.types["US State Abbreviation"]}
-                  onChange={value => {
-                    if (value) {
-                      dictionary.addType("US State Abbreviation");
-                    } else {
-                      dictionary.removeType("US State Abbreviation");
-                    }
-                    store.morse.setIncludeUSStateAbbreviations(value);
-                    store.morse.sanityCheckActiveDictionarySize();
-                  }}
-                />
-              }
-            />
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id="list-control-primary-8"
-                  name="list-control-primary"
-                  label="Countries"
-                  disabled={
-                    store.morse.includeCount() <= 1 &&
-                    store.morse.types["Country"]
-                  }
-                  checked={store.morse.types["Country"]}
-                  onChange={value => {
-                    if (value) {
-                      dictionary.addType("Country");
-                    } else {
-                      dictionary.removeType("Country");
-                    }
-                    store.morse.setIncludeCountries(value);
-                    store.morse.sanityCheckActiveDictionarySize();
-                  }}
-                />
-              }
-            />
-          </List>
-          <Slider
-            id="activeDictionarySize"
-            label="Size"
-            editable
-            max={dictionary.wordFrequency.size}
-            min={1}
-            step={1}
-            value={store.morse.activeDictionarySize}
-            onChange={value => store.morse.setActiveDictionarySize(value)}
-            leftIcon={<FontIcon>build</FontIcon>}
-          />
+          <DictionaryOptions />
           <br />
           <TestButton />
         </div>

@@ -5755,21 +5755,6 @@ class Dictionary {
     this.setActiveWords(Array.from(types.keys()));
   }
 
-  addType(type) {
-    if (!this.types.includes(type)) {
-      this.types.push(type);
-      this.setActiveWords(this.types);
-    }
-  }
-
-  removeType(type) {
-    if (this.types.includes(type)) {
-      const indexOfType = this.types.indexOf(type);
-      this.types.splice(indexOfType, 1);
-      this.setActiveWords(this.types);
-    }
-  }
-
   setActiveWords(types) {
     this.minWordLength = Number.MAX_SAFE_INTEGER;
     this.maxWordLength = 0;
