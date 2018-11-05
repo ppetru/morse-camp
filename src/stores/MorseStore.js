@@ -16,13 +16,7 @@ class MorseStore extends SettingsSaver {
       delay: 2500,
       maxRepeats: 15,
       activeDictionarySize: dictionary.wordFrequency.size,
-      includeWords: true,
-      includeAbbreviations: true,
-      includeQCodes: true,
-      includeNumbers: true,
-      includeYears: true,
-      includeUSNames: false,
-      includeCountries: false,
+      types: dictionary.typesToIncludeByDefault,
 
       startedPlaying: action(() => {
         this.playing = true;
@@ -39,14 +33,7 @@ class MorseStore extends SettingsSaver {
           delay: this.delay,
           maxRepeats: this.maxRepeats,
           activeDictionarySize: this.activeDictionarySize,
-          includeWords: this.includeWords,
-          includeAbbreviations: this.includeAbbreviations,
-          includeQCodes: this.includeQCodes,
-          includeNumbers: this.includeNumbers,
-          includeYears: this.includeYears,
-          includeUSNames: this.includeUSNames,
-          includeUSStateAbbreviations: this.includeUSStateAbbreviations,
-          includeCountries: this.includeCountries
+          types: this.types
         };
       }
     });
@@ -56,41 +43,15 @@ class MorseStore extends SettingsSaver {
   }
 
   includeCount = () => {
-    var cnt = 0;
+    var count = 0;
 
-    if (this.includeWords) {
-      cnt++;
-    }
+    Object.entries(this.types).forEach(([key, value]) => {
+      if (value) {
+        count++;
+      }
+    });
 
-    if (this.includeAbbreviations) {
-      cnt++;
-    }
-
-    if (this.includeQCodes) {
-      cnt++;
-    }
-
-    if (this.includeNumbers) {
-      cnt++;
-    }
-
-    if (this.includeYears) {
-      cnt++;
-    }
-
-    if (this.includeUSNames) {
-      cnt++;
-    }
-
-    if (this.includeUSStateAbbreviations) {
-      cnt++;
-    }
-
-    if (this.includeCountries) {
-      cnt++;
-    }
-
-    return cnt;
+    return count;
   };
 
   sanityCheckActiveDictionarySize = () => {
@@ -106,32 +67,15 @@ class MorseStore extends SettingsSaver {
   };
 
   setActiveDictionary = () => {
-    const include = [];
-    if (this.includeWords) {
-      include.push("Word");
+    var types = [];
+
+    for (var type in this.types) {
+      if (this.types.hasOwnProperty(type) && this.types[type]) {
+        types.push(type);
+      }
     }
-    if (this.includeAbbreviations) {
-      include.push("Abbreviation");
-    }
-    if (this.includeQCodes) {
-      include.push("Q Code");
-    }
-    if (this.includeNumbers) {
-      include.push("Number");
-    }
-    if (this.includeYears) {
-      include.push("Year");
-    }
-    if (this.includeUSNames) {
-      include.push("US Name");
-    }
-    if (this.includeUSStateAbbreviations) {
-      include.push("US State Abbreviation");
-    }
-    if (this.includeCountries) {
-      include.push("Country");
-    }
-    dictionary.setActiveWords(include);
+
+    dictionary.setActiveWords(types);
 
     if (this.activeDictionarySize > dictionary.wordType.size) {
       this.setActiveDictionarySize(dictionary.wordType.size);
@@ -145,14 +89,7 @@ class MorseStore extends SettingsSaver {
     this.setDelay(json.delay);
     this.setMaxRepeats(json.maxRepeats);
     this.setActiveDictionarySize(json.activeDictionarySize);
-    this.setIncludeWords(json.includeWords);
-    this.setIncludeAbbreviations(json.includeAbbreviations);
-    this.setIncludeQCodes(json.includeQCodes);
-    this.setIncludeNumbers(json.includeNumbers);
-    this.setIncludeYears(json.includeYears);
-    this.setIncludeUSNames(json.includeUSNames);
-    this.setIncludeUSStateAbbreviations(json.includeUSStateAbbreviations);
-    this.setIncludeCountries(json.includeCountries);
+    this.setTypes(json.types);
 
     this.setActiveDictionary();
   });
@@ -176,33 +113,35 @@ class MorseStore extends SettingsSaver {
       (this.activeDictionarySize = parseInt(activeDictionarySize, 10))
   );
 
-  setIncludeWords = action(includeWords => (this.includeWords = includeWords));
+  setTypes = action(types => (this.types = types));
+  setType = action((type, value) => (this.types[type] = value));
 
-  setIncludeAbbreviations = action(
-    includeAbbreviations => (this.includeAbbreviations = includeAbbreviations)
+  setIncludeWords = action(includeWords => this.setType("Word", includeWords));
+
+  setIncludeAbbreviations = action(includeAbbreviations =>
+    this.setType("Abbreviation", includeAbbreviations)
   );
 
-  setIncludeQCodes = action(
-    includeQCodes => (this.includeQCodes = includeQCodes)
+  setIncludeQCodes = action(includeQCodes =>
+    this.setType("Q Code", includeQCodes)
   );
 
-  setIncludeNumbers = action(
-    includeNumbers => (this.includeNumbers = includeNumbers)
+  setIncludeNumbers = action(includeNumbers =>
+    this.setType("Number", includeNumbers)
   );
 
-  setIncludeYears = action(includeYears => (this.includeYears = includeYears));
+  setIncludeYears = action(includeYears => this.setType("Year", includeYears));
 
-  setIncludeUSNames = action(
-    includeUSNames => (this.includeUSNames = includeUSNames)
+  setIncludeUSNames = action(includeUSNames =>
+    this.setType("US Name", includeUSNames)
   );
 
-  setIncludeUSStateAbbreviations = action(
-    includeUSStateAbbreviations =>
-      (this.includeUSStateAbbreviations = includeUSStateAbbreviations)
+  setIncludeUSStateAbbreviations = action(includeUSStateAbbreviations =>
+    this.setType("US State Abbreviation", includeUSStateAbbreviations)
   );
 
-  setIncludeCountries = action(
-    includeCountries => (this.includeCountries = includeCountries)
+  setIncludeCountries = action(includeCountries =>
+    this.setType("Country", includeCountries)
   );
 }
 

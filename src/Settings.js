@@ -222,9 +222,9 @@ const Settings = inject("store", "morsePlayer")(
                   name="list-control-primary"
                   label="Words"
                   disabled={
-                    store.morse.includeCount() <= 1 && store.morse.includeWords
+                    store.morse.includeCount() <= 1 && store.morse.types["Word"]
                   }
-                  checked={store.morse.includeWords}
+                  checked={store.morse.types["Word"]}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Word");
@@ -245,9 +245,9 @@ const Settings = inject("store", "morsePlayer")(
                   label="Abbreviations"
                   disabled={
                     store.morse.includeCount() <= 1 &&
-                    store.morse.includeAbbreviations
+                    store.morse.types["Abbreviation"]
                   }
-                  checked={store.morse.includeAbbreviations}
+                  checked={store.morse.types["Abbreviation"]}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Abbreviation");
@@ -267,9 +267,10 @@ const Settings = inject("store", "morsePlayer")(
                   name="list-control-primary"
                   label="Q Codes"
                   disabled={
-                    store.morse.includeCount() <= 1 && store.morse.includeQCodes
+                    store.morse.includeCount() <= 1 &&
+                    store.morse.types["Q Code"]
                   }
-                  checked={store.morse.includeQCodes}
+                  checked={store.morse.types["Q Code"]}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Q Code");
@@ -290,9 +291,9 @@ const Settings = inject("store", "morsePlayer")(
                   label="Numbers"
                   disabled={
                     store.morse.includeCount() <= 1 &&
-                    store.morse.includeNumbers
+                    store.morse.types["Number"]
                   }
-                  checked={store.morse.includeNumbers}
+                  checked={store.morse.types["Number"]}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Number");
@@ -312,9 +313,9 @@ const Settings = inject("store", "morsePlayer")(
                   name="list-control-primary"
                   label="Years"
                   disabled={
-                    store.morse.includeCount() <= 1 && store.morse.includeYears
+                    store.morse.includeCount() <= 1 && store.morse.types["Year"]
                   }
-                  checked={store.morse.includeYears}
+                  checked={store.morse.types["Year"]}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Year");
@@ -335,9 +336,9 @@ const Settings = inject("store", "morsePlayer")(
                   label="US Names"
                   disabled={
                     store.morse.includeCount() <= 1 &&
-                    store.morse.includeUSNames
+                    store.morse.types["US Name"]
                   }
-                  checked={store.morse.includeUSNames}
+                  checked={store.morse.types["US Name"]}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("US Name");
@@ -358,9 +359,9 @@ const Settings = inject("store", "morsePlayer")(
                   label="US State Abbreviations"
                   disabled={
                     store.morse.includeCount() <= 1 &&
-                    store.morse.includeUSStateAbbreviations
+                    store.morse.types["US State Abbreviation"]
                   }
-                  checked={store.morse.includeUSStateAbbreviations}
+                  checked={store.morse.types["US State Abbreviation"]}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("US State Abbreviation");
@@ -381,9 +382,9 @@ const Settings = inject("store", "morsePlayer")(
                   label="Countries"
                   disabled={
                     store.morse.includeCount() <= 1 &&
-                    store.morse.includeCountries
+                    store.morse.types["Country"]
                   }
-                  checked={store.morse.includeCountries}
+                  checked={store.morse.types["Country"]}
                   onChange={value => {
                     if (value) {
                       dictionary.addType("Country");

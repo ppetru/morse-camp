@@ -5722,8 +5722,19 @@ class Dictionary {
   allWords = null; // Contains all the words in the dictionary
   allTypes = null; // Array containing all types in the dictionary
 
+  typesToIncludeByDefault = {
+    Word: true,
+    Abbreviation: true,
+    "Q Code": true,
+    Number: true,
+    Year: true,
+    "US Name": false,
+    "US State Abbreviation": false,
+    Country: false
+  };
+
   words = null;
-  types = null;
+  types = null; // Map where key=type and value=boolean
   wordFrequency = null; // Map where key=word and value=frequency
   wordType = null; // Map where key=word and value=type
   minWordLength = 0;
@@ -5764,10 +5775,11 @@ class Dictionary {
     this.maxWordLength = 0;
     this.wordFrequency = new Map();
     this.wordType = new Map();
-    this.types = types.slice(0);
+
+    this.types = types;
 
     this.allWords.forEach(([word, pos, freq, type]) => {
-      if (types.includes(type)) {
+      if (this.types.includes(type)) {
         if (this.wordFrequency.has(word)) {
           this.wordFrequency.set(word, freq + this.wordFrequency.get(word));
         } else {
