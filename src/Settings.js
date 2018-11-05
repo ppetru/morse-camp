@@ -164,6 +164,9 @@ const DictionaryOptions = inject("store", "morsePlayer")(
                   onChange={value => {
                     store.morse.setType(type, value);
                     store.morse.setupActiveDictionary();
+                    store.morse.setActiveDictionarySize(
+                      dictionary.wordType.size
+                    );
                   }}
                 />
               }

@@ -65,8 +65,10 @@ class MorseStore extends SettingsSaver {
     }
 
     dictionary.setActiveWords(types);
-    this.setActiveDictionarySize(dictionary.wordType.size);
     this.setMaxDictionarySize(dictionary.wordType.size);
+    if (this.activeDictionarySize > this.maxDictionarySize) {
+      this.setActiveDictionarySize(this.maxDictionarySize);
+    }
   };
 
   setFromJson = action(json => {
@@ -75,8 +77,16 @@ class MorseStore extends SettingsSaver {
     this.setFrequency(json.frequency);
     this.setDelay(json.delay);
     this.setMaxRepeats(json.maxRepeats);
-    this.setActiveDictionarySize(json.activeDictionarySize);
-    this.setTypes(json.types);
+
+    if (
+      json.activeDictionarySize !== undefined &&
+      json.activeDictionarySize !== null
+    ) {
+      this.setActiveDictionarySize(json.activeDictionarySize);
+    }
+    if (json.types !== undefined && json.types !== null) {
+      this.setTypes(json.types);
+    }
 
     this.setupActiveDictionary();
   });
