@@ -176,7 +176,7 @@ const DictionaryOptions = inject("store", "morsePlayer")(
         label="Number Of Entries"
         editable
         max={store.morse.maxDictionarySize}
-        min={1}
+        min={10}
         step={1}
         value={store.morse.activeDictionarySize}
         onChange={value => store.morse.setActiveDictionarySize(value)}
