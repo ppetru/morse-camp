@@ -1,7 +1,16 @@
 import React, { PureComponent, Component } from "react";
-import { Button, DialogContainer, FontIcon, Slider } from "react-md";
+import {
+  Button,
+  DialogContainer,
+  FontIcon,
+  Slider,
+  List,
+  Checkbox,
+  ListItemControl
+} from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
+import { dictionary } from "./Words";
 
 import { makeLogger } from "./analytics";
 
@@ -33,8 +42,11 @@ const ClearStorage = inject("store")(
       event("clear storage");
       const { store } = this.props;
       store.transport.clear().then(() => {
+        store.morse.setupActiveDictionary();
         store.appStore.addToast("Storage cleared");
+        window.location.reload();
       });
+
       this.hide();
     };
 
@@ -129,6 +141,51 @@ const TestButton = inject("store", "morsePlayer")(
   }
 );
 
+const DictionaryOptions = inject("store", "morsePlayer")(
+  observer(({ store, morsePlayer }) => (
+    <div>
+      <h4>
+        <b>Dictionary Options</b>
+      </h4>
+      Include
+      <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
+        {dictionary.allTypes.map(type => (
+          <div key={type}>
+            <ListItemControl
+              primaryAction={
+                <Checkbox
+                  id={"list-control-primary-" + type}
+                  name="list-control-primary"
+                  label={type}
+                  disabled={
+                    store.morse.includeCount() <= 1 && store.morse.types[type]
+                  }
+                  checked={store.morse.types[type]}
+                  onChange={value => {
+                    store.morse.setType(type, value);
+                    store.morse.setupActiveDictionary();
+                  }}
+                />
+              }
+            />
+          </div>
+        ))}
+      </List>
+      <Slider
+        id="activeDictionarySize"
+        label="Number Of Entries"
+        editable
+        max={store.morse.maxDictionarySize}
+        min={1}
+        step={1}
+        value={store.morse.activeDictionarySize}
+        onChange={value => store.morse.setActiveDictionarySize(value)}
+        leftIcon={<FontIcon>build</FontIcon>}
+      />
+    </div>
+  ))
+);
+
 const Settings = inject("store", "morsePlayer")(
   observer(({ store, morsePlayer }) => (
     <div>
@@ -137,18 +194,9 @@ const Settings = inject("store", "morsePlayer")(
       </Helmet>
       <h1>Settings</h1>
       <div>
+        <br />
         <h2>Morse tone</h2>
         <div>
-          <Slider
-            id="volume"
-            label="Voume"
-            editable
-            max={100}
-            min={0}
-            value={store.morse.volume}
-            onChange={value => store.morse.setVolume(value)}
-            leftIcon={<FontIcon>build</FontIcon>}
-          />
           <Slider
             id="speed"
             label="Speed (WPM)"
@@ -171,6 +219,21 @@ const Settings = inject("store", "morsePlayer")(
             leftIcon={<FontIcon>audiotrack</FontIcon>}
           />
           <Slider
+            id="volume"
+            label="Voume"
+            editable
+            max={100}
+            min={0}
+            value={store.morse.volume}
+            onChange={value => store.morse.setVolume(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
+        </div>
+        <br />
+        <br />
+        <div>
+          <h2>Read Trainer</h2>
+          <Slider
             id="delay"
             label="Delay Before Repeat (ms)"
             editable
@@ -192,9 +255,12 @@ const Settings = inject("store", "morsePlayer")(
             onChange={value => store.morse.setMaxRepeats(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
+          <DictionaryOptions />
+          <br />
           <TestButton />
         </div>
-
+        <br />
+        <br />
         <h2>Internals</h2>
         <div>
           <ClearStorage />

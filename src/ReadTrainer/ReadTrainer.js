@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import { Button, FontIcon } from "react-md";
 import { Helmet } from "react-helmet";
 
-import { wordFrequency } from "../Words";
-import { computeWordWeights, generateText } from "../TextGenerator";
+import { dictionary } from "../Words";
+import {
+  trimDictionary,
+  computeWordWeights,
+  generateText
+} from "../TextGenerator";
 import { makeLogger } from "../analytics";
 
 import HelpScreen from "./HelpScreen";
@@ -20,14 +23,36 @@ const PlayLoop = inject("store")(
       text: ""
     };
 
-    pickText = () => {
+    pickText = (previousText = "") => {
       const store = this.props.store.readTrainer;
+      const trimmedDictionary = trimDictionary(
+        dictionary.wordFrequency,
+        this.props.store.morse.activeDictionarySize
+      );
+
       const candidates = computeWordWeights(
-        wordFrequency,
+        trimmedDictionary,
         store.words,
         Date.now()
       );
-      const text = generateText(candidates, store.minLength, store.maxLength);
+
+      var text;
+      while (text === undefined || text === null) {
+        text = generateText(candidates, store.minLength, store.maxLength);
+
+        // With small dictionaries we may need to bump up the max size to find
+        // one or more words.
+        if (text === undefined || text === null) {
+          store.setMaxLength(store.maxLength + 1);
+        }
+      }
+
+      // When the same word is selected twice in a row (which can be caused
+      // by a limited number of entries in the dictionary), adding a space
+      // allows the word to be used immediately again.
+      if (previousText === text) {
+        text += " ";
+      }
       this.setState({ text });
     };
 
@@ -39,24 +64,15 @@ const PlayLoop = inject("store")(
       const store = this.props.store.readTrainer;
       store.textFeedback(this.state.text, success, count, Date.now());
       store.adjustLengths();
-      this.pickText();
+      this.pickText(this.state.text);
     };
 
     render() {
       const { text } = this.state;
-      return (
-        <PlayText
-          text={text}
-          onResult={this.onResult}
-          onAbort={this.props.onAbort}
-        />
-      );
+      return <PlayText text={text} onResult={this.onResult} />;
     }
   }
 );
-PlayLoop.propTypes = {
-  onAbort: PropTypes.func.isRequired
-};
 
 const TextSettings = inject("store")(
   observer(({ store }) => (
@@ -173,7 +189,7 @@ const ReadTrainer = inject("store", "morsePlayer")(
               <h2>Text length</h2>
               <TextSettings />
             </div>
-            {active && <PlayLoop onAbort={this.stop} />}
+            {active && <PlayLoop />}
             <div className="filler-card" />
           </div>
         );

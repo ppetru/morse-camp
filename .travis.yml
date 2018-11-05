@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-  - 'node'
+  - "node"
 cache:
   directories:
-    - 'node_modules'
+    - "node_modules"
   yarn: true
