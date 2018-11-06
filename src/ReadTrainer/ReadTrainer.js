@@ -50,6 +50,7 @@ const PlayLoop = inject("store")(
       // When the same word is selected twice in a row (which can be caused
       // by a limited number of entries in the dictionary), adding a space
       // allows the word to be used immediately again.
+      // (this is a workaround necessary due to the way setState() is (ab)used -- it needs a new value for things to work)
       if (previousText === text) {
         text += " ";
       }
