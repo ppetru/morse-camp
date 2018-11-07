@@ -25,6 +25,10 @@ const PlayLoop = inject("store")(
 
     pickText = (previousText = "") => {
       const store = this.props.store.readTrainer;
+
+      // If there are performance issues on slower devices, we may want to consider caching
+      // the trimmed dictionary. It is relatively expensive. It will need to be invalidated
+      // whenever the user changes the active dictionary.
       const trimmedDictionary = trimDictionary(
         dictionary.wordFrequency,
         this.props.store.morse.activeDictionarySize
