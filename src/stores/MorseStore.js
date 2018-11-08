@@ -87,8 +87,6 @@ class MorseStore extends SettingsSaver {
     if (json.types !== undefined && json.types !== null) {
       this.setTypes(json.types);
     }
-
-    this.setupActiveDictionary();
   });
 
   setVolume = action(volume => (this.volume = parseInt(volume, 10)));
@@ -115,8 +113,15 @@ class MorseStore extends SettingsSaver {
       (this.maxDictionarySize = parseInt(maxDictionarySize, 10))
   );
 
-  setTypes = action(types => (this.types = types));
-  setType = action((type, value) => (this.types[type] = value));
+  setTypes = action(types => {
+    this.types = types;
+    this.setupActiveDictionary();
+  });
+
+  setType = action((type, value) => {
+    this.types[type] = value;
+    this.setupActiveDictionary();
+  });
 }
 
 export default MorseStore;
