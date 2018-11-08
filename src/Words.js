@@ -5569,8 +5569,8 @@ const WORDS = [
   ["Dominican Republic", "n", 5000, "Country"],
   ["East Timor", "n", 5000, "Country"],
   ["Ecuador", "n", 5000, "Country"],
-  ["Eygpt", "n", 5000, "Country"],
-  ["El Savador", "n", 5000, "Country"],
+  ["Egypt", "n", 5000, "Country"],
+  ["El Salvador", "n", 5000, "Country"],
   ["Equatorial Guinea", "n", 5000, "Country"],
   ["Eritrea", "n", 5000, "Country"],
   ["Estonia", "n", 5000, "Country"],
@@ -5648,7 +5648,7 @@ const WORDS = [
   ["Nigeria", "n", 5000, "Country"],
   ["Norway", "n", 5000, "Country"],
   ["Oman", "n", 5000, "Country"],
-  ["Packistan", "n", 5000, "Country"],
+  ["Pakistan", "n", 5000, "Country"],
   ["Palau", "n", 5000, "Country"],
   ["Panama", "n", 5000, "Country"],
   ["Papua New Guinea", "n", 5000, "Country"],
@@ -5682,7 +5682,7 @@ const WORDS = [
   ["Sudan", "n", 5000, "Country"],
   ["Suriname", "n", 5000, "Country"],
   ["Swaziland", "n", 5000, "Country"],
-  ["Sweeden", "n", 5000, "Country"],
+  ["Sweden", "n", 5000, "Country"],
   ["Switzerland", "n", 5000, "Country"],
   ["Syria", "n", 5000, "Country"],
   ["Taiwan", "n", 5000, "Country"],
@@ -5700,7 +5700,7 @@ const WORDS = [
   ["Ukraine", "n", 5000, "Country"],
   ["United Arab Emirates", "n", 5000, "Country"],
   ["UAE", "n", 5000, "Country"],
-  ["United Kingon", "n", 5000, "Country"],
+  ["United Kingdom", "n", 5000, "Country"],
   ["UK", "n", 5000, "Country"],
   ["United States", "n", 5000, "Country"],
   ["USA", "n", 5000, "Country"],
@@ -5758,7 +5758,7 @@ class Dictionary {
   setActiveWords(types) {
     this.minWordLength = Number.MAX_SAFE_INTEGER;
     this.maxWordLength = 0;
-    this.wordFrequency = new Map();
+    this.wordFrequency = new Map(); // TODO: this is used in sorted value order, consider using http://www.collectionsjs.com/sorted-map
     this.wordType = new Map();
 
     this.types = types;
