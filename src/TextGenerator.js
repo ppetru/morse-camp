@@ -1,5 +1,4 @@
 import "seedrandom";
-import { minWordLength } from "./Words";
 
 const weighted = require("weighted");
 
@@ -8,6 +7,27 @@ Math.seedrandom();
 const REPEAT_DELAY_MS = 60 * 1000;
 const ELAPSED_WEIGHT = 1 / 10000;
 const SCORE_WEIGHT = 1;
+
+const trimDictionary = (dictionary, maxWords) => {
+  let freqs = [];
+  dictionary.forEach((freq, word) => {
+    freqs.push(freq);
+  });
+  freqs = freqs.sort(function(a, b) {
+    return b - a;
+  }); //highest to lowest
+
+  let minFrequency = freqs[maxWords - 1];
+
+  let result = new Map();
+  dictionary.forEach((freq, word) => {
+    if (freq >= minFrequency && result.size < maxWords) {
+      result.set(word, freq);
+    }
+  });
+
+  return result;
+};
 
 const computeWordWeights = (words, state, timeNow) => {
   let result = new Map(words);
@@ -39,6 +59,7 @@ const computeWordWeights = (words, state, timeNow) => {
 const pickWord = (dictionary, minLength, maxLength, blacklist = []) => {
   let words = [];
   let weights = [];
+  let allZeroWeights = true;
 
   dictionary.forEach((freq, word) => {
     if (
@@ -47,35 +68,64 @@ const pickWord = (dictionary, minLength, maxLength, blacklist = []) => {
       !blacklist.includes(word)
     ) {
       words.push(word);
-      weights.push(freq * Math.pow(2, word.length)); // avoid short, frequent words dominating everything
+
+      const weight = freq * Math.pow(2, word.length);
+      weights.push(weight); // avoid short, frequent words dominating everything
+      if (weight > 0) {
+        allZeroWeights = false;
+      }
     }
   });
 
-  if (words.length > 0) {
+  // if all words previously used
+  if (allZeroWeights) {
+    return words[Math.floor(Math.random() * words.length)];
+  } else if (words.length > 0) {
     return weighted.select(words, weights);
   } else {
     return null;
   }
 };
 
-const makeText = (dictionary, minLength, maxLength) => {
-  if (maxLength < 2 * minWordLength + 1) {
-    return null;
+const permissivelyPickWord = (dictionary, minLength, maxLength) => {
+  //allow smaller
+  var minLengthSmaller = minLength - 1;
+  var t;
+  while (minLengthSmaller >= 1) {
+    t = pickWord(dictionary, minLengthSmaller, maxLength);
+    if (t) {
+      return t;
+    }
+    minLengthSmaller--;
   }
 
-  let word = pickWord(
-    dictionary,
-    minWordLength,
-    maxLength - (1 + minWordLength)
-  );
+  //allow larger
+  var maxLengthLarger = maxLength + 1;
+  while (true) {
+    t = pickWord(dictionary, minLength, maxLengthLarger);
+    if (t) {
+      return t;
+    }
+    maxLengthLarger++;
+  }
+};
+
+const makeText = (dictionary, minLength, maxLength) => {
+  let word = pickWord(dictionary, minLength, maxLength - (1 + minLength));
   if (!word) {
-    return null;
+    word = permissivelyPickWord(dictionary, minLength, maxLength);
   }
   let words = [word];
   var remainingLength = maxLength - word.length;
 
-  while (remainingLength > minWordLength) {
-    word = pickWord(dictionary, minWordLength, remainingLength - 1, words);
+  const additionalMinLength = 2;
+  while (remainingLength > additionalMinLength) {
+    word = pickWord(
+      dictionary,
+      additionalMinLength,
+      remainingLength - 1,
+      words
+    );
     if (!word) {
       break;
     }
@@ -106,4 +156,4 @@ const generateText = (dictionary, minLength, maxLength) => {
   return candidates[Math.floor(Math.random() * candidates.length)];
 };
 
-export { computeWordWeights, generateText, REPEAT_DELAY_MS };
+export { trimDictionary, computeWordWeights, generateText, REPEAT_DELAY_MS };

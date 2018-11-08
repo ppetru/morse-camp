@@ -3,8 +3,12 @@ import { inject, observer } from "mobx-react";
 import { Button, FontIcon } from "react-md";
 import { Helmet } from "react-helmet";
 
-import { wordFrequency } from "../Words";
-import { computeWordWeights, generateText } from "../TextGenerator";
+import { dictionary } from "../Words";
+import {
+  trimDictionary,
+  computeWordWeights,
+  generateText
+} from "../TextGenerator";
 import { makeLogger } from "../analytics";
 
 import HelpScreen from "./HelpScreen";
@@ -19,14 +23,41 @@ const PlayLoop = inject("store")(
       text: ""
     };
 
-    pickText = () => {
+    pickText = (previousText = "") => {
       const store = this.props.store.readTrainer;
+
+      // If there are performance issues on slower devices, we may want to consider caching
+      // the trimmed dictionary. It is relatively expensive. It will need to be invalidated
+      // whenever the user changes the active dictionary.
+      const trimmedDictionary = trimDictionary(
+        dictionary.wordFrequency,
+        this.props.store.morse.activeDictionarySize
+      );
+
       const candidates = computeWordWeights(
-        wordFrequency,
+        trimmedDictionary,
         store.words,
         Date.now()
       );
-      const text = generateText(candidates, store.minLength, store.maxLength);
+
+      var text;
+      while (text === undefined || text === null) {
+        text = generateText(candidates, store.minLength, store.maxLength);
+
+        // With small dictionaries we may need to bump up the max size to find
+        // one or more words.
+        if (text === undefined || text === null) {
+          store.setMaxLength(store.maxLength + 1);
+        }
+      }
+
+      // When the same word is selected twice in a row (which can be caused
+      // by a limited number of entries in the dictionary), adding a space
+      // allows the word to be used immediately again.
+      // (this is a workaround necessary due to the way setState() is (ab)used -- it needs a new value for things to work)
+      if (previousText === text) {
+        text += " ";
+      }
       this.setState({ text });
     };
 
@@ -38,7 +69,7 @@ const PlayLoop = inject("store")(
       const store = this.props.store.readTrainer;
       store.textFeedback(this.state.text, success, count, Date.now());
       store.adjustLengths();
-      this.pickText();
+      this.pickText(this.state.text);
     };
 
     render() {
