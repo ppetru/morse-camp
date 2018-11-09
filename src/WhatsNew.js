@@ -8,6 +8,12 @@ const WhatsNew = () => (
     </Helmet>
     <h1>What's new</h1>
     <div className="md-text-container">
+      <h2>November 9, 2018</h2>
+      <ul>
+        <li>Read trainer: configurable dictionary.</li>
+        <li>Read trainer: dictionary now has more entries.</li>
+        <li>Multiple bug fixes.</li>
+      </ul>
       <h2>October 17, 2018</h2>
       <ul>
         <li>Read trainer: configurable repeat delay and max count.</li>
