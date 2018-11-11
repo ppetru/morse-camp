@@ -232,7 +232,7 @@ const Settings = inject("store", "morsePlayer")(
           />
           <Slider
             id="volume"
-            label="Voume"
+            label="Volume"
             editable
             max={100}
             min={0}
