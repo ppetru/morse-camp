@@ -27,3 +27,4 @@ src/**/*.css
 .idea/
 
 firebase-debug.log
+.firebase
