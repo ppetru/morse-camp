@@ -15,7 +15,7 @@ import { HotKeys } from "react-hotkeys";
 
 import { makeLogger } from "../analytics";
 
-import "./ReadTrainer.css";
+import "./ReadTrainer.scss";
 
 const keyMap = {
   show: "space",

@@ -263,12 +263,22 @@ const Settings = inject("store", "morsePlayer")(
         <div>
           <Slider
             id="speed"
-            label="Speed (WPM)"
+            label="Character Speed (WPM)"
             editable
             max={80}
             min={10}
-            value={store.morse.speed}
-            onChange={value => store.morse.setSpeed(value)}
+            value={store.morse.characterSpeed}
+            onChange={value => store.morse.setCharacterSpeed(value)}
+            leftIcon={<FontIcon>fast_forward</FontIcon>}
+          />
+          <Slider
+            id="speed"
+            label="Effective Speed (WPM)"
+            editable
+            max={80}
+            min={10}
+            value={store.morse.effectiveSpeed}
+            onChange={value => store.morse.setEffectiveSpeed(value)}
             leftIcon={<FontIcon>fast_forward</FontIcon>}
           />
           <Slider
@@ -284,7 +294,7 @@ const Settings = inject("store", "morsePlayer")(
           />
           <Slider
             id="volume"
-            label="Voume"
+            label="Volume"
             editable
             max={100}
             min={0}
@@ -295,8 +305,8 @@ const Settings = inject("store", "morsePlayer")(
         </div>
         <br />
         <br />
+        <h2>Read Trainer</h2>
         <div>
-          <h2>Read Trainer</h2>
           <RepeatOptions />
           <DictionaryOptions />
           <br />

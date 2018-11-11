@@ -11,7 +11,8 @@ class MorseStore extends SettingsSaver {
     extendObservable(this, {
       volume: 80,
       playing: false,
-      speed: 30,
+      effectiveSpeed: 30,
+      characterSpeed: 30,
       frequency: 500,
       automaticallyRepeat: true,
       delay: 2500,
@@ -30,7 +31,8 @@ class MorseStore extends SettingsSaver {
       get asJson() {
         return {
           volume: this.volume,
-          speed: this.speed,
+          effectiveSpeed: this.effectiveSpeed,
+          characterSpeed: this.characterSpeed,
           frequency: this.frequency,
           automaticallyRepeat: this.automaticallyRepeat,
           delay: this.delay,
@@ -75,7 +77,8 @@ class MorseStore extends SettingsSaver {
 
   setFromJson = action(json => {
     this.setVolume(json.volume);
-    this.setSpeed(json.speed);
+    this.setEffectiveSpeed(json.effectiveSpeed || 30);
+    this.setCharacterSpeed(json.characterSpeed || 30);
     this.setFrequency(json.frequency);
 
     if (
@@ -101,7 +104,19 @@ class MorseStore extends SettingsSaver {
 
   setVolume = action(volume => (this.volume = parseInt(volume, 10)));
 
-  setSpeed = action(speed => (this.speed = parseInt(speed, 10)));
+  setCharacterSpeed = action(speed => {
+    this.characterSpeed = parseInt(speed, 10);
+    if (this.effectiveSpeed > this.characterSpeed) {
+      this.effectiveSpeed = this.characterSpeed;
+    }
+  });
+
+  setEffectiveSpeed = action(speed => {
+    this.effectiveSpeed = parseInt(speed, 10);
+    if (this.effectiveSpeed > this.characterSpeed) {
+      this.effectiveSpeed = this.characterSpeed;
+    }
+  });
 
   setFrequency = action(
     frequency => (this.frequency = parseInt(frequency, 10))
