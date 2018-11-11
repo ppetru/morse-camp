@@ -8,7 +8,7 @@ import WebFontLoader from "webfontloader";
 import { createBrowserHistory } from "history";
 import ReactGA from "react-ga";
 
-import "./index.css";
+import "./index.scss";
 import App from "./App";
 import MorsePlayer from "./MorsePlayer";
 import RootStore from "./stores/RootStore";

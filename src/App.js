@@ -5,7 +5,7 @@ import { Router, Route, Switch } from "react-router-dom";
 import { Drawer, NavigationDrawer, Snackbar } from "react-md";
 import { Helmet } from "react-helmet";
 
-import "./App.css";
+import "./App.scss";
 import NavItemLink from "./NavItemLink";
 import ReadTrainer from "./ReadTrainer/ReadTrainer";
 import Settings from "./Settings";

@@ -7,7 +7,7 @@
     "localforage": "^1.5.5",
     "mobx": "^3.3.1",
     "mobx-react": "^4.3.3",
-    "npm-run-all": "^4.1.1",
+    "node-sass": "^4.10.0",
     "raf": "^3.4.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
@@ -16,14 +16,13 @@
     "react-hotkeys": "^1.1.4",
     "react-md": "^1.1.7",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.14",
+    "react-scripts": "2.0.3",
     "seedrandom": "^2.4.3",
     "web-audio-test-api": "^0.5.2",
     "webfontloader": "^1.6.28",
     "weighted": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "5.7.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-config-react-app": "3.0.4",
     "eslint-plugin-flowtype": "^3.0.0",
@@ -33,19 +32,15 @@
     "eslint-plugin-react": "^7.11.1",
     "husky": "^1.1.2",
     "lint-staged": "^7.3.0",
-    "node-sass-chokidar": "^0.0.3",
     "prettier": "1.14.3"
   },
   "scripts": {
-    "build-css": "node-sass-chokidar src/ -o src/",
-    "watch-css": "yarn run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
-    "start-js": "react-scripts start",
-    "start": "npm-run-all -p watch-css start-js",
-    "build": "yarn run build-css && react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "prettier": "prettier \"**/*.{json,md,scss,yaml,yml}\"",
     "lint:other": "yarn prettier --list-different",
     "lint:js": "eslint --ignore-path .gitignore --ignore-path .prettierignore \"**/*.{js,jsx}\"",
-    "pretest": "yarn run build-css",
+    "pretest": "yarn run build",
     "test": "yarn lint:other && yarn lint:js && react-scripts test --env=jsdom",
     "format:other": "yarn prettier --write",
     "format:js": "yarn lint:js --fix",
@@ -63,5 +58,11 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
