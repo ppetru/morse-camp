@@ -28,8 +28,12 @@ const event = makeLogger("ReadTrainer");
 const PlayHiddenCard = inject("store")(
   observer(
     class PlayHiddenCard extends Component {
+      constructor(props) {
+        super(props);
+        this.playCardRef = React.createRef();
+      }
       componentDidMount() {
-        document.getElementById("PlayHiddenCard").focus();
+        this.playCardRef.current.focus();
       }
 
       render() {
@@ -41,7 +45,7 @@ const PlayHiddenCard = inject("store")(
                   show: event => this.props.onShow()
                 }}
               >
-                <div tabIndex="-1" id="PlayHiddenCard">
+                <div tabIndex="-1" ref={this.playCardRef}>
                   <Card className="bottom-card">
                     <CardTitle
                       title="Listen"
@@ -81,8 +85,12 @@ PlayHiddenCard.propTypes = {
 const PlayVisibleCard = inject("store")(
   observer(
     class PlayVisibleCard extends Component {
+      constructor(props) {
+        super(props);
+        this.playCardRef = React.createRef();
+      }
       componentDidMount() {
-        document.getElementById("PlayVisibleCard").focus();
+        this.playCardRef.current.focus();
       }
 
       render() {
@@ -95,7 +103,7 @@ const PlayVisibleCard = inject("store")(
                   incorrect: event => this.props.onIncorrect()
                 }}
               >
-                <div tabIndex="-1" id="PlayVisibleCard">
+                <div tabIndex="-1" ref={this.playCardRef}>
                   <Card className="bottom-card">
                     <CardTitle
                       title="Listen"
