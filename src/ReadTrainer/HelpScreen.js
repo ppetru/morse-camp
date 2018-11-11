@@ -65,7 +65,7 @@ export default class HelpScreen extends PureComponent {
             </p>
             <p>
               If you are on a computer, you can make use of keyboard shortcuts.
-              Press the SPACE key in place of the SHOW button. If it is
+              Press the SPACE key in place of the SHOW button. When it is
               available, press R for REPEAT. Press the left arrow key for a
               CORRECT answer and the right arrow key for an INCORRECT answer.
             </p>
