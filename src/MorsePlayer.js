@@ -51,9 +51,46 @@ class MorsePlayer {
     "<SK>": "...-.-"
   };
 
+  ditsPerWord = 50; // dits in 'PARIS'
+
+  // ARRL Farnsworth formulas cf. http://www.arrl.org/files/file/Technology/x9004008.pdf
+  get addedFarnsworthDelay() {
+    return (
+      (60 * this.store.characterSpeed - 37.2 * this.store.effectiveSpeed) /
+      (this.store.characterSpeed * this.store.effectiveSpeed)
+    );
+  }
+
+  get extraCharacterSpace() {
+    return (3 * this.addedFarnsworthDelay) / 19;
+  }
+
+  get extraWordSpace() {
+    return (7 * this.addedFarnsworthDelay) / 19;
+  }
+
+  get farnsworthEnabled() {
+    return this.store.characterSpeed !== this.store.effectiveSpeed;
+  }
+
   get ditLength() {
-    // 1.2s per dit is 1WPM
-    return 1.2 / this.store.speed;
+    return 60 / this.ditsPerWord / this.store.characterSpeed;
+  }
+
+  get characterSpace() {
+    if (this.farnsworthEnabled) {
+      return 3 * this.ditLength + this.extraCharacterSpace;
+    } else {
+      return 3 * this.ditLength;
+    }
+  }
+
+  get wordSpace() {
+    if (this.farnsworthEnabled) {
+      return 7 * this.ditLength + this.extraWordSpace;
+    } else {
+      return 7 * this.ditLength;
+    }
   }
 
   get timeConstant() {
@@ -89,6 +126,9 @@ class MorsePlayer {
       }
       t += this.ditLength;
     }
+    // remove the space added after the last element -- there'll be a
+    // (potentially longer) character or word space added afterwards
+    t -= this.ditLength;
     return t;
   };
 
@@ -118,10 +158,16 @@ class MorsePlayer {
         char = s[i];
       }
       if (char === " ") {
-        t += 4 * this.ditLength; // +3 after the last char = 7 for inter-word
+        if (i > 0) {
+          // If this isn't the first character in the string then we need to
+          // first deduct the character space added after the last played
+          // character.
+          t -= this.characterSpace;
+        }
+        t += this.wordSpace;
       } else if (this.morseCodes[char] !== undefined) {
         t = this.playChar(t, this.morseCodes[char]);
-        t += 2 * this.ditLength; // +1 after the last symbol = 3 for inter-char
+        t += this.characterSpace;
       } else {
         console.log("Character '", char, "' unknown");
       }

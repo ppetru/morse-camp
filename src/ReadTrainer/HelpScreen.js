@@ -3,7 +3,7 @@ import { Button, DialogContainer, FontIcon } from "react-md";
 
 import { makeLogger } from "../analytics";
 
-import "./ReadTrainer.css";
+import "./ReadTrainer.scss";
 
 const event = makeLogger("ReadTrainer");
 
