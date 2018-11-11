@@ -11,71 +11,140 @@ import {
   FontIcon
 } from "react-md";
 
+import { HotKeys } from "react-hotkeys";
+
 import { makeLogger } from "../analytics";
 
 import "./ReadTrainer.css";
 
+const keyMap = {
+  show: "space",
+  correct: "left",
+  incorrect: "right"
+};
+
 const event = makeLogger("ReadTrainer");
 
 const PlayHiddenCard = inject("store")(
-  observer(({ store, onShow }) => (
-    <Card className="bottom-card">
-      <CardTitle
-        title="Listen"
-        subtitle={store.morse.playing ? "Playing..." : "Waiting..."}
-      />
-      <CardText>
-        <p>Decode the text and press 'Show' when ready</p>
-      </CardText>
-      <CardActions centered>
-        <Button
-          raised
-          primary
-          onClick={onShow}
-          iconEl={<FontIcon>visibility</FontIcon>}
-        >
-          Show
-        </Button>
-      </CardActions>
-    </Card>
-  ))
+  observer(
+    class PlayHiddenCard extends Component {
+      constructor(props) {
+        super(props);
+        this.playCardRef = React.createRef();
+      }
+      componentDidMount() {
+        this.playCardRef.current.focus();
+      }
+
+      render() {
+        return (
+          <HotKeys keyMap={keyMap}>
+            <div>
+              <HotKeys
+                handlers={{
+                  show: event => this.props.onShow()
+                }}
+              >
+                <div tabIndex="-1" ref={this.playCardRef}>
+                  <Card className="bottom-card">
+                    <CardTitle
+                      title="Listen"
+                      subtitle={
+                        this.props.store.morse.playing
+                          ? "Playing..."
+                          : "Waiting..."
+                      }
+                    />
+                    <CardText>
+                      <p>Decode the text and press 'Show' when ready</p>
+                    </CardText>
+                    <CardActions centered>
+                      <Button
+                        raised
+                        primary
+                        onClick={this.props.onShow}
+                        iconEl={<FontIcon>visibility</FontIcon>}
+                      >
+                        Show
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </div>
+              </HotKeys>
+            </div>
+          </HotKeys>
+        );
+      }
+    }
+  )
 );
 PlayHiddenCard.propTypes = {
   onShow: PropTypes.func.isRequired
 };
 
 const PlayVisibleCard = inject("store")(
-  observer(({ store, text, onCorrect, onIncorrect }) => (
-    <Card className="bottom-card">
-      <CardTitle
-        title="Listen"
-        subtitle={store.morse.playing ? "Playing..." : "Waiting..."}
-      />
-      <CardText>
-        <p>
-          The text was: <b>{text}</b>
-        </p>
-      </CardText>
-      <CardActions centered>
-        <Button
-          raised
-          primary
-          onClick={onCorrect}
-          iconEl={<FontIcon>thumb_up</FontIcon>}
-        >
-          Correct
-        </Button>
-        <Button
-          raised
-          primary
-          onClick={onIncorrect}
-          iconEl={<FontIcon>thumb_down</FontIcon>}
-        >
-          Incorrect
-        </Button>
-      </CardActions>
-    </Card>
-  ))
+  observer(
+    class PlayVisibleCard extends Component {
+      constructor(props) {
+        super(props);
+        this.playCardRef = React.createRef();
+      }
+      componentDidMount() {
+        this.playCardRef.current.focus();
+      }
+
+      render() {
+        return (
+          <HotKeys keyMap={keyMap}>
+            <div>
+              <HotKeys
+                handlers={{
+                  correct: event => this.props.onCorrect(),
+                  incorrect: event => this.props.onIncorrect()
+                }}
+              >
+                <div tabIndex="-1" ref={this.playCardRef}>
+                  <Card className="bottom-card">
+                    <CardTitle
+                      title="Listen"
+                      subtitle={
+                        this.props.store.morse.playing
+                          ? "Playing..."
+                          : "Waiting..."
+                      }
+                    />
+                    <CardText>
+                      <p>
+                        The text was: <b>{this.props.text}</b>
+                      </p>
+                    </CardText>
+                    <CardActions centered>
+                      <Button
+                        raised
+                        primary
+                        onClick={this.props.onCorrect}
+                        iconEl={<FontIcon>thumb_up</FontIcon>}
+                      >
+                        Correct
+                      </Button>
+                      <Button
+                        raised
+                        primary
+                        onClick={this.props.onIncorrect}
+                        iconEl={<FontIcon>thumb_down</FontIcon>}
+                      >
+                        Incorrect
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </div>
+              </HotKeys>
+            </div>
+          </HotKeys>
+        );
+      }
+    }
+  )
 );
 PlayVisibleCard.propTypes = {
   text: PropTypes.string.isRequired,

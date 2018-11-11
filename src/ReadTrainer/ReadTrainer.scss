@@ -34,3 +34,7 @@
 .center-justify {
   justify-content: center;
 }
+
+div[tabindex="-1"] {
+  outline: 0px;
+}
