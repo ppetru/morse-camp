@@ -13,6 +13,7 @@ class MorseStore extends SettingsSaver {
       playing: false,
       speed: 30,
       frequency: 500,
+      automaticallyRepeat: true,
       delay: 2500,
       maxRepeats: 15,
       activeDictionarySize: dictionary.wordFrequency.size,
@@ -31,6 +32,7 @@ class MorseStore extends SettingsSaver {
           volume: this.volume,
           speed: this.speed,
           frequency: this.frequency,
+          automaticallyRepeat: this.automaticallyRepeat,
           delay: this.delay,
           maxRepeats: this.maxRepeats,
           activeDictionarySize: this.activeDictionarySize,
@@ -75,6 +77,14 @@ class MorseStore extends SettingsSaver {
     this.setVolume(json.volume);
     this.setSpeed(json.speed);
     this.setFrequency(json.frequency);
+
+    if (
+      json.automaticallyRepeat !== undefined &&
+      json.automaticallyRepeat !== null
+    ) {
+      this.setAutomaticallyRepeat(json.automaticallyRepeat);
+    }
+
     this.setDelay(json.delay);
     this.setMaxRepeats(json.maxRepeats);
 
@@ -98,6 +108,10 @@ class MorseStore extends SettingsSaver {
   );
 
   setDelay = action(delay => (this.delay = parseInt(delay, 10)));
+
+  setAutomaticallyRepeat = action(
+    automaticallyRepeat => (this.automaticallyRepeat = automaticallyRepeat)
+  );
 
   setMaxRepeats = action(
     maxRepeats => (this.maxRepeats = parseInt(maxRepeats, 10))
