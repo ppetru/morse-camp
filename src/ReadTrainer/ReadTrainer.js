@@ -13,7 +13,7 @@ import { makeLogger } from "../analytics";
 
 import HelpScreen from "./HelpScreen";
 import PlayText from "./PlayText";
-import "./ReadTrainer.css";
+import "./ReadTrainer.scss";
 
 const event = makeLogger("ReadTrainer");
 
