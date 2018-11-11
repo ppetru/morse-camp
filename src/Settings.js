@@ -243,8 +243,8 @@ const Settings = inject("store", "morsePlayer")(
         </div>
         <br />
         <br />
+        <h2>Read Trainer</h2>
         <div>
-          <h2>Read Trainer</h2>
           <Slider
             id="delay"
             label="Delay Before Repeat (ms)"
