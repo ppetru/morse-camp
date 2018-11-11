@@ -201,12 +201,22 @@ const Settings = inject("store", "morsePlayer")(
         <div>
           <Slider
             id="speed"
-            label="Speed (WPM)"
+            label="Character Speed (WPM)"
             editable
             max={80}
             min={10}
-            value={store.morse.speed}
-            onChange={value => store.morse.setSpeed(value)}
+            value={store.morse.characterSpeed}
+            onChange={value => store.morse.setCharacterSpeed(value)}
+            leftIcon={<FontIcon>fast_forward</FontIcon>}
+          />
+          <Slider
+            id="speed"
+            label="Effective Speed (WPM)"
+            editable
+            max={80}
+            min={10}
+            value={store.morse.effectiveSpeed}
+            onChange={value => store.morse.setEffectiveSpeed(value)}
             leftIcon={<FontIcon>fast_forward</FontIcon>}
           />
           <Slider

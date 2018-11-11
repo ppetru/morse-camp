@@ -53,7 +53,7 @@ class MorsePlayer {
 
   get ditLength() {
     // 1.2s per dit is 1WPM
-    return 1.2 / this.store.speed;
+    return 1.2 / this.store.effectiveSpeed;
   }
 
   get timeConstant() {
