@@ -20,7 +20,8 @@ import "./ReadTrainer.css";
 const keyMap = {
   show: "space",
   correct: "left",
-  incorrect: "right"
+  incorrect: "right",
+  repeat: "r"
 };
 
 const event = makeLogger("ReadTrainer");
@@ -42,7 +43,8 @@ const PlayHiddenCard = inject("store")(
             <div>
               <HotKeys
                 handlers={{
-                  show: event => this.props.onShow()
+                  show: event => this.props.onShow(),
+                  repeat: event => this.props.onRepeat()
                 }}
               >
                 <div tabIndex="-1" ref={this.playCardRef}>
@@ -67,6 +69,18 @@ const PlayHiddenCard = inject("store")(
                       >
                         Show
                       </Button>
+                      {this.props.store.morse.automaticallyRepeat ? (
+                        <div />
+                      ) : (
+                        <Button
+                          raised
+                          primary
+                          iconEl={<FontIcon>loop</FontIcon>}
+                          onClick={this.props.onRepeat}
+                        >
+                          Repeat
+                        </Button>
+                      )}
                     </CardActions>
                   </Card>
                 </div>
@@ -79,7 +93,8 @@ const PlayHiddenCard = inject("store")(
   )
 );
 PlayHiddenCard.propTypes = {
-  onShow: PropTypes.func.isRequired
+  onShow: PropTypes.func.isRequired,
+  onRepeat: PropTypes.func.isRequired
 };
 
 const PlayVisibleCard = inject("store")(
@@ -175,6 +190,8 @@ const PlayText = inject("store", "morsePlayer")(
         if (!this.props.store.morse.playing) {
           if (this.playCount === 0) {
             this.playText();
+          } else if (!this.props.store.morse.automaticallyRepeat) {
+            this.stop();
           } else if (
             this.playCount >= this.props.store.morse.maxRepeats ||
             this.replayCount >= this.props.store.morse.maxRepeats
@@ -239,7 +256,9 @@ const PlayText = inject("store", "morsePlayer")(
 
       render() {
         if (this.state.hidden) {
-          return <PlayHiddenCard onShow={this.onShow} />;
+          return (
+            <PlayHiddenCard onShow={this.onShow} onRepeat={this.playText} />
+          );
         } else {
           return (
             <PlayVisibleCard
