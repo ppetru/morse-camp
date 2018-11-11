@@ -22,3 +22,13 @@ it("caps effective speed to character speed", () => {
   store.setEffectiveSpeed(50);
   expect(store.effectiveSpeed).toEqual(30);
 });
+
+it("caps effective speed to character speed when the latter drops", () => {
+  const transport = new FakeTransport();
+  var store = new MorseStore(null, transport, true);
+  store.setCharacterSpeed(30);
+  store.setEffectiveSpeed(50);
+  expect(store.effectiveSpeed).toEqual(30);
+  store.setCharacterSpeed(20);
+  expect(store.effectiveSpeed).toEqual(20);
+});
