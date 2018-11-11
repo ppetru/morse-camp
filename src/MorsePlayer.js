@@ -52,14 +52,45 @@ class MorsePlayer {
   };
 
   ditsPerWord = 50; // dits in 'PARIS'
-  spacesInParis = 19; // 5x 3 dit inter-char + 1x 7 dit inter-word
 
-  get characterDitLength() {
+  // ARRL Farnsworth formulas cf. http://www.arrl.org/files/file/Technology/x9004008.pdf
+  get addedFarnsworthDelay() {
+    return (
+      (60 * this.store.characterSpeed - 37.2 * this.store.effectiveSpeed) /
+      (this.store.characterSpeed * this.store.effectiveSpeed)
+    );
+  }
+
+  get extraCharacterSpace() {
+    return (3 * this.addedFarnsworthDelay) / 19;
+  }
+
+  get extraWordSpace() {
+    return (7 * this.addedFarnsworthDelay) / 19;
+  }
+
+  get farnsworthEnabled() {
+    return this.store.characterSpeed !== this.store.effectiveSpeed;
+  }
+
+  get ditLength() {
     return 60 / this.ditsPerWord / this.store.characterSpeed;
   }
 
-  get pauseDitLength() {
-    return 60 / this.ditsPerWord / this.store.effectiveSpeed;
+  get characterSpace() {
+    if (this.farnsworthEnabled) {
+      return 3 * this.ditLength + this.extraCharacterSpace;
+    } else {
+      return 3 * this.ditLength;
+    }
+  }
+
+  get wordSpace() {
+    if (this.farnsworthEnabled) {
+      return 7 * this.ditLength + this.extraWordSpace;
+    } else {
+      return 7 * this.ditLength;
+    }
   }
 
   get timeConstant() {
@@ -83,19 +114,21 @@ class MorsePlayer {
       switch (c[i]) {
         case ".":
           this.soundOn(t);
-          t += this.characterDitLength;
+          t += this.ditLength;
           this.soundOff(t);
           break;
         case "-":
           this.soundOn(t);
-          t += 3 * this.characterDitLength;
+          t += 3 * this.ditLength;
           this.soundOff(t);
           break;
         default:
       }
-      t += this.characterDitLength;
+      t += this.ditLength;
     }
-    t -= this.characterDitLength;
+    // remove the space added after the last element -- there'll be a
+    // (potentially longer) character or word space added afterwards
+    t -= this.ditLength;
     return t;
   };
 
@@ -114,7 +147,7 @@ class MorsePlayer {
     this.oscillator.start();
     this.playing = true;
     let t = this.audioContext.currentTime;
-    t += 3 * this.characterDitLength;
+    t += 3 * this.ditLength;
     var i = 0;
     while (i < s.length) {
       let char;
@@ -125,10 +158,16 @@ class MorsePlayer {
         char = s[i];
       }
       if (char === " ") {
-        t += 4 * this.pauseDitLength; // +3 after the last char = 7 for inter-word
+        if (i > 0) {
+          // If this isn't the first character in the string then we need to
+          // first deduct the character space added after the last played
+          // character.
+          t -= this.characterSpace;
+        }
+        t += this.wordSpace;
       } else if (this.morseCodes[char] !== undefined) {
         t = this.playChar(t, this.morseCodes[char]);
-        t += 3 * this.pauseDitLength;
+        t += this.characterSpace;
       } else {
         console.log("Character '", char, "' unknown");
       }
@@ -151,12 +190,12 @@ class MorsePlayer {
     if (this.playing) {
       const t = this.audioContext.currentTime;
       this.gain.gain.cancelScheduledValues(t);
-      this.soundOff(t + this.characterDitLength); // gracefully ramp down in case the tone was on
+      this.soundOff(t + this.ditLength); // gracefully ramp down in case the tone was on
       // TODO: this is not necessary until/unless we do something more
       // interesting in the ended event listener. Meanwhile, it causes Safari
       // to throw an invalid state exception (because somehow mobx ends up
       // calling things twice and/or takes a while to propagate values.
-      //this.oscillator.stop(t + 7 * this.characterDitLength); // leave some space between words
+      //this.oscillator.stop(t + 7 * this.ditLength); // leave some space between words
     }
   };
 
