@@ -87,7 +87,7 @@ const PlayVisibleCard = inject("store")(
 
       render() {
         return (
-          <HotKeys autoFocus keyMap={keyMap}>
+          <HotKeys keyMap={keyMap}>
             <div>
               <HotKeys
                 handlers={{
