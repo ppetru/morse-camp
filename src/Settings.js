@@ -92,7 +92,7 @@ const FrequencyOptions = inject("store")(
       <Switch
         id="variable-switch"
         name="variable"
-        label="Randomly Variable"
+        label="Random"
         onChange={checked => store.morse.setVariableFrequency(checked)}
         checked={store.morse.variableFrequency}
       />
@@ -109,7 +109,7 @@ const FrequencyOptions = inject("store")(
             value={store.morse.upperBoundFrequency}
             onChange={value => {
               store.morse.setUpperBoundFrequency(value);
-              const lowerBound = value - 500 < 100 ? 101 : value - 500;
+              const lowerBound = value - 400 < 100 ? 101 : value - 400;
               store.morse.setLowerBoundFrequency(lowerBound);
             }}
             leftIcon={<FontIcon>build</FontIcon>}
@@ -130,7 +130,7 @@ const FrequencyOptions = inject("store")(
         <div>
           <Slider
             id="frequency"
-            label="Tone Frequency (Hz)"
+            label="Tone (Hz)"
             editable
             max={1000}
             min={200}
