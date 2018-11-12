@@ -32,7 +32,7 @@ const PlayLoop = inject("store")(
       // whenever the user changes the active dictionary.
       const trimmedDictionary = trimDictionary(
         dictionary.wordFrequency,
-        this.props.store.morse.activeDictionarySize
+        this.props.store.readTrainer.activeDictionarySize
       );
 
       const candidates = computeWordWeights(

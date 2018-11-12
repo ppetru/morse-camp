@@ -1,5 +1,4 @@
 import { action, extendObservable } from "mobx";
-import { dictionary } from "../Words";
 import SettingsSaver from "./SettingsSaver";
 
 class MorseStore extends SettingsSaver {
@@ -14,12 +13,6 @@ class MorseStore extends SettingsSaver {
       effectiveSpeed: 30,
       characterSpeed: 30,
       frequency: 500,
-      automaticallyRepeat: true,
-      delay: 2500,
-      maxRepeats: 15,
-      activeDictionarySize: dictionary.wordFrequency.size,
-      maxDictionarySize: dictionary.wordFrequency.size,
-      types: dictionary.typesToIncludeByDefault,
 
       startedPlaying: action(() => {
         this.playing = true;
@@ -33,73 +26,19 @@ class MorseStore extends SettingsSaver {
           volume: this.volume,
           effectiveSpeed: this.effectiveSpeed,
           characterSpeed: this.characterSpeed,
-          frequency: this.frequency,
-          automaticallyRepeat: this.automaticallyRepeat,
-          delay: this.delay,
-          maxRepeats: this.maxRepeats,
-          activeDictionarySize: this.activeDictionarySize,
-          types: this.types
+          frequency: this.frequency
         };
       }
     });
 
-    this.setupActiveDictionary();
     this.setupSettings("MorsePlayer", noDebounce);
   }
-
-  includeCount = () => {
-    var count = 0;
-
-    Object.entries(this.types).forEach(([key, value]) => {
-      if (value) {
-        count++;
-      }
-    });
-
-    return count;
-  };
-
-  setupActiveDictionary = () => {
-    var types = [];
-
-    for (var type in this.types) {
-      if (this.types.hasOwnProperty(type) && this.types[type]) {
-        types.push(type);
-      }
-    }
-
-    dictionary.setActiveWords(types);
-    this.setMaxDictionarySize(dictionary.wordType.size);
-    if (this.activeDictionarySize > this.maxDictionarySize) {
-      this.setActiveDictionarySize(this.maxDictionarySize);
-    }
-  };
 
   setFromJson = action(json => {
     this.setVolume(json.volume);
     this.setCharacterSpeed(json.characterSpeed || 30);
     this.setEffectiveSpeed(json.effectiveSpeed || 30);
     this.setFrequency(json.frequency);
-
-    if (
-      json.automaticallyRepeat !== undefined &&
-      json.automaticallyRepeat !== null
-    ) {
-      this.setAutomaticallyRepeat(json.automaticallyRepeat);
-    }
-
-    this.setDelay(json.delay);
-    this.setMaxRepeats(json.maxRepeats);
-
-    if (
-      json.activeDictionarySize !== undefined &&
-      json.activeDictionarySize !== null
-    ) {
-      this.setActiveDictionarySize(json.activeDictionarySize);
-    }
-    if (json.types !== undefined && json.types !== null) {
-      this.setTypes(json.types);
-    }
   });
 
   setVolume = action(volume => (this.volume = parseInt(volume, 10)));
@@ -121,36 +60,6 @@ class MorseStore extends SettingsSaver {
   setFrequency = action(
     frequency => (this.frequency = parseInt(frequency, 10))
   );
-
-  setDelay = action(delay => (this.delay = parseInt(delay, 10)));
-
-  setAutomaticallyRepeat = action(
-    automaticallyRepeat => (this.automaticallyRepeat = automaticallyRepeat)
-  );
-
-  setMaxRepeats = action(
-    maxRepeats => (this.maxRepeats = parseInt(maxRepeats, 10))
-  );
-
-  setActiveDictionarySize = action(
-    activeDictionarySize =>
-      (this.activeDictionarySize = parseInt(activeDictionarySize, 10))
-  );
-
-  setMaxDictionarySize = action(
-    maxDictionarySize =>
-      (this.maxDictionarySize = parseInt(maxDictionarySize, 10))
-  );
-
-  setTypes = action(types => {
-    this.types = types;
-    this.setupActiveDictionary();
-  });
-
-  setType = action((type, value) => {
-    this.types[type] = value;
-    this.setupActiveDictionary();
-  });
 }
 
 export default MorseStore;

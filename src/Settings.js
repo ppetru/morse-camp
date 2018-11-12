@@ -34,7 +34,7 @@ const ClearStorage = inject("store")(
       event("clear storage");
       const { store } = this.props;
       store.transport.clear().then(() => {
-        store.morse.setupActiveDictionary();
+        store.readTrainer.setupActiveDictionary();
         store.appStore.addToast("Storage cleared");
         window.location.reload();
       });

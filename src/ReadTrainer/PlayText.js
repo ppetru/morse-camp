@@ -69,7 +69,7 @@ const PlayHiddenCard = inject("store")(
                       >
                         Show
                       </Button>
-                      {this.props.store.morse.automaticallyRepeat ? (
+                      {this.props.store.readTrainer.automaticallyRepeat ? (
                         <div />
                       ) : (
                         <Button
@@ -190,17 +190,17 @@ const PlayText = inject("store", "morsePlayer")(
         if (!this.props.store.morse.playing) {
           if (this.playCount === 0) {
             this.playText();
-          } else if (!this.props.store.morse.automaticallyRepeat) {
+          } else if (!this.props.store.readTrainer.automaticallyRepeat) {
             this.stop();
           } else if (
-            this.playCount >= this.props.store.morse.maxRepeats ||
-            this.replayCount >= this.props.store.morse.maxRepeats
+            this.playCount >= this.props.store.readTrainer.maxRepeats ||
+            this.replayCount >= this.props.store.readTrainer.maxRepeats
           ) {
             this.stop();
           } else {
             this.timeout = setTimeout(
               this.playText,
-              this.props.store.morse.delay
+              this.props.store.readTrainer.delay
             );
           }
         }

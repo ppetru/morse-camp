@@ -25,7 +25,7 @@ const TestButton = inject("store", "morsePlayer")(
           this.playCount++;
           setTimeout(() => {
             this.playHello();
-          }, this.props.store.morse.delay);
+          }, this.props.store.readTrainer.delay);
         }
       }
     };

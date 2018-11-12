@@ -19,11 +19,11 @@ const RepeatOptions = inject("store")(
         id="repeat-switch"
         name="repeat"
         label="Automatically Repeat"
-        onChange={checked => store.morse.setAutomaticallyRepeat(checked)}
-        checked={store.morse.automaticallyRepeat}
+        onChange={checked => store.readTrainer.setAutomaticallyRepeat(checked)}
+        checked={store.readTrainer.automaticallyRepeat}
       />
 
-      {store.morse.automaticallyRepeat ? (
+      {store.readTrainer.automaticallyRepeat ? (
         <div>
           <Slider
             id="delay"
@@ -32,8 +32,8 @@ const RepeatOptions = inject("store")(
             max={5000}
             min={10}
             step={10}
-            value={store.morse.delay}
-            onChange={value => store.morse.setDelay(value)}
+            value={store.readTrainer.delay}
+            onChange={value => store.readTrainer.setDelay(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <Slider
@@ -43,8 +43,8 @@ const RepeatOptions = inject("store")(
             max={20}
             min={1}
             step={1}
-            value={store.morse.maxRepeats}
-            onChange={value => store.morse.setMaxRepeats(value)}
+            value={store.readTrainer.maxRepeats}
+            onChange={value => store.readTrainer.setMaxRepeats(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <TestButton repeatCount={2} />
@@ -72,12 +72,15 @@ const DictionaryOptions = inject("store")(
                 name="list-control-primary"
                 label={type}
                 disabled={
-                  store.morse.includeCount() <= 1 && store.morse.types[type]
+                  store.readTrainer.includeCount() <= 1 &&
+                  store.readTrainer.types[type]
                 }
-                checked={store.morse.types[type]}
+                checked={store.readTrainer.types[type]}
                 onChange={value => {
-                  store.morse.setType(type, value);
-                  store.morse.setActiveDictionarySize(dictionary.wordType.size);
+                  store.readTrainer.setType(type, value);
+                  store.readTrainer.setActiveDictionarySize(
+                    dictionary.wordType.size
+                  );
                 }}
               />
             }
@@ -88,11 +91,11 @@ const DictionaryOptions = inject("store")(
         id="activeDictionarySize"
         label="Number Of Entries"
         editable
-        max={store.morse.maxDictionarySize}
+        max={store.readTrainer.maxDictionarySize}
         min={10}
         step={1}
-        value={store.morse.activeDictionarySize}
-        onChange={value => store.morse.setActiveDictionarySize(value)}
+        value={store.readTrainer.activeDictionarySize}
+        onChange={value => store.readTrainer.setActiveDictionarySize(value)}
         leftIcon={<FontIcon>build</FontIcon>}
       />
     </div>
