@@ -196,6 +196,9 @@ class MorsePlayer {
     this.oscillator.connect(this.gain);
 
     if (this.store.randomFrequency) {
+      if (this.randomFrequency === -1) {
+        this.resetRandomFrequency();
+      }
       this.oscillator.frequency.value = this.randomFrequency;
     } else {
       this.oscillator.frequency.value = this.store.frequency;
