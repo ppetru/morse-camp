@@ -40,6 +40,8 @@ const navItems = [
 const App = inject("store")(
   observer(
     class App extends Component {
+      state = { title: "Morse Camp" };
+
       componentWillMount() {
         this.unlisten = this.props.history.listen(location => {
           pageview(location.pathname + location.search);
@@ -62,11 +64,14 @@ const App = inject("store")(
               render={({ location }) => (
                 <div className="fullscreen">
                   <Helmet
-                    titleTemplate="Morse Camp - %s"
+                    titleTemplate="Morse Camp | %s"
                     defaultTitle="Morse Camp"
+                    onChangeClientState={newState =>
+                      this.setState({ title: newState.title })
+                    }
                   />
                   <NavigationDrawer
-                    toolbarTitle="Morse Camp"
+                    toolbarTitle={this.state.title}
                     desktopDrawerType={Drawer.DrawerTypes.CLIPPED}
                     navItems={navItems.map(props => (
                       <NavItemLink {...props} key={props.to} />

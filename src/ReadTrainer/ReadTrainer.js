@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import { inject, observer } from "mobx-react";
-import { Button, FontIcon } from "react-md";
+import { BottomNavigation, Button, FontIcon } from "react-md";
 import { Helmet } from "react-helmet";
 
 import { dictionary } from "../Words";
@@ -12,6 +12,7 @@ import {
 import { makeLogger } from "../analytics";
 
 import HelpScreen from "./HelpScreen";
+import Configuration from "./Configuration";
 import PlayText from "./PlayText";
 import "./ReadTrainer.scss";
 
@@ -134,9 +135,9 @@ const TextSettings = inject("store")(
   ))
 );
 
-const ReadTrainer = inject("store", "morsePlayer")(
+const ReadTrainerPlayer = inject("store", "morsePlayer")(
   observer(
-    class ReadTrainer extends Component {
+    class ReadTrainerPlayer extends Component {
       state = {
         active: false
       };
@@ -182,25 +183,77 @@ const ReadTrainer = inject("store", "morsePlayer")(
 
         return (
           <div className="vcontainer">
-            <Helmet>
-              <title>Read Trainer</title>
-            </Helmet>
-            <h1>Read Trainer</h1>
             <div className="top-card">
-              <div className="horizontal-container center-justify">
-                <HelpScreen />
-                {button}
-              </div>
               <h2>Text length</h2>
               <TextSettings />
+              <div className="horizontal-container center-justify">
+                {button}
+              </div>
             </div>
             {active && <PlayLoop />}
-            <div className="filler-card" />
           </div>
         );
       }
     }
   )
 );
+
+const links = [
+  {
+    label: "Train",
+    icon: <FontIcon>play_arrow</FontIcon>
+  },
+  {
+    label: "Configuration",
+    icon: <FontIcon>tune</FontIcon>
+  },
+  {
+    label: "Instructions",
+    icon: <FontIcon>help</FontIcon>
+  }
+];
+
+class ReadTrainer extends PureComponent {
+  state = { children: <ReadTrainerPlayer /> };
+
+  handleNavChange = activeIndex => {
+    let children;
+    switch (activeIndex) {
+      case 1:
+        children = <Configuration key="config" />;
+        event("configuration");
+        break;
+      case 2:
+        children = <HelpScreen key="help" />;
+        event("help");
+        break;
+      default:
+        children = <ReadTrainerPlayer key="trainer" />;
+        event("play_tab");
+    }
+
+    this.setState({ children });
+  };
+
+  render() {
+    const { children } = this.state;
+
+    return (
+      <div className="vcontainer">
+        <Helmet>
+          <title>Read Trainer</title>
+        </Helmet>
+        <main className="vcontainer md-bottom-navigation-offset">
+          {children}
+        </main>
+        <BottomNavigation
+          links={links}
+          dynamic={false}
+          onNavChange={this.handleNavChange}
+        />
+      </div>
+    );
+  }
+}
 
 export default ReadTrainer;
