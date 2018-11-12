@@ -65,9 +65,9 @@ export default class HelpScreen extends PureComponent {
             </p>
             <p>
               If you are on a computer, you can make use of keyboard shortcuts.
-              Press the SPACE key in place of the SHOW button. Press the left
-              arrow key for a CORRECT answer and the right arrow key for an
-              INCORRECT answer.
+              Press the SPACE key in place of the SHOW button. When it is
+              available, press R for REPEAT. Press the left arrow key for a
+              CORRECT answer and the right arrow key for an INCORRECT answer.
             </p>
             <p>
               The difficulty adjusts automatically and problematic words repeat
