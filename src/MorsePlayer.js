@@ -52,7 +52,7 @@ class MorsePlayer {
     "<SK>": "...-.-"
   };
 
-  frequencyLastUsed = -1;
+  randomFrequency = -1;
   ditsPerWord = 50; // dits in 'PARIS'
 
   // ARRL Farnsworth formulas cf. http://www.arrl.org/files/file/Technology/x9004008.pdf
@@ -134,7 +134,20 @@ class MorsePlayer {
     return t;
   };
 
-  playString = (s, reuseVariableFrequency = false) => {
+  resetRandomFrequency = () => {
+    let frequency = -1;
+    while (
+      !(
+        frequency >= this.store.lowerBoundFrequency &&
+        frequency <= this.store.upperBoundFrequency
+      )
+    ) {
+      frequency = Math.floor(Math.random() * this.store.upperBoundFrequency);
+    }
+    this.randomFrequency = frequency;
+  };
+
+  playString = s => {
     if (this.playing) {
       return;
     }
@@ -145,7 +158,7 @@ class MorsePlayer {
     }
     s = s.toUpperCase();
     this.store.startedPlaying();
-    this.makeOscillator(reuseVariableFrequency);
+    this.makeOscillator();
     this.oscillator.start();
     this.playing = true;
     let t = this.audioContext.currentTime;
@@ -178,28 +191,12 @@ class MorsePlayer {
     this.oscillator.stop(t);
   };
 
-  makeOscillator = (reuseVariableFrequency = false) => {
+  makeOscillator = () => {
     this.oscillator = this.audioContext.createOscillator();
     this.oscillator.connect(this.gain);
 
-    if (this.store.variableFrequency) {
-      if (reuseVariableFrequency && this.frequencyLastUsed !== -1) {
-        this.oscillator.frequency.value = this.frequencyLastUsed;
-      } else {
-        let frequency = -1;
-        while (
-          !(
-            frequency >= this.store.lowerBoundFrequency &&
-            frequency <= this.store.upperBoundFrequency
-          )
-        ) {
-          frequency = Math.floor(
-            Math.random() * this.store.upperBoundFrequency
-          );
-        }
-        this.frequencyLastUsed = frequency;
-        this.oscillator.frequency.value = frequency;
-      }
+    if (this.store.randomFrequency) {
+      this.oscillator.frequency.value = this.randomFrequency;
     } else {
       this.oscillator.frequency.value = this.store.frequency;
     }

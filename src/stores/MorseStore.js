@@ -12,7 +12,7 @@ class MorseStore extends SettingsSaver {
       playing: false,
       effectiveSpeed: 30,
       characterSpeed: 30,
-      variableFrequency: false,
+      randomFrequency: false,
       frequency: 500,
       upperBoundFrequency: 800,
       lowerBoundFrequency: 400,
@@ -29,7 +29,7 @@ class MorseStore extends SettingsSaver {
           volume: this.volume,
           effectiveSpeed: this.effectiveSpeed,
           characterSpeed: this.characterSpeed,
-          variableFrequency: this.variableFrequency,
+          randomFrequency: this.randomFrequency,
           frequency: this.frequency,
           upperBoundFrequency: this.upperBoundFrequency,
           lowerBoundFrequency: this.lowerBoundFrequency
@@ -44,7 +44,7 @@ class MorseStore extends SettingsSaver {
     this.setVolume(json.volume);
     this.setCharacterSpeed(json.characterSpeed || 30);
     this.setEffectiveSpeed(json.effectiveSpeed || 30);
-    this.setVariableFrequency(json.variableFrequency || false);
+    this.setRandomFrequency(json.randomFrequency || false);
     this.setFrequency(json.frequency);
     this.setUpperBoundFrequency(json.upperBoundFrequency || 800);
     this.setLowerBoundFrequency(json.lowerBoundFrequency || 400);
@@ -66,8 +66,8 @@ class MorseStore extends SettingsSaver {
     }
   });
 
-  setVariableFrequency = action(variableFrequency => {
-    this.variableFrequency = variableFrequency;
+  setRandomFrequency = action(randomFrequency => {
+    this.randomFrequency = randomFrequency;
   });
 
   setFrequency = action(

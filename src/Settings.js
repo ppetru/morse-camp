@@ -90,14 +90,14 @@ const FrequencyOptions = inject("store")(
     <div>
       <h3>Frequency</h3>
       <Switch
-        id="variable-switch"
-        name="variable"
+        id="randomFrequency-switch"
+        name="randomFrequency"
         label="Random"
-        onChange={checked => store.morse.setVariableFrequency(checked)}
-        checked={store.morse.variableFrequency}
+        onChange={checked => store.morse.setRandomFrequency(checked)}
+        checked={store.morse.randomFrequency}
       />
 
-      {store.morse.variableFrequency ? (
+      {store.morse.randomFrequency ? (
         <div>
           <Slider
             id="upperBoundFrequency"

@@ -171,30 +171,29 @@ const PlayText = inject("store", "morsePlayer")(
   observer(
     class PlayText extends Component {
       state = {
-        hidden: true,
-        reuseVariableFrequency: false
+        hidden: true
       };
 
       playText = () => {
         const { morsePlayer, text } = this.props;
-        const { hidden, reuseVariableFrequency } = this.state;
+        const { hidden } = this.state;
 
         if (hidden) {
           this.playCount++;
         } else {
           this.replayCount++;
         }
-        morsePlayer.playString(text, reuseVariableFrequency);
+        morsePlayer.playString(text);
       };
 
       manualPlayText = () => {
-        this.setState({ reuseVariableFrequency: true });
         this.playText();
       };
 
       playLoop = () => {
         if (!this.props.store.morse.playing) {
           if (this.playCount === 0) {
+            this.props.morsePlayer.resetRandomFrequency();
             this.playText();
           } else if (!this.props.store.readTrainer.automaticallyRepeat) {
             this.stop();
@@ -204,7 +203,6 @@ const PlayText = inject("store", "morsePlayer")(
           ) {
             this.stop();
           } else {
-            this.setState({ reuseVariableFrequency: true });
             this.timeout = setTimeout(
               this.playText,
               this.props.store.readTrainer.delay
@@ -223,7 +221,6 @@ const PlayText = inject("store", "morsePlayer")(
         this.autorun();
         clearTimeout(this.timeout);
         this.props.morsePlayer.forceStop();
-        this.setState({ reuseVariableFrequency: false });
       };
 
       componentWillMount() {
