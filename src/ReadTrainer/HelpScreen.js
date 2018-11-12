@@ -8,8 +8,8 @@ const HelpScreen = () => (
     <div className="md-text-container md-text-justify">
       <p>This trainer teaches you to "read" text by ear.</p>
       <p>
-        You will hear a text of adjustable length formed from the words
-        configured in the Settings tab.
+        You will hear a text of adjustable length formed from the words selected
+        in the Configuration tab.
       </p>
       <p>
         Listen to the text until you fully decode it, then press "Show". Grade
