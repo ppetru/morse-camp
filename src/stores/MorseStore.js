@@ -77,8 +77,8 @@ class MorseStore extends SettingsSaver {
 
   setFromJson = action(json => {
     this.setVolume(json.volume);
-    this.setEffectiveSpeed(json.effectiveSpeed || 30);
     this.setCharacterSpeed(json.characterSpeed || 30);
+    this.setEffectiveSpeed(json.effectiveSpeed || 30);
     this.setFrequency(json.frequency);
 
     if (
