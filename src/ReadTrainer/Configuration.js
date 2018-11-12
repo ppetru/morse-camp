@@ -9,6 +9,7 @@ import {
 } from "react-md";
 import { inject, observer } from "mobx-react";
 import { dictionary } from "../Words";
+import TestButton from "../TestButton";
 
 const RepeatOptions = inject("store")(
   observer(({ store }) => (
@@ -46,6 +47,7 @@ const RepeatOptions = inject("store")(
             onChange={value => store.morse.setMaxRepeats(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
+          <TestButton repeatCount={2} />
         </div>
       ) : (
         <div>

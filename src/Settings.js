@@ -1,9 +1,10 @@
-import React, { PureComponent, Component } from "react";
+import React, { PureComponent } from "react";
 import { Button, DialogContainer, FontIcon, Slider } from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
 import { makeLogger } from "./analytics";
+import TestButton from "./TestButton";
 
 const event = makeLogger("Settings");
 
@@ -84,54 +85,6 @@ const ClearStorage = inject("store")(
   }
 );
 
-const TestButton = inject("store", "morsePlayer")(
-  class TestButton extends Component {
-    playCount = 0;
-    playInterval;
-
-    playLoop = () => {
-      if (!this.props.store.morse.playing) {
-        if (this.playCount === 0) {
-          this.playCount++;
-          this.playHello();
-        } else if (this.playCount > 1) {
-          clearInterval(this.playInterval);
-          this.playInterval = undefined;
-        } else {
-          this.playCount++;
-          setTimeout(() => {
-            this.playHello();
-          }, this.props.store.morse.delay);
-        }
-      }
-    };
-
-    playHello = () => {
-      this.props.morsePlayer.playString("hello");
-    };
-
-    render() {
-      return (
-        <Button
-          raised
-          primary
-          className="md-block-centered"
-          iconEl={<FontIcon>play_arrow</FontIcon>}
-          onClick={() => {
-            event("test");
-            if (this.playInterval === undefined) {
-              this.playCount = 0;
-              this.playInterval = setInterval(this.playLoop, 50);
-            }
-          }}
-        >
-          Test
-        </Button>
-      );
-    }
-  }
-);
-
 const Settings = inject("store", "morsePlayer")(
   observer(({ store, morsePlayer }) => (
     <div>
@@ -183,7 +136,7 @@ const Settings = inject("store", "morsePlayer")(
             onChange={value => store.morse.setVolume(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
-          <TestButton />
+          <TestButton repeatCount={1} />
         </div>
         <br />
         <br />
