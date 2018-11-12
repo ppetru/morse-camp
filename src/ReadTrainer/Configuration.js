@@ -13,6 +13,7 @@ import { dictionary } from "../Words";
 const RepeatOptions = inject("store")(
   observer(({ store }) => (
     <div>
+      <h2>Repeats</h2>
       <Switch
         id="repeat-switch"
         name="repeat"
@@ -55,36 +56,29 @@ const RepeatOptions = inject("store")(
   ))
 );
 
-const DictionaryOptions = inject("store", "morsePlayer")(
-  observer(({ store, morsePlayer }) => (
+const DictionaryOptions = inject("store")(
+  observer(({ store }) => (
     <div>
-      <h4>
-        <b>Dictionary Options</b>
-      </h4>
-      Include
+      <h2>Dictionary</h2>
       <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
         {dictionary.allTypes.map(type => (
-          <div key={type}>
-            <ListItemControl
-              primaryAction={
-                <Checkbox
-                  id={"list-control-primary-" + type}
-                  name="list-control-primary"
-                  label={type}
-                  disabled={
-                    store.morse.includeCount() <= 1 && store.morse.types[type]
-                  }
-                  checked={store.morse.types[type]}
-                  onChange={value => {
-                    store.morse.setType(type, value);
-                    store.morse.setActiveDictionarySize(
-                      dictionary.wordType.size
-                    );
-                  }}
-                />
-              }
-            />
-          </div>
+          <ListItemControl
+            primaryAction={
+              <Checkbox
+                id={"list-control-primary-" + type}
+                name="list-control-primary"
+                label={type}
+                disabled={
+                  store.morse.includeCount() <= 1 && store.morse.types[type]
+                }
+                checked={store.morse.types[type]}
+                onChange={value => {
+                  store.morse.setType(type, value);
+                  store.morse.setActiveDictionarySize(dictionary.wordType.size);
+                }}
+              />
+            }
+          />
         ))}
       </List>
       <Slider
@@ -102,14 +96,14 @@ const DictionaryOptions = inject("store", "morsePlayer")(
   ))
 );
 
-const Configuration = inject("store", "morsePlayer")(
-  observer(({ store, morsePlayer }) => (
-    <div>
-      <h1>Configuration</h1>
-      <RepeatOptions />
-      <DictionaryOptions />
-    </div>
-  ))
+// TODO: this should probably use md-bottom-navigation-offset instead
+const Configuration = () => (
+  <div className="vcontainer">
+    <h1>Configuration</h1>
+    <RepeatOptions />
+    <DictionaryOptions />
+    <div className="filler-card" />
+  </div>
 );
 
 export default Configuration;
