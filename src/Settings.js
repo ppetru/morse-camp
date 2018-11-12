@@ -6,12 +6,12 @@ import {
   Slider,
   List,
   Checkbox,
-  ListItemControl
+  ListItemControl,
+  Switch
 } from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 import { dictionary } from "./Words";
-import Switch from "react-switch";
 
 import { makeLogger } from "./analytics";
 
@@ -143,64 +143,48 @@ const TestButton = inject("store", "morsePlayer")(
 );
 
 const RepeatOptions = inject("store")(
-  class RepeatOptions extends Component {
-    constructor() {
-      super();
-      this.handleChange = this.handleChange.bind(this);
-    }
+  observer(({ store }) => (
+    <div>
+      <Switch
+        id="repeat-switch"
+        name="repeat"
+        label="Automatically Repeat"
+        onChange={checked => store.morse.setAutomaticallyRepeat(checked)}
+        checked={store.morse.automaticallyRepeat}
+      />
 
-    handleChange(checked) {
-      this.setState({ checked });
-      this.props.store.morse.setAutomaticallyRepeat(checked);
-    }
-
-    render() {
-      return (
+      {store.morse.automaticallyRepeat ? (
         <div>
-          <label htmlFor="normal-switch">
-            <p>Automatically Repeat</p>
-            <Switch
-              onChange={this.handleChange}
-              checked={this.props.store.morse.automaticallyRepeat}
-              onColor={"#98ce5f"}
-              id="normal-switch"
-            />
-          </label>
-
-          {this.props.store.morse.automaticallyRepeat ? (
-            <div>
-              <Slider
-                id="delay"
-                label="Delay Before Repeat (ms)"
-                editable
-                max={5000}
-                min={10}
-                step={10}
-                value={this.props.store.morse.delay}
-                onChange={value => this.props.store.morse.setDelay(value)}
-                leftIcon={<FontIcon>build</FontIcon>}
-              />
-              <Slider
-                id="max repeats"
-                label="Max Repeats"
-                editable
-                max={20}
-                min={1}
-                step={1}
-                value={this.props.store.morse.maxRepeats}
-                onChange={value => this.props.store.morse.setMaxRepeats(value)}
-                leftIcon={<FontIcon>build</FontIcon>}
-              />
-            </div>
-          ) : (
-            <div>
-              <br />
-            </div>
-          )}
+          <Slider
+            id="delay"
+            label="Delay Before Repeat (ms)"
+            editable
+            max={5000}
+            min={10}
+            step={10}
+            value={store.morse.delay}
+            onChange={value => store.morse.setDelay(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
+          <Slider
+            id="max repeats"
+            label="Max Repeats"
+            editable
+            max={20}
+            min={1}
+            step={1}
+            value={store.morse.maxRepeats}
+            onChange={value => store.morse.setMaxRepeats(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
         </div>
-      );
-    }
-  }
+      ) : (
+        <div>
+          <br />
+        </div>
+      )}
+    </div>
+  ))
 );
 
 const DictionaryOptions = inject("store", "morsePlayer")(
