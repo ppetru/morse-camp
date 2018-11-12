@@ -12,12 +12,15 @@ const TestButton = inject("store", "morsePlayer")(
     // TODO: should these be React state instead?
     playCount = 0;
     playInterval;
+    reuseVariableFrequency = false;
 
     playLoop = () => {
       if (!this.props.store.morse.playing) {
         if (this.playCount === 0) {
           this.playCount++;
+          this.reuseVariableFrequency = false;
           this.playHello();
+          this.reuseVariableFrequency = true;
         } else if (this.playCount > this.props.repeatCount - 1) {
           clearInterval(this.playInterval);
           this.playInterval = undefined;
@@ -31,7 +34,7 @@ const TestButton = inject("store", "morsePlayer")(
     };
 
     playHello = () => {
-      this.props.morsePlayer.playString("hello");
+      this.props.morsePlayer.playString("hello", this.reuseVariableFrequency);
     };
 
     render() {

@@ -41,6 +41,7 @@ class MorsePlayer {
     ".": ".-.-.-",
     ",": "--..--",
     "?": "..--..",
+    "/": "-..-.",
 
     "<AR>": ".-.-.",
     "<AS>": ".-...",
@@ -51,6 +52,7 @@ class MorsePlayer {
     "<SK>": "...-.-"
   };
 
+  frequencyLastUsed = -1;
   ditsPerWord = 50; // dits in 'PARIS'
 
   // ARRL Farnsworth formulas cf. http://www.arrl.org/files/file/Technology/x9004008.pdf
@@ -132,7 +134,7 @@ class MorsePlayer {
     return t;
   };
 
-  playString = s => {
+  playString = (s, reuseVariableFrequency = false) => {
     if (this.playing) {
       return;
     }
@@ -143,7 +145,7 @@ class MorsePlayer {
     }
     s = s.toUpperCase();
     this.store.startedPlaying();
-    this.makeOscillator();
+    this.makeOscillator(reuseVariableFrequency);
     this.oscillator.start();
     this.playing = true;
     let t = this.audioContext.currentTime;
@@ -176,10 +178,32 @@ class MorsePlayer {
     this.oscillator.stop(t);
   };
 
-  makeOscillator = () => {
+  makeOscillator = (reuseVariableFrequency = false) => {
     this.oscillator = this.audioContext.createOscillator();
     this.oscillator.connect(this.gain);
-    this.oscillator.frequency.value = this.store.frequency;
+
+    if (this.store.variableFrequency) {
+      if (reuseVariableFrequency && this.frequencyLastUsed !== -1) {
+        this.oscillator.frequency.value = this.frequencyLastUsed;
+      } else {
+        let frequency = -1;
+        while (
+          !(
+            frequency >= this.store.lowerBoundFrequency &&
+            frequency <= this.store.upperBoundFrequency
+          )
+        ) {
+          frequency = Math.floor(
+            Math.random() * this.store.upperBoundFrequency
+          );
+        }
+        this.frequencyLastUsed = frequency;
+        this.oscillator.frequency.value = frequency;
+      }
+    } else {
+      this.oscillator.frequency.value = this.store.frequency;
+    }
+
     this.oscillator.addEventListener("ended", event => {
       this.playing = false;
       this.store.stoppedPlaying();
