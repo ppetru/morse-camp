@@ -65,6 +65,7 @@ const DictionaryOptions = inject("store")(
       <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
         {dictionary.allTypes.map(type => (
           <ListItemControl
+            key={type}
             primaryAction={
               <Checkbox
                 id={"list-control-primary-" + type}
