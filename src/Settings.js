@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Button, DialogContainer, FontIcon, Slider } from "react-md";
+import { Button, DialogContainer, FontIcon, Slider, Switch } from "react-md";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
@@ -85,6 +85,66 @@ const ClearStorage = inject("store")(
   }
 );
 
+const FrequencyOptions = inject("store")(
+  observer(({ store }) => (
+    <div>
+      <h3>Frequency</h3>
+      <Switch
+        id="variable-switch"
+        name="variable"
+        label="Randomly Variable"
+        onChange={checked => store.morse.setVariableFrequency(checked)}
+        checked={store.morse.variableFrequency}
+      />
+
+      {store.morse.variableFrequency ? (
+        <div>
+          <Slider
+            id="upperBoundFrequency"
+            label="Upper Bound (Hz)"
+            editable
+            max={1200}
+            min={200}
+            step={10}
+            value={store.morse.upperBoundFrequency}
+            onChange={value => {
+              store.morse.setUpperBoundFrequency(value);
+              const lowerBound = value - 500 < 100 ? 101 : value - 500;
+              store.morse.setLowerBoundFrequency(lowerBound);
+            }}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
+          <Slider
+            id="lowerBoundFrequency"
+            label="Lower Bound (Hz)"
+            editable
+            max={store.morse.upperBoundFrequency}
+            min={100}
+            step={10}
+            value={store.morse.lowerBoundFrequency}
+            onChange={value => store.morse.setLowerBoundFrequency(value)}
+            leftIcon={<FontIcon>build</FontIcon>}
+          />
+        </div>
+      ) : (
+        <div>
+          <Slider
+            id="frequency"
+            label="Tone Frequency (Hz)"
+            editable
+            max={1000}
+            min={200}
+            step={10}
+            value={store.morse.frequency}
+            onChange={value => store.morse.setFrequency(value)}
+            leftIcon={<FontIcon>audiotrack</FontIcon>}
+          />
+        </div>
+      )}
+    </div>
+  ))
+);
+
 const Settings = inject("store", "morsePlayer")(
   observer(({ store, morsePlayer }) => (
     <div>
@@ -119,17 +179,6 @@ const Settings = inject("store", "morsePlayer")(
             leftIcon={<FontIcon>fast_forward</FontIcon>}
           />
           <Slider
-            id="frequency"
-            label="Tone Frequency (Hz)"
-            editable
-            max={1000}
-            min={200}
-            step={10}
-            value={store.morse.frequency}
-            onChange={value => store.morse.setFrequency(value)}
-            leftIcon={<FontIcon>audiotrack</FontIcon>}
-          />
-          <Slider
             id="volume"
             label="Volume (%)"
             editable
@@ -139,6 +188,8 @@ const Settings = inject("store", "morsePlayer")(
             onChange={value => store.morse.setVolume(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
+          <br />
+          <FrequencyOptions />
           <TestButton repeatCount={1} />
         </div>
         <br />

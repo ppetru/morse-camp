@@ -12,7 +12,10 @@ class MorseStore extends SettingsSaver {
       playing: false,
       effectiveSpeed: 30,
       characterSpeed: 30,
+      variableFrequency: false,
       frequency: 500,
+      upperBoundFrequency: 1000,
+      lowerBoundFrequency: 250,
 
       startedPlaying: action(() => {
         this.playing = true;
@@ -26,7 +29,10 @@ class MorseStore extends SettingsSaver {
           volume: this.volume,
           effectiveSpeed: this.effectiveSpeed,
           characterSpeed: this.characterSpeed,
-          frequency: this.frequency
+          variableFrequency: this.variableFrequency,
+          frequency: this.frequency,
+          upperBoundFrequency: this.upperBoundFrequency,
+          lowerBoundFrequency: this.lowerBoundFrequency
         };
       }
     });
@@ -38,7 +44,10 @@ class MorseStore extends SettingsSaver {
     this.setVolume(json.volume);
     this.setCharacterSpeed(json.characterSpeed || 30);
     this.setEffectiveSpeed(json.effectiveSpeed || 30);
+    this.setVariableFrequency(json.variableFrequency || false);
     this.setFrequency(json.frequency);
+    this.setUpperBoundFrequency(json.upperBoundFrequency || 1000);
+    this.setLowerBoundFrequency(json.lowerBoundFrequency || 250);
   });
 
   setVolume = action(volume => (this.volume = parseInt(volume, 10)));
@@ -57,9 +66,27 @@ class MorseStore extends SettingsSaver {
     }
   });
 
+  setVariableFrequency = action(variableFrequency => {
+    this.variableFrequency = variableFrequency;
+  });
+
   setFrequency = action(
     frequency => (this.frequency = parseInt(frequency, 10))
   );
+
+  setUpperBoundFrequency = action(upperBoundFrequency => {
+    this.upperBoundFrequency = upperBoundFrequency;
+    if (this.lowerBoundFrequency > this.upperBoundFrequency) {
+      this.lowerBoundFrequency = this.upperBoundFrequency;
+    }
+  });
+
+  setLowerBoundFrequency = action(lowerBoundFrequency => {
+    this.lowerBoundFrequency = lowerBoundFrequency;
+    if (this.lowerBoundFrequency > this.upperBoundFrequency) {
+      this.lowerBoundFrequency = this.upperBoundFrequency;
+    }
+  });
 }
 
 export default MorseStore;
