@@ -106,16 +106,10 @@ class MorseStore extends SettingsSaver {
 
   setCharacterSpeed = action(speed => {
     this.characterSpeed = parseInt(speed, 10);
-    if (this.effectiveSpeed > this.characterSpeed) {
-      this.effectiveSpeed = this.characterSpeed;
-    }
   });
 
   setEffectiveSpeed = action(speed => {
     this.effectiveSpeed = parseInt(speed, 10);
-    if (this.effectiveSpeed > this.characterSpeed) {
-      this.effectiveSpeed = this.characterSpeed;
-    }
   });
 
   setFrequency = action(
