@@ -88,7 +88,7 @@ const ClearStorage = inject("store")(
 const FrequencyOptions = inject("store")(
   observer(({ store }) => (
     <div>
-      <h3>Frequency</h3>
+      <h3>Tone Frequency (Hz)</h3>
       <Switch
         id="randomFrequency-switch"
         name="randomFrequency"
@@ -101,7 +101,7 @@ const FrequencyOptions = inject("store")(
         <div>
           <Slider
             id="upperBoundFrequency"
-            label="Upper Bound (Hz)"
+            label="Upper Bound"
             editable
             max={1200}
             min={200}
@@ -116,7 +116,7 @@ const FrequencyOptions = inject("store")(
           />
           <Slider
             id="lowerBoundFrequency"
-            label="Lower Bound (Hz)"
+            label="Lower Bound"
             editable
             max={store.morse.upperBoundFrequency}
             min={100}
@@ -130,7 +130,7 @@ const FrequencyOptions = inject("store")(
         <div>
           <Slider
             id="frequency"
-            label="Tone (Hz)"
+            label="Value"
             editable
             max={1000}
             min={200}
