@@ -17,6 +17,7 @@ const TestButton = inject("store", "morsePlayer")(
       if (!this.props.store.morse.playing) {
         if (this.playCount === 0) {
           this.playCount++;
+          this.props.morsePlayer.resetRandomFrequency();
           this.playHello();
         } else if (this.playCount > this.props.repeatCount - 1) {
           clearInterval(this.playInterval);

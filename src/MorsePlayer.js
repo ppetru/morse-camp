@@ -41,6 +41,7 @@ class MorsePlayer {
     ".": ".-.-.-",
     ",": "--..--",
     "?": "..--..",
+    "/": "-..-.",
 
     "<AR>": ".-.-.",
     "<AS>": ".-...",
@@ -51,6 +52,7 @@ class MorsePlayer {
     "<SK>": "...-.-"
   };
 
+  randomFrequency = -1;
   ditsPerWord = 50; // dits in 'PARIS'
 
   // ARRL Farnsworth formulas cf. http://www.arrl.org/files/file/Technology/x9004008.pdf
@@ -132,6 +134,14 @@ class MorsePlayer {
     return t;
   };
 
+  resetRandomFrequency = () => {
+    this.randomFrequency =
+      Math.floor(
+        Math.random() *
+          (this.store.upperBoundFrequency - this.store.lowerBoundFrequency)
+      ) + this.store.lowerBoundFrequency;
+  };
+
   playString = s => {
     if (this.playing) {
       return;
@@ -179,7 +189,16 @@ class MorsePlayer {
   makeOscillator = () => {
     this.oscillator = this.audioContext.createOscillator();
     this.oscillator.connect(this.gain);
-    this.oscillator.frequency.value = this.store.frequency;
+
+    if (this.store.randomFrequency) {
+      if (this.randomFrequency === -1) {
+        this.resetRandomFrequency();
+      }
+      this.oscillator.frequency.value = this.randomFrequency;
+    } else {
+      this.oscillator.frequency.value = this.store.frequency;
+    }
+
     this.oscillator.addEventListener("ended", event => {
       this.playing = false;
       this.store.stoppedPlaying();

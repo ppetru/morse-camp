@@ -189,6 +189,7 @@ const PlayText = inject("store", "morsePlayer")(
       playLoop = () => {
         if (!this.props.store.morse.playing) {
           if (this.playCount === 0) {
+            this.props.morsePlayer.resetRandomFrequency();
             this.playText();
           } else if (!this.props.store.readTrainer.automaticallyRepeat) {
             this.stop();
