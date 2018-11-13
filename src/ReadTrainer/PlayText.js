@@ -186,10 +186,6 @@ const PlayText = inject("store", "morsePlayer")(
         morsePlayer.playString(text);
       };
 
-      manualPlayText = () => {
-        this.playText();
-      };
-
       playLoop = () => {
         if (!this.props.store.morse.playing) {
           if (this.playCount === 0) {
@@ -262,10 +258,7 @@ const PlayText = inject("store", "morsePlayer")(
       render() {
         if (this.state.hidden) {
           return (
-            <PlayHiddenCard
-              onShow={this.onShow}
-              onRepeat={this.manualPlayText}
-            />
+            <PlayHiddenCard onShow={this.onShow} onRepeat={this.playText} />
           );
         } else {
           return (
