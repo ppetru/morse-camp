@@ -66,18 +66,12 @@ class ReadTrainerStore extends SettingsSaver {
   }
 
   setFromJson = action(json => {
-    this.setMinLength(json.minLength);
-    this.setMaxLength(json.maxLength);
     // TODO: have a generic way of adding new store props that might be undefined in the JSON
-    if (
-      json.automaticallyRepeat !== undefined &&
-      json.automaticallyRepeat !== null
-    ) {
-      this.setAutomaticallyRepeat(json.automaticallyRepeat);
-    }
-
-    this.setDelay(json.delay);
-    this.setMaxRepeats(json.maxRepeats);
+    this.setMinLength(json.minLength || 2);
+    this.setMaxLength(json.maxLength || 2);
+    this.setAutomaticallyRepeat(json.automaticallyRepeat || true);
+    this.setDelay(json.delay || 2500);
+    this.setMaxRepeats(json.maxRepeats || 15);
 
     if (
       json.activeDictionarySize !== undefined &&
@@ -85,6 +79,7 @@ class ReadTrainerStore extends SettingsSaver {
     ) {
       this.setActiveDictionarySize(json.activeDictionarySize);
     }
+
     if (json.types !== undefined && json.types !== null) {
       this.setTypes(json.types);
     }
