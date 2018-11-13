@@ -135,16 +135,11 @@ class MorsePlayer {
   };
 
   resetRandomFrequency = () => {
-    let frequency = -1;
-    while (
-      !(
-        frequency >= this.store.lowerBoundFrequency &&
-        frequency <= this.store.upperBoundFrequency
-      )
-    ) {
-      frequency = Math.floor(Math.random() * this.store.upperBoundFrequency);
-    }
-    this.randomFrequency = frequency;
+    this.randomFrequency =
+      Math.floor(
+        Math.random() *
+          (this.store.upperBoundFrequency - this.store.lowerBoundFrequency)
+      ) + this.store.lowerBoundFrequency;
   };
 
   playString = s => {
