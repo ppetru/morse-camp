@@ -28,7 +28,10 @@ class ReadTrainerStore extends SettingsSaver {
       activeDictionarySize: dictionary.wordFrequency.size,
       maxDictionarySize: dictionary.wordFrequency.size,
       types: dictionary.typesToIncludeByDefault,
+      useUserDictionary: false,
+      userDictionary: observable.array(),
 
+      // TODO: adding new things is a lot of boilerplate. Is there a better way to serialize things?
       get asJson() {
         return {
           minLength: this.minLength,
@@ -37,8 +40,22 @@ class ReadTrainerStore extends SettingsSaver {
           delay: this.delay,
           maxRepeats: this.maxRepeats,
           activeDictionarySize: this.activeDictionarySize,
-          types: this.types
+          types: this.types,
+          useUserDictionary: this.useUserDictionary,
+          userDictionary: this.userDictionary.slice()
         };
+      },
+
+      get canUseUserDictionary() {
+        return this.useUserDictionary && this.userDictionary.length > 0;
+      },
+
+      get dictionaryAsText() {
+        return this.userDictionary.join("\n");
+      },
+
+      get dictionaryAsWordFreq() {
+        return new Map(this.userDictionary.map(w => [w, 1]));
       }
     });
 
@@ -83,6 +100,9 @@ class ReadTrainerStore extends SettingsSaver {
     if (json.types !== undefined && json.types !== null) {
       this.setTypes(json.types);
     }
+
+    this.setUseUserDictionary(json.useUserDictionary || false);
+    this.setUserDictionary(json.userDictionary || []);
   });
 
   includeCount = () => {
@@ -164,6 +184,17 @@ class ReadTrainerStore extends SettingsSaver {
     this.types[type] = value;
     this.setupActiveDictionary();
   });
+
+  setUseUserDictionary = action(value => (this.useUserDictionary = value));
+  setUserDictionary = action(values => (this.userDictionary = values));
+  setUserDictionaryFromText(text) {
+    let words = new Set();
+    text
+      .split(/[ \n,]/)
+      .map(word => word.toLowerCase().replace(/[^a-z0-9]/, ""))
+      .forEach(word => word !== "" && words.add(word));
+    this.setUserDictionary(Array.from(words.keys()));
+  }
 
   setWordData = action((w, data) => {
     this.words.set(w, data);

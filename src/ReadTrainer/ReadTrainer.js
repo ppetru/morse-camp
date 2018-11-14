@@ -27,35 +27,41 @@ const PlayLoop = inject("store")(
     pickText = (previousText = "") => {
       const store = this.props.store.readTrainer;
 
-      // If there are performance issues on slower devices, we may want to consider caching
-      // the trimmed dictionary. It is relatively expensive. It will need to be invalidated
-      // whenever the user changes the active dictionary.
-      const trimmedDictionary = trimDictionary(
-        dictionary.wordFrequency,
-        this.props.store.readTrainer.activeDictionarySize
-      );
+      let dict;
+      if (store.canUseUserDictionary) {
+        dict = store.dictionaryAsWordFreq;
+      } else {
+        // If there are performance issues on slower devices, we may want to consider caching
+        // the trimmed dictionary. It is relatively expensive. It will need to be invalidated
+        // whenever the user changes the active dictionary.
+        dict = trimDictionary(
+          dictionary.wordFrequency,
+          store.activeDictionarySize
+        );
+      }
 
-      const candidates = computeWordWeights(
-        trimmedDictionary,
-        store.words,
-        Date.now()
-      );
+      const candidates = computeWordWeights(dict, store.words, Date.now());
 
       var text;
-      while (text === undefined || text === null) {
+      var safecount = 10;
+      while (text === undefined && safecount-- > 0) {
         text = generateText(candidates, store.minLength, store.maxLength);
 
         // With small dictionaries we may need to bump up the max size to find
         // one or more words.
-        if (text === undefined || text === null) {
+        if (text === undefined) {
           store.setMaxLength(store.maxLength + 1);
         }
+      }
+      if (text === undefined) {
+        text = "uhoh";
       }
 
       // When the same word is selected twice in a row (which can be caused
       // by a limited number of entries in the dictionary), adding a space
       // allows the word to be used immediately again.
-      // (this is a workaround necessary due to the way setState() is (ab)used -- it needs a new value for things to work)
+      // (this is a workaround necessary due to the way setState() is (ab)used
+      // -- it needs a new value for things to work)
       if (previousText === text) {
         text += " ";
       }

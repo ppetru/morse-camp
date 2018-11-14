@@ -1,11 +1,14 @@
-import React from "react";
+import React, { Component } from "react";
 import {
-  FontIcon,
-  Slider,
-  List,
+  Button,
   Checkbox,
+  FontIcon,
+  List,
   ListItemControl,
-  Switch
+  SelectionControlGroup,
+  Slider,
+  Switch,
+  TextField
 } from "react-md";
 import { inject, observer } from "mobx-react";
 import { dictionary } from "../Words";
@@ -58,10 +61,9 @@ const RepeatOptions = inject("store")(
   ))
 );
 
-const DictionaryOptions = inject("store")(
+const BuiltInDictionaryOptions = inject("store")(
   observer(({ store }) => (
-    <div>
-      <h2>Dictionary</h2>
+    <>
       <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
         {dictionary.allTypes.map(type => (
           <ListItemControl
@@ -98,6 +100,84 @@ const DictionaryOptions = inject("store")(
         onChange={value => store.readTrainer.setActiveDictionarySize(value)}
         leftIcon={<FontIcon>build</FontIcon>}
       />
+    </>
+  ))
+);
+
+const UserDictionaryOptions = inject("store")(
+  observer(
+    class UserDictionaryOptions extends Component {
+      constructor(props) {
+        super(props);
+        this.state = { dictionary: props.store.readTrainer.dictionaryAsText };
+      }
+
+      render() {
+        const { dictionary } = this.state;
+        const store = this.props.store.readTrainer;
+
+        return (
+          <>
+            <h3>{store.userDictionary.length} user defined words</h3>
+            <TextField
+              id="user-dictionary"
+              label="Dictionary (space, comma, or newline separated words)"
+              leftIcon={<FontIcon>book</FontIcon>}
+              rows={3}
+              resize={{ max: 10000 }}
+              value={dictionary}
+              onChange={value => this.setState({ dictionary: value })}
+            />
+            <p>Saving will normalize and deduplicate the dictionary.</p>
+            <Button
+              raised
+              primary
+              className="md-block-centered"
+              iconEl={<FontIcon>check</FontIcon>}
+              onClick={() => {
+                store.setUserDictionaryFromText(this.state.dictionary);
+                this.setState({ dictionary: store.dictionaryAsText });
+              }}
+            >
+              Save
+            </Button>
+          </>
+        );
+      }
+    }
+  )
+);
+
+const DictionaryOptions = inject("store")(
+  observer(({ store }) => (
+    <div>
+      <h2>Dictionary</h2>
+      <SelectionControlGroup
+        id="dictionary-control-group"
+        name="user-dictionary"
+        type="radio"
+        label="Type"
+        inline
+        value={store.readTrainer.useUserDictionary.toString()}
+        onChange={value =>
+          store.readTrainer.setUseUserDictionary(value === "true")
+        }
+        controls={[
+          {
+            label: "Built in",
+            value: "false"
+          },
+          {
+            label: "User supplied",
+            value: "true"
+          }
+        ]}
+      />
+      {store.readTrainer.useUserDictionary ? (
+        <UserDictionaryOptions />
+      ) : (
+        <BuiltInDictionaryOptions />
+      )}
     </div>
   ))
 );

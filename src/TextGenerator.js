@@ -101,19 +101,24 @@ const permissivelyPickWord = (dictionary, minLength, maxLength) => {
 
   //allow larger
   var maxLengthLarger = maxLength + 1;
-  while (true) {
+  // 30 = arbitrarily chosen to mean "we are probably looping and should bail"
+  while (maxLengthLarger < 30) {
     t = pickWord(dictionary, minLength, maxLengthLarger);
     if (t) {
       return t;
     }
     maxLengthLarger++;
   }
+  return null;
 };
 
 const makeText = (dictionary, minLength, maxLength) => {
   let word = pickWord(dictionary, minLength, maxLength - (1 + minLength));
   if (!word) {
     word = permissivelyPickWord(dictionary, minLength, maxLength);
+  }
+  if (!word) {
+    return null;
   }
   let words = [word];
   var remainingLength = maxLength - word.length;
