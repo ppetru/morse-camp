@@ -191,9 +191,9 @@ class ReadTrainerStore extends SettingsSaver {
     let words = new Set();
     text
       .split(/[ \n,]/)
-      .map(word => word.toLowerCase().replace(/[^a-z0-9]/, ""))
+      .map(word => word.toLowerCase().replace(/[^a-z0-9]/g, ""))
       .forEach(word => word !== "" && words.add(word));
-    this.setUserDictionary(Array.from(words.keys()));
+    this.setUserDictionary(Array.from(words.keys()).sort());
   }
 
   setWordData = action((w, data) => {

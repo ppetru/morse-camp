@@ -123,8 +123,9 @@ const UserDictionaryOptions = inject("store")(
               id="user-dictionary"
               label="Dictionary (space, comma, or newline separated words)"
               leftIcon={<FontIcon>book</FontIcon>}
-              rows={3}
-              resize={{ max: 10000 }}
+              rows={5}
+              maxRows={10}
+              resize={{ max: 300 }}
               value={dictionary}
               onChange={value => this.setState({ dictionary: value })}
             />
