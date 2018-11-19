@@ -29,7 +29,8 @@ class ReadTrainerStore extends SettingsSaver {
       maxDictionarySize: dictionary.wordFrequency.size,
       types: dictionary.typesToIncludeByDefault,
       useUserDictionary: false,
-      userDictionary: observable.array(),
+      userDictionaryWords: observable.array(),
+      userDictionaryWordFrequencies: observable.array(),
 
       // TODO: adding new things is a lot of boilerplate. Is there a better way to serialize things?
       get asJson() {
@@ -42,20 +43,33 @@ class ReadTrainerStore extends SettingsSaver {
           activeDictionarySize: this.activeDictionarySize,
           types: this.types,
           useUserDictionary: this.useUserDictionary,
-          userDictionary: this.userDictionary.slice()
+          userDictionaryWords: this.userDictionaryWords.slice(),
+          userDictionaryWordFrequencies: this.userDictionaryWordFrequencies.slice()
         };
       },
 
       get canUseUserDictionary() {
-        return this.useUserDictionary && this.userDictionary.length > 0;
+        return this.useUserDictionary && this.userDictionaryWords.length > 0;
       },
 
-      get dictionaryAsText() {
-        return this.userDictionary.join("\n");
+      get userDictionaryAsText() {
+        return this.userDictionaryWords.join("\n");
       },
 
-      get dictionaryAsWordFreq() {
-        return new Map(this.userDictionary.map(w => [w, 1]));
+      get userDictionaryWithWordFreq() {
+        let ret = new Map();
+
+        this.userDictionaryWords.forEach((w, idx) => {
+          let word = w;
+          let freq =
+            this.userDictionaryWordFrequencies.length > idx
+              ? this.userDictionaryWordFrequencies[idx]
+              : 1;
+
+          ret.set(word, freq);
+        });
+
+        return ret;
       }
     });
 
@@ -102,7 +116,10 @@ class ReadTrainerStore extends SettingsSaver {
     }
 
     this.setUseUserDictionary(json.useUserDictionary || false);
-    this.setUserDictionary(json.userDictionary || []);
+    this.setUserDictionaryWords(json.userDictionaryWords || []);
+    this.setUserDictionaryWordFrequencies(
+      json.userDictionaryWordFrequencies || []
+    );
   });
 
   includeCount = () => {
@@ -117,6 +134,8 @@ class ReadTrainerStore extends SettingsSaver {
     return count;
   };
 
+  // This is used to setup the built-in active dictionary, which can be trimmed
+  // as configured by the user.
   setupActiveDictionary = () => {
     var types = [];
 
@@ -186,14 +205,37 @@ class ReadTrainerStore extends SettingsSaver {
   });
 
   setUseUserDictionary = action(value => (this.useUserDictionary = value));
-  setUserDictionary = action(values => (this.userDictionary = values));
+  setUserDictionaryWords = action(
+    values => (this.userDictionaryWords = values)
+  );
+  setUserDictionaryWordFrequencies = action(
+    values => (this.userDictionaryWordFrequencies = values)
+  );
+
   setUserDictionaryFromText(text) {
-    let words = new Set();
+    let words = new Map();
+
+    function addWord(word) {
+      if (word === "") {
+        return;
+      }
+
+      let frequency = words.get(word) === undefined ? 1 : words.get(word) + 1;
+      words.set(word, frequency);
+    }
+
     text
       .split(/[ \n,]/)
       .map(word => word.toLowerCase().replace(/[^a-z0-9]/g, ""))
-      .forEach(word => word !== "" && words.add(word));
-    this.setUserDictionary(Array.from(words.keys()).sort());
+      .forEach(word => addWord(word));
+
+    this.setUserDictionaryWords(Array.from(words.keys()).sort());
+
+    var frequencies = [];
+    this.userDictionaryWords.forEach(word => {
+      frequencies.push(words.get(word));
+    });
+    this.setUserDictionaryWordFrequencies(frequencies);
   }
 
   setWordData = action((w, data) => {

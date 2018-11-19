@@ -29,7 +29,7 @@ const PlayLoop = inject("store")(
 
       let dict;
       if (store.canUseUserDictionary) {
-        dict = store.dictionaryAsWordFreq;
+        dict = store.userDictionaryWithWordFreq;
       } else {
         // If there are performance issues on slower devices, we may want to consider caching
         // the trimmed dictionary. It is relatively expensive. It will need to be invalidated
