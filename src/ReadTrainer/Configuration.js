@@ -120,7 +120,7 @@ const UserDictionaryOptions = inject("store")(
 
         return (
           <>
-            <h3>{store.userDictionaryWords.length} user defined words</h3>
+            <h3>{store.userDictionary.keys().length} user defined words</h3>
             <TextField
               id="user-dictionary"
               label="Dictionary (space, comma, or newline separated words)"
