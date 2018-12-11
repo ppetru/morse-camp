@@ -109,7 +109,9 @@ const UserDictionaryOptions = inject("store")(
     class UserDictionaryOptions extends Component {
       constructor(props) {
         super(props);
-        this.state = { dictionary: props.store.readTrainer.dictionaryAsText };
+        this.state = {
+          dictionary: props.store.readTrainer.userDictionaryAsText
+        };
       }
 
       render() {
@@ -118,7 +120,7 @@ const UserDictionaryOptions = inject("store")(
 
         return (
           <>
-            <h3>{store.userDictionary.length} user defined words</h3>
+            <h3>{store.userDictionary.keys().length} user defined words</h3>
             <TextField
               id="user-dictionary"
               label="Dictionary (space, comma, or newline separated words)"
@@ -137,7 +139,7 @@ const UserDictionaryOptions = inject("store")(
               iconEl={<FontIcon>check</FontIcon>}
               onClick={() => {
                 store.setUserDictionaryFromText(this.state.dictionary);
-                this.setState({ dictionary: store.dictionaryAsText });
+                this.setState({ dictionary: store.userDictionaryAsText });
               }}
             >
               Save
