@@ -8,6 +8,14 @@ const WhatsNew = () => (
     </Helmet>
     <h1>What's new</h1>
     <div className="md-text-container">
+      <h2>December 16, 2018</h2>
+      <ul>
+        <li>Added popular callsigns to the dictionary.</li>
+        <li>
+          User-supplied dictionaries now compute word frequencies in the input
+          text.
+        </li>
+      </ul>
       <h2>November 15, 2018</h2>
       <ul>
         <li>Read trainer: support user-supplied dictionaries.</li>
