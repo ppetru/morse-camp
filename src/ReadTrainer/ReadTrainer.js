@@ -75,7 +75,9 @@ const PlayLoop = inject("store")(
     onResult = (success, count) => {
       const store = this.props.store.readTrainer;
       store.textFeedback(this.state.text, success, count, Date.now());
-      store.adjustLengths();
+      if (store.automaticallyIncreaseDifficulty) {
+        store.adjustLengths();
+      }
       this.pickText(this.state.text);
     };
 
