@@ -8,6 +8,10 @@ const WhatsNew = () => (
     </Helmet>
     <h1>What's new</h1>
     <div className="md-text-container">
+      <h2>February 16, 2019</h2>
+      <ul>
+        <li>Manual control of word lengths.</li>
+      </ul>
       <h2>December 16, 2018</h2>
       <ul>
         <li>Added popular callsigns to the dictionary.</li>
