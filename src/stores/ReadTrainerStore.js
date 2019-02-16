@@ -23,6 +23,7 @@ class ReadTrainerStore extends SettingsSaver {
       words: observable.map(),
       lengths: observable.map(),
       automaticallyRepeat: true,
+      automaticallyIncreaseDifficulty: true,
       delay: 2500,
       maxRepeats: 15,
       activeDictionarySize: dictionary.wordFrequency.size,
@@ -37,6 +38,7 @@ class ReadTrainerStore extends SettingsSaver {
           minLength: this.minLength,
           maxLength: this.maxLength,
           automaticallyRepeat: this.automaticallyRepeat,
+          automaticallyIncreaseDifficulty: this.automaticallyIncreaseDifficulty,
           delay: this.delay,
           maxRepeats: this.maxRepeats,
           activeDictionarySize: this.activeDictionarySize,
@@ -87,6 +89,9 @@ class ReadTrainerStore extends SettingsSaver {
     this.setMinLength(json.minLength || 2);
     this.setMaxLength(json.maxLength || 2);
     this.setAutomaticallyRepeat(json.automaticallyRepeat || true);
+    this.setAutomaticallyIncreaseDifficulty(
+      json.automaticallyIncreaseDifficulty || true
+    );
     this.setDelay(json.delay || 2500);
     this.setMaxRepeats(json.maxRepeats || 15);
 
@@ -165,6 +170,11 @@ class ReadTrainerStore extends SettingsSaver {
 
   setAutomaticallyRepeat = action(
     automaticallyRepeat => (this.automaticallyRepeat = automaticallyRepeat)
+  );
+
+  setAutomaticallyIncreaseDifficulty = action(
+    automaticallyIncreaseDifficulty =>
+      (this.automaticallyIncreaseDifficulty = automaticallyIncreaseDifficulty)
   );
 
   setMaxRepeats = action(

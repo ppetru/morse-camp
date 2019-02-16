@@ -51,12 +51,35 @@ const RepeatOptions = inject("store")(
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <TestButton repeatCount={2} />
+          <div>
+            <br />
+          </div>
         </div>
       ) : (
         <div>
           <br />
         </div>
       )}
+    </div>
+  ))
+);
+
+const MiscellaneousOptions = inject("store")(
+  observer(({ store }) => (
+    <div>
+      <h2>Miscellaneous</h2>
+      <Switch
+        id="increase-difficulty-switch"
+        name="difficulty"
+        label="Automatically Increase Difficulty"
+        onChange={checked =>
+          store.readTrainer.setAutomaticallyIncreaseDifficulty(checked)
+        }
+        checked={store.readTrainer.automaticallyIncreaseDifficulty}
+      />
+      <div>
+        <br />
+      </div>
     </div>
   ))
 );
@@ -190,6 +213,7 @@ const Configuration = () => (
   <div className="vcontainer">
     <h1>Configuration</h1>
     <RepeatOptions />
+    <MiscellaneousOptions />
     <DictionaryOptions />
     <div className="filler-card" />
   </div>
