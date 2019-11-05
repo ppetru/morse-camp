@@ -8,6 +8,10 @@ const WhatsNew = () => (
     </Helmet>
     <h1>What's new</h1>
     <div className="md-text-container">
+      <h2>November 5, 2019</h2>
+      <ul>
+        <li>Update dependencies to several security vulnerabilities.</li>
+      </ul>
       <h2>July 11, 2019</h2>
       <ul>
         <li>Update dependencies to fix lodash security vulnerability.</li>
