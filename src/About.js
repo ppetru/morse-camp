@@ -59,15 +59,15 @@ const About = () => (
         >
           Github
         </a>
-        ,{" "}
+        , the discussion group at{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://forum.morse.camp"
+          href="https://groups.io/g/morse-camp"
         >
-          forum.morse.camp
-        </a>{" "}
-        or by email at <a href="mailto:op@morse.camp">op@morse.camp</a>.
+          morse-camp@groups.io
+        </a>
+        , or by email at <a href="mailto:op@morse.camp">op@morse.camp</a>.
       </p>
       <h2>Code contributors</h2>
       <ul>
