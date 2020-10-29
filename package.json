@@ -7,7 +7,7 @@
     "localforage": "^1.5.5",
     "mobx": "^3.3.1",
     "mobx-react": "^4.3.3",
-    "node-sass": "^4.10.0",
+    "node-sass": "^4.13.1",
     "raf": "^3.4.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
