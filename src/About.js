@@ -72,7 +72,7 @@ const About = () => (
       <h2>Code contributors</h2>
       <ul>
         <li>Kurt Zoglmann, AD0WE</li>
-        <li>Petru Paler, HB9GKP</li>
+        <li>Petru Paler, CT7AZH (ex HB9GKP)</li>
       </ul>
     </div>
   </div>
