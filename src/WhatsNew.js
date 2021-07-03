@@ -14,6 +14,7 @@ const WhatsNew = () => (
           Bugfix: some configuration options were sometimes not being correctly
           restored.
         </li>
+        <li>Update some dependencies to fix security vulnerabilities.</li>
       </ul>
       <h2>November 14, 2019</h2>
       <ul>
