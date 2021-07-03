@@ -85,28 +85,26 @@ class ReadTrainerStore extends SettingsSaver {
   }
 
   setFromJson = action(json => {
-    // TODO: have a generic way of adding new store props that might be undefined in the JSON
-    this.setMinLength(json.minLength || 2);
-    this.setMaxLength(json.maxLength || 2);
-    this.setAutomaticallyRepeat(json.automaticallyRepeat || true);
-    this.setAutomaticallyIncreaseDifficulty(
-      json.automaticallyIncreaseDifficulty || true
-    );
-    this.setDelay(json.delay || 2500);
-    this.setMaxRepeats(json.maxRepeats || 15);
-
-    if (
-      json.activeDictionarySize !== undefined &&
-      json.activeDictionarySize !== null
-    ) {
-      this.setActiveDictionarySize(json.activeDictionarySize);
+    const propDefaults = {
+      minLength: 2,
+      maxLength: 2,
+      automaticallyRepeat: true,
+      automaticallyIncreaseDifficulty: true,
+      delay: 2500,
+      maxRepeats: 15,
+      useUserDictionary: false,
+      activeDictionarySize: undefined,
+      types: undefined
+    };
+    for (let prop in propDefaults) {
+      var value = propDefaults[prop];
+      if (prop in json) {
+        value = json[prop];
+      }
+      // fooBar -> setFooBar
+      this["set" + prop.charAt(0).toUpperCase() + prop.slice(1)](value);
     }
 
-    if (json.types !== undefined && json.types !== null) {
-      this.setTypes(json.types);
-    }
-
-    this.setUseUserDictionary(json.useUserDictionary || false);
     if (json.userDictionary) {
       this.setUserDictionary(new Map(JSON.parse(json.userDictionary)));
     } else {

@@ -53,6 +53,21 @@ describe("ReadTrainerStore", () => {
         expect(store().maxLength).toEqual(9);
       });
     });
+
+    it("correctly restores boolean false prefs", () => {
+      store().setAutomaticallyRepeat(false);
+      testStore = undefined;
+      return store().loadSettings.then(() => {
+        expect(store().automaticallyRepeat).toEqual(false);
+      });
+    });
+
+    it("handles undefined defaults", () => {
+      testStore = undefined;
+      return store().loadSettings.then(() => {
+        expect(store().activeDictionarySize).toBeDefined();
+      });
+    });
   });
 
   describe("feedback", () => {
