@@ -8,6 +8,13 @@ const WhatsNew = () => (
     </Helmet>
     <h1>What's new</h1>
     <div className="md-text-container">
+      <h2>July 3, 2021</h2>
+      <ul>
+        <li>
+          Bugfix: some configuration options were sometimes not being correctly
+          restored.
+        </li>
+      </ul>
       <h2>November 14, 2019</h2>
       <ul>
         <li>Add link to groups.io discussion forum.</li>
