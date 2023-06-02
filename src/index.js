@@ -17,7 +17,7 @@ import registerServiceWorker from "./registerServiceWorker";
 import modernizr from "./modernizr";
 import UnsupportedBrowser from "./UnsupportedBrowser";
 
-ReactGA.initialize("UA-111651933-2");
+ReactGA.initialize("G-65SKQ2JDP7");
 
 WebFontLoader.load({
   google: {
