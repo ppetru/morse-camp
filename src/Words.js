@@ -9714,7 +9714,7 @@ const WORDS = [
   ["VK7AV", "n", 5000, "Other Callsign", "Australia"],
   ["PE1PMV", "n", 5000, "Other Callsign", "Netherlands"],
   ["RW6AGY", "n", 5000, "Other Callsign", "Russia"],
-  ["HB9GKP", "n", 5000, "Other Callsign", "Switzerland"]
+  ["HB9GKP", "n", 5000, "Other Callsign", "Switzerland"],
 ];
 
 // Verb, Noun, adJective, adveRb, Article, Conjunction, Demonstrative,
@@ -9734,7 +9734,7 @@ class Dictionary {
     "US State Abbreviation": false,
     Country: false,
     "USA Callsign": false,
-    "Other Callsign": false
+    "Other Callsign": false,
   };
 
   words = null;

@@ -2,7 +2,7 @@ import { reaction } from "mobx";
 
 class SettingsSaver {
   setupSettings(module, noDebounce) {
-    this.loadSettings = this.transport.loadSettings(module).then(json => {
+    this.loadSettings = this.transport.loadSettings(module).then((json) => {
       if (json) {
         this.setFromJson(json);
       }
@@ -15,8 +15,8 @@ class SettingsSaver {
 
     this.saveHandler = reaction(
       () => this.asJson,
-      json => this.transport.saveSettings(module, json),
-      opts
+      (json) => this.transport.saveSettings(module, json),
+      opts,
     );
   }
 }

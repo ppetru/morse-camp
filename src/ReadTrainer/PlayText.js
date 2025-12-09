@@ -8,7 +8,7 @@ import {
   CardActions,
   CardText,
   CardTitle,
-  FontIcon
+  FontIcon,
 } from "react-md";
 
 import { HotKeys } from "react-hotkeys";
@@ -21,7 +21,7 @@ const keyMap = {
   show: "space",
   correct: "left",
   incorrect: "right",
-  repeat: "r"
+  repeat: "r",
 };
 
 const event = makeLogger("ReadTrainer");
@@ -43,8 +43,8 @@ const PlayHiddenCard = inject("store")(
             <div>
               <HotKeys
                 handlers={{
-                  show: event => this.props.onShow(),
-                  repeat: event => this.props.onRepeat()
+                  show: (event) => this.props.onShow(),
+                  repeat: (event) => this.props.onRepeat(),
                 }}
               >
                 <div tabIndex="-1" ref={this.playCardRef}>
@@ -89,12 +89,12 @@ const PlayHiddenCard = inject("store")(
           </HotKeys>
         );
       }
-    }
-  )
+    },
+  ),
 );
 PlayHiddenCard.propTypes = {
   onShow: PropTypes.func.isRequired,
-  onRepeat: PropTypes.func.isRequired
+  onRepeat: PropTypes.func.isRequired,
 };
 
 const PlayVisibleCard = inject("store")(
@@ -114,8 +114,8 @@ const PlayVisibleCard = inject("store")(
             <div>
               <HotKeys
                 handlers={{
-                  correct: event => this.props.onCorrect(),
-                  incorrect: event => this.props.onIncorrect()
+                  correct: (event) => this.props.onCorrect(),
+                  incorrect: (event) => this.props.onIncorrect(),
                 }}
               >
                 <div tabIndex="-1" ref={this.playCardRef}>
@@ -158,20 +158,23 @@ const PlayVisibleCard = inject("store")(
           </HotKeys>
         );
       }
-    }
-  )
+    },
+  ),
 );
 PlayVisibleCard.propTypes = {
   text: PropTypes.string.isRequired,
   onCorrect: PropTypes.func.isRequired,
-  onIncorrect: PropTypes.func.isRequired
+  onIncorrect: PropTypes.func.isRequired,
 };
 
-const PlayText = inject("store", "morsePlayer")(
+const PlayText = inject(
+  "store",
+  "morsePlayer",
+)(
   observer(
     class PlayText extends Component {
       state = {
-        hidden: true
+        hidden: true,
       };
 
       playText = () => {
@@ -201,7 +204,7 @@ const PlayText = inject("store", "morsePlayer")(
           } else {
             this.timeout = setTimeout(
               this.playText,
-              this.props.store.readTrainer.delay
+              this.props.store.readTrainer.delay,
             );
           }
         }
@@ -219,7 +222,7 @@ const PlayText = inject("store", "morsePlayer")(
         this.props.morsePlayer.forceStop();
       };
 
-      componentWillMount() {
+      componentDidMount() {
         this.start();
       }
 
@@ -227,20 +230,16 @@ const PlayText = inject("store", "morsePlayer")(
         this.stop();
       }
 
-      componentWillReceiveProps(nextProps) {
-        if (nextProps.text !== this.props.text) {
-          this.stop();
-          this.setState({ hidden: true });
-        }
-      }
-
       componentDidUpdate(prevProps, prevState) {
         if (prevProps.text !== this.props.text) {
-          this.start();
+          this.stop();
+          this.setState({ hidden: true }, () => {
+            this.start();
+          });
         }
       }
 
-      onResult = success => {
+      onResult = (success) => {
         this.stop();
         if (success) {
           event("success", this.props.text.length, this.replayCount);
@@ -270,13 +269,13 @@ const PlayText = inject("store", "morsePlayer")(
           );
         }
       }
-    }
-  )
+    },
+  ),
 );
 
 PlayText.propTypes = {
   onResult: PropTypes.func.isRequired,
-  text: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired,
 };
 
 export default PlayText;

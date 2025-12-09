@@ -1,4 +1,4 @@
-import { action, autorun, extendObservable, observable } from "mobx";
+import { autorun, makeAutoObservable, observable } from "mobx";
 
 import SettingsSaver from "./SettingsSaver";
 import { dictionary } from "../Words";
@@ -12,60 +12,43 @@ class ReadTrainerStore extends SettingsSaver {
   WORD_PREFIX = "rw-";
   LENGTH_PREFIX = "rl-";
 
+  minLength = 2;
+  maxLength = 2;
+  words = observable.map();
+  lengths = observable.map();
+  automaticallyRepeat = true;
+  automaticallyIncreaseDifficulty = true;
+  delay = 2500;
+  maxRepeats = 15;
+  activeDictionarySize = dictionary.wordFrequency.size;
+  maxDictionarySize = dictionary.wordFrequency.size;
+  types = dictionary.typesToIncludeByDefault;
+  useUserDictionary = false;
+  userDictionary = observable.map();
+
   constructor(rootStore, transport, noDebounce) {
     super();
     this.rootStore = rootStore;
     this.transport = transport;
 
-    extendObservable(this, {
-      minLength: 2,
-      maxLength: 2,
-      words: observable.map(),
-      lengths: observable.map(),
-      automaticallyRepeat: true,
-      automaticallyIncreaseDifficulty: true,
-      delay: 2500,
-      maxRepeats: 15,
-      activeDictionarySize: dictionary.wordFrequency.size,
-      maxDictionarySize: dictionary.wordFrequency.size,
-      types: dictionary.typesToIncludeByDefault,
-      useUserDictionary: false,
-      userDictionary: observable.map(),
-
-      // TODO: adding new things is a lot of boilerplate. Is there a better way to serialize things?
-      get asJson() {
-        return {
-          minLength: this.minLength,
-          maxLength: this.maxLength,
-          automaticallyRepeat: this.automaticallyRepeat,
-          automaticallyIncreaseDifficulty: this.automaticallyIncreaseDifficulty,
-          delay: this.delay,
-          maxRepeats: this.maxRepeats,
-          activeDictionarySize: this.activeDictionarySize,
-          types: this.types,
-          useUserDictionary: this.useUserDictionary,
-          userDictionary: JSON.stringify([...this.userDictionary])
-        };
-      },
-
-      get canUseUserDictionary() {
-        return this.useUserDictionary && this.userDictionary.keys().length > 0;
-      },
-
-      get userDictionaryAsText() {
-        return this.userDictionary.keys().join("\n");
-      },
-
-      get userDictionaryWithWordFreq() {
-        return this.userDictionary;
-      }
+    makeAutoObservable(this, {
+      rootStore: false,
+      transport: false,
+      WORD_PREFIX: false,
+      LENGTH_PREFIX: false,
+      loadWords: false,
+      wordPersister: false,
+      loadLengths: false,
+      lengthPersister: false,
+      loadSettings: false,
+      saveHandler: false,
     });
 
     this.setupActiveDictionary();
     this.setupSettings("ReadTrainer", noDebounce);
 
     this.loadWords = this.transport.iteratePrefix(this.WORD_PREFIX, (w, d) =>
-      this.setWordData(w, d)
+      this.setWordData(w, d),
     );
     this.wordPersister = autorun(() => {
       for (const [k, v] of this.words.entries()) {
@@ -75,7 +58,7 @@ class ReadTrainerStore extends SettingsSaver {
 
     this.loadLengths = this.transport.iteratePrefix(
       this.LENGTH_PREFIX,
-      (l, d) => this.setLengthData(l, d)
+      (l, d) => this.setLengthData(l, d),
     );
     this.lengthPersister = autorun(() => {
       for (const [k, v] of this.lengths.entries()) {
@@ -84,7 +67,35 @@ class ReadTrainerStore extends SettingsSaver {
     });
   }
 
-  setFromJson = action(json => {
+  // TODO: adding new things is a lot of boilerplate. Is there a better way to serialize things?
+  get asJson() {
+    return {
+      minLength: this.minLength,
+      maxLength: this.maxLength,
+      automaticallyRepeat: this.automaticallyRepeat,
+      automaticallyIncreaseDifficulty: this.automaticallyIncreaseDifficulty,
+      delay: this.delay,
+      maxRepeats: this.maxRepeats,
+      activeDictionarySize: this.activeDictionarySize,
+      types: this.types,
+      useUserDictionary: this.useUserDictionary,
+      userDictionary: JSON.stringify([...this.userDictionary]),
+    };
+  }
+
+  get canUseUserDictionary() {
+    return this.useUserDictionary && [...this.userDictionary.keys()].length > 0;
+  }
+
+  get userDictionaryAsText() {
+    return [...this.userDictionary.keys()].join("\n");
+  }
+
+  get userDictionaryWithWordFreq() {
+    return this.userDictionary;
+  }
+
+  setFromJson = (json) => {
     const propDefaults = {
       minLength: 2,
       maxLength: 2,
@@ -94,7 +105,7 @@ class ReadTrainerStore extends SettingsSaver {
       maxRepeats: 15,
       useUserDictionary: false,
       activeDictionarySize: undefined,
-      types: undefined
+      types: undefined,
     };
     for (let prop in propDefaults) {
       var value = propDefaults[prop];
@@ -110,7 +121,7 @@ class ReadTrainerStore extends SettingsSaver {
     } else {
       this.setUserDictionary(new Map());
     }
-  });
+  };
 
   includeCount = () => {
     var count = 0;
@@ -142,7 +153,7 @@ class ReadTrainerStore extends SettingsSaver {
     }
   };
 
-  setMinLength = action(l => {
+  setMinLength = (l) => {
     var n = parseInt(l, 10);
     if (isNaN(n) || n < 2) {
       n = 2;
@@ -151,9 +162,9 @@ class ReadTrainerStore extends SettingsSaver {
     if (this.minLength > this.maxLength) {
       this.maxLength = this.minLength;
     }
-  });
+  };
 
-  setMaxLength = action(l => {
+  setMaxLength = (l) => {
     var n = parseInt(l, 10);
     if (isNaN(n) || n < 2) {
       n = 2;
@@ -162,45 +173,36 @@ class ReadTrainerStore extends SettingsSaver {
     if (this.maxLength < this.minLength) {
       this.minLength = this.maxLength;
     }
-  });
+  };
 
-  setDelay = action(delay => (this.delay = parseInt(delay, 10)));
+  setDelay = (delay) => (this.delay = parseInt(delay, 10));
 
-  setAutomaticallyRepeat = action(
-    automaticallyRepeat => (this.automaticallyRepeat = automaticallyRepeat)
-  );
+  setAutomaticallyRepeat = (automaticallyRepeat) =>
+    (this.automaticallyRepeat = automaticallyRepeat);
 
-  setAutomaticallyIncreaseDifficulty = action(
-    automaticallyIncreaseDifficulty =>
-      (this.automaticallyIncreaseDifficulty = automaticallyIncreaseDifficulty)
-  );
+  setAutomaticallyIncreaseDifficulty = (automaticallyIncreaseDifficulty) =>
+    (this.automaticallyIncreaseDifficulty = automaticallyIncreaseDifficulty);
 
-  setMaxRepeats = action(
-    maxRepeats => (this.maxRepeats = parseInt(maxRepeats, 10))
-  );
+  setMaxRepeats = (maxRepeats) => (this.maxRepeats = parseInt(maxRepeats, 10));
 
-  setActiveDictionarySize = action(
-    activeDictionarySize =>
-      (this.activeDictionarySize = parseInt(activeDictionarySize, 10))
-  );
+  setActiveDictionarySize = (activeDictionarySize) =>
+    (this.activeDictionarySize = parseInt(activeDictionarySize, 10));
 
-  setMaxDictionarySize = action(
-    maxDictionarySize =>
-      (this.maxDictionarySize = parseInt(maxDictionarySize, 10))
-  );
+  setMaxDictionarySize = (maxDictionarySize) =>
+    (this.maxDictionarySize = parseInt(maxDictionarySize, 10));
 
-  setTypes = action(types => {
+  setTypes = (types) => {
     this.types = types;
     this.setupActiveDictionary();
-  });
+  };
 
-  setType = action((type, value) => {
+  setType = (type, value) => {
     this.types[type] = value;
     this.setupActiveDictionary();
-  });
+  };
 
-  setUseUserDictionary = action(value => (this.useUserDictionary = value));
-  setUserDictionary = action(values => (this.userDictionary = values));
+  setUseUserDictionary = (value) => (this.useUserDictionary = value);
+  setUserDictionary = (values) => (this.userDictionary = values);
 
   setUserDictionaryFromText(text) {
     let words = observable.map();
@@ -216,15 +218,15 @@ class ReadTrainerStore extends SettingsSaver {
 
     text
       .split(/[ \n,]/)
-      .map(word => word.toLowerCase().replace(/[^a-z0-9]/g, ""))
-      .forEach(word => addWord(word));
+      .map((word) => word.toLowerCase().replace(/[^a-z0-9]/g, ""))
+      .forEach((word) => addWord(word));
 
     this.setUserDictionary(words);
   }
 
-  setWordData = action((w, data) => {
+  setWordData = (w, data) => {
     this.words.set(w, data);
-  });
+  };
 
   wordFeedback = (word, success, count, time) => {
     let avgScore;
@@ -238,13 +240,13 @@ class ReadTrainerStore extends SettingsSaver {
 
     this.setWordData(word, {
       score: avgScore,
-      time: time
+      time: time,
     });
   };
 
-  setLengthData = action((len, data) => {
+  setLengthData = (len, data) => {
     this.lengths.set(len, data);
-  });
+  };
 
   lengthFeedback = (len, success, tryCount) => {
     let avgScore;
@@ -260,7 +262,7 @@ class ReadTrainerStore extends SettingsSaver {
     }
     this.setLengthData(len, {
       score: avgScore,
-      count: newCount
+      count: newCount,
     });
 
     while (--len >= dictionary.minWordLength) {
@@ -269,7 +271,7 @@ class ReadTrainerStore extends SettingsSaver {
         if (newScore >= score) {
           this.setLengthData(len, {
             score: ewma(score, newScore),
-            count: count + 1
+            count: count + 1,
           });
         }
       }
@@ -277,16 +279,16 @@ class ReadTrainerStore extends SettingsSaver {
   };
 
   textFeedback = (text, success, count, time) => {
-    text.split(" ").forEach(w => this.wordFeedback(w, success, count, time));
+    text.split(" ").forEach((w) => this.wordFeedback(w, success, count, time));
     this.lengthFeedback(text.length, success, count);
   };
 
-  resetLengthCount = len => {
+  resetLengthCount = (len) => {
     if (this.lengths.has(len)) {
       const { score } = this.lengths.get(len);
       this.setLengthData(len, {
         score: score,
-        count: 0
+        count: 0,
       });
     }
   };

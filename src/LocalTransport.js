@@ -3,7 +3,7 @@ import localforage from "localforage";
 class LocalTransport {
   constructor() {
     localforage.config({
-      name: "Morse Camp"
+      name: "Morse Camp",
     });
   }
 
@@ -16,7 +16,7 @@ class LocalTransport {
   }
 
   setIfDifferent(key, value) {
-    localforage.getItem(key).then(prevValue => {
+    localforage.getItem(key).then((prevValue) => {
       if (prevValue !== value) {
         localforage.setItem(key, value);
       }

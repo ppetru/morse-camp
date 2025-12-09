@@ -13,10 +13,10 @@ const ClearStorage = inject("store")(
     state = {
       visible: false,
       pageX: null,
-      pageY: null
+      pageY: null,
     };
 
-    show = e => {
+    show = (e) => {
       let { pageX, pageY } = e;
       if (e.changedTouches) {
         pageX = e.changedTouches[0].pageX;
@@ -48,13 +48,13 @@ const ClearStorage = inject("store")(
         {
           onClick: this.hide,
           primary: true,
-          children: "No, nevermind"
+          children: "No, nevermind",
         },
         {
           onClick: this.delete,
           primary: false,
-          children: "Yes, delete everything"
-        }
+          children: "Yes, delete everything",
+        },
       ];
 
       return (
@@ -82,7 +82,7 @@ const ClearStorage = inject("store")(
         </div>
       );
     }
-  }
+  },
 );
 
 const FrequencyOptions = inject("store")(
@@ -93,7 +93,7 @@ const FrequencyOptions = inject("store")(
         id="randomFrequency-switch"
         name="randomFrequency"
         label="Random"
-        onChange={checked => store.morse.setRandomFrequency(checked)}
+        onChange={(checked) => store.morse.setRandomFrequency(checked)}
         checked={store.morse.randomFrequency}
       />
 
@@ -107,7 +107,7 @@ const FrequencyOptions = inject("store")(
             min={200}
             step={10}
             value={store.morse.upperBoundFrequency}
-            onChange={value => {
+            onChange={(value) => {
               store.morse.setUpperBoundFrequency(value);
               const lowerBound = value - 400 < 100 ? 101 : value - 400;
               store.morse.setLowerBoundFrequency(lowerBound);
@@ -122,7 +122,7 @@ const FrequencyOptions = inject("store")(
             min={100}
             step={10}
             value={store.morse.lowerBoundFrequency}
-            onChange={value => store.morse.setLowerBoundFrequency(value)}
+            onChange={(value) => store.morse.setLowerBoundFrequency(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
         </div>
@@ -136,16 +136,19 @@ const FrequencyOptions = inject("store")(
             min={200}
             step={10}
             value={store.morse.frequency}
-            onChange={value => store.morse.setFrequency(value)}
+            onChange={(value) => store.morse.setFrequency(value)}
             leftIcon={<FontIcon>audiotrack</FontIcon>}
           />
         </div>
       )}
     </div>
-  ))
+  )),
 );
 
-const Settings = inject("store", "morsePlayer")(
+const Settings = inject(
+  "store",
+  "morsePlayer",
+)(
   observer(({ store, morsePlayer }) => (
     <div>
       <Helmet>
@@ -162,7 +165,7 @@ const Settings = inject("store", "morsePlayer")(
             max={80}
             min={10}
             value={store.morse.characterSpeed}
-            onChange={value => {
+            onChange={(value) => {
               store.morse.setCharacterSpeed(value);
               store.morse.setEffectiveSpeed(value);
             }}
@@ -175,7 +178,7 @@ const Settings = inject("store", "morsePlayer")(
             max={store.morse.characterSpeed}
             min={10}
             value={store.morse.effectiveSpeed}
-            onChange={value => store.morse.setEffectiveSpeed(value)}
+            onChange={(value) => store.morse.setEffectiveSpeed(value)}
             leftIcon={<FontIcon>fast_forward</FontIcon>}
           />
           <Slider
@@ -185,7 +188,7 @@ const Settings = inject("store", "morsePlayer")(
             max={100}
             min={0}
             value={store.morse.volume}
-            onChange={value => store.morse.setVolume(value)}
+            onChange={(value) => store.morse.setVolume(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <br />
@@ -200,7 +203,7 @@ const Settings = inject("store", "morsePlayer")(
         </div>
       </div>
     </div>
-  ))
+  )),
 );
 
 export default Settings;

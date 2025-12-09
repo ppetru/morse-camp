@@ -7,7 +7,10 @@ import { makeLogger } from "./analytics";
 
 const event = makeLogger("TestButton");
 
-const TestButton = inject("store", "morsePlayer")(
+const TestButton = inject(
+  "store",
+  "morsePlayer",
+)(
   class TestButton extends PureComponent {
     // TODO: should these be React state instead?
     playCount = 0;
@@ -54,10 +57,10 @@ const TestButton = inject("store", "morsePlayer")(
         </Button>
       );
     }
-  }
+  },
 );
 TestButton.propTypes = {
-  repeatCount: PropTypes.number.isRequired
+  repeatCount: PropTypes.number.isRequired,
 };
 
 export default TestButton;

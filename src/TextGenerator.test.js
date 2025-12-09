@@ -6,7 +6,7 @@ describe("Text generation", () => {
       ["foo", 1],
       ["bar", 1],
       ["baz", 2],
-      ["quux", 2]
+      ["quux", 2],
     ]);
     let testState;
 
@@ -50,7 +50,7 @@ describe("Text generation", () => {
       const result = computeWordWeights(
         dictionary,
         state(),
-        REPEAT_DELAY_MS + 1000
+        REPEAT_DELAY_MS + 1000,
       );
       expect(result.get("foo")).not.toEqual(0);
       expect(result.get("bar")).toBeLessThan(result.get("foo"));

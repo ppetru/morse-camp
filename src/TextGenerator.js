@@ -13,7 +13,7 @@ const trimDictionary = (dictionary, maxWords) => {
   dictionary.forEach((freq, word) => {
     freqs.push(freq);
   });
-  freqs = freqs.sort(function(a, b) {
+  freqs = freqs.sort(function (a, b) {
     return b - a;
   }); //highest to lowest
 
@@ -129,7 +129,7 @@ const makeText = (dictionary, minLength, maxLength) => {
       dictionary,
       additionalMinLength,
       remainingLength - 1,
-      words
+      words,
     );
     if (!word) {
       break;

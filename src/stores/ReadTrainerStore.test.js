@@ -13,7 +13,7 @@ describe("ReadTrainerStore", () => {
       testStore = new ReadTrainerStore(
         null,
         fakeTransport,
-        true /* noDebounce */
+        true /* noDebounce */,
       );
     }
     return testStore;
@@ -76,8 +76,8 @@ describe("ReadTrainerStore", () => {
         store().textFeedback("foo bar", true, 2, 0);
         testStore = undefined;
         return store().loadSettings.then(() => {
-          expect(store().words.keys()).toContain("foo");
-          expect(store().words.keys()).toContain("bar");
+          expect([...store().words.keys()]).toContain("foo");
+          expect([...store().words.keys()]).toContain("bar");
         });
       });
 
@@ -107,10 +107,10 @@ describe("ReadTrainerStore", () => {
         store().textFeedback("foo baz", true, 2, 0);
         store().textFeedback("bar qux", true, 3, 0);
         expect(store().words.get("foo").score).toBeGreaterThan(
-          store().words.get("bar").score
+          store().words.get("bar").score,
         );
         expect(store().words.get("baz").score).toBeGreaterThan(
-          store().words.get("qux").score
+          store().words.get("qux").score,
         );
       });
     });
@@ -121,8 +121,8 @@ describe("ReadTrainerStore", () => {
         store().textFeedback("123", true, 2, 0);
         testStore = undefined;
         return store().loadSettings.then(() => {
-          expect(store().lengths.keys()).toContain("2");
-          expect(store().lengths.keys()).toContain("3");
+          expect([...store().lengths.keys()]).toContain(2);
+          expect([...store().lengths.keys()]).toContain(3);
         });
       });
 

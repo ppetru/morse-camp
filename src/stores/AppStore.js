@@ -1,37 +1,41 @@
-import { action, extendObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class AppStore {
+  toasts = [];
+  autohide = true;
+
   constructor(rootStore) {
     this.rootStore = rootStore;
-
-    extendObservable(this, {
-      toasts: observable([]),
-      autohide: true,
-
-      addToast: action((text, action, autohide = true) => {
-        this.toasts.push({ text, action });
-        this.autohide = autohide;
-      }),
-      dismissToast: action(() => {
-        this.toasts.shift();
-      }),
-      notifyCached: action(() => {
-        this.addToast("App can now be used offline", "OK", false);
-      }),
-      notifyUpdate: action(() => {
-        this.addToast(
-          "New app version available",
-          {
-            children: "Reload",
-            onClick: () => {
-              window.location.reload(true);
-            }
-          },
-          false
-        );
-      })
+    makeAutoObservable(this, {
+      rootStore: false,
     });
   }
+
+  addToast = (text, action, autohide = true) => {
+    this.toasts.push({ text, action });
+    this.autohide = autohide;
+  };
+
+  dismissToast = () => {
+    this.toasts.shift();
+  };
+
+  notifyCached = () => {
+    this.addToast("App can now be used offline", "OK", false);
+  };
+
+  notifyUpdate = () => {
+    this.addToast(
+      "New app version available",
+      {
+        children: "Reload",
+        onClick: () => {
+          window.location.reload(true);
+        },
+      },
+      false,
+    );
+  };
 }
 
 export default AppStore;

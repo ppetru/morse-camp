@@ -8,7 +8,7 @@ import {
   SelectionControlGroup,
   Slider,
   Switch,
-  TextField
+  TextField,
 } from "react-md";
 import { inject, observer } from "mobx-react";
 import { dictionary } from "../Words";
@@ -22,7 +22,9 @@ const RepeatOptions = inject("store")(
         id="repeat-switch"
         name="repeat"
         label="Automatically Repeat"
-        onChange={checked => store.readTrainer.setAutomaticallyRepeat(checked)}
+        onChange={(checked) =>
+          store.readTrainer.setAutomaticallyRepeat(checked)
+        }
         checked={store.readTrainer.automaticallyRepeat}
       />
 
@@ -36,7 +38,7 @@ const RepeatOptions = inject("store")(
             min={10}
             step={10}
             value={store.readTrainer.delay}
-            onChange={value => store.readTrainer.setDelay(value)}
+            onChange={(value) => store.readTrainer.setDelay(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <Slider
@@ -47,7 +49,7 @@ const RepeatOptions = inject("store")(
             min={1}
             step={1}
             value={store.readTrainer.maxRepeats}
-            onChange={value => store.readTrainer.setMaxRepeats(value)}
+            onChange={(value) => store.readTrainer.setMaxRepeats(value)}
             leftIcon={<FontIcon>build</FontIcon>}
           />
           <TestButton repeatCount={2} />
@@ -61,7 +63,7 @@ const RepeatOptions = inject("store")(
         </div>
       )}
     </div>
-  ))
+  )),
 );
 
 const MiscellaneousOptions = inject("store")(
@@ -72,7 +74,7 @@ const MiscellaneousOptions = inject("store")(
         id="increase-difficulty-switch"
         name="difficulty"
         label="Automatically Increase Difficulty"
-        onChange={checked =>
+        onChange={(checked) =>
           store.readTrainer.setAutomaticallyIncreaseDifficulty(checked)
         }
         checked={store.readTrainer.automaticallyIncreaseDifficulty}
@@ -81,14 +83,14 @@ const MiscellaneousOptions = inject("store")(
         <br />
       </div>
     </div>
-  ))
+  )),
 );
 
 const BuiltInDictionaryOptions = inject("store")(
   observer(({ store }) => (
     <>
       <List className={"md-cell md-cell--10 md-paper md-paper--2"}>
-        {dictionary.allTypes.map(type => (
+        {dictionary.allTypes.map((type) => (
           <ListItemControl
             key={type}
             primaryAction={
@@ -101,10 +103,10 @@ const BuiltInDictionaryOptions = inject("store")(
                   store.readTrainer.types[type]
                 }
                 checked={store.readTrainer.types[type]}
-                onChange={value => {
+                onChange={(value) => {
                   store.readTrainer.setType(type, value);
                   store.readTrainer.setActiveDictionarySize(
-                    dictionary.wordType.size
+                    dictionary.wordType.size,
                   );
                 }}
               />
@@ -120,11 +122,11 @@ const BuiltInDictionaryOptions = inject("store")(
         min={10}
         step={1}
         value={store.readTrainer.activeDictionarySize}
-        onChange={value => store.readTrainer.setActiveDictionarySize(value)}
+        onChange={(value) => store.readTrainer.setActiveDictionarySize(value)}
         leftIcon={<FontIcon>build</FontIcon>}
       />
     </>
-  ))
+  )),
 );
 
 const UserDictionaryOptions = inject("store")(
@@ -133,7 +135,7 @@ const UserDictionaryOptions = inject("store")(
       constructor(props) {
         super(props);
         this.state = {
-          dictionary: props.store.readTrainer.userDictionaryAsText
+          dictionary: props.store.readTrainer.userDictionaryAsText,
         };
       }
 
@@ -143,7 +145,9 @@ const UserDictionaryOptions = inject("store")(
 
         return (
           <>
-            <h3>{store.userDictionary.keys().length} user defined words</h3>
+            <h3>
+              {[...store.userDictionary.keys()].length} user defined words
+            </h3>
             <TextField
               id="user-dictionary"
               label="Dictionary (space, comma, or newline separated words)"
@@ -152,7 +156,7 @@ const UserDictionaryOptions = inject("store")(
               maxRows={10}
               resize={{ max: 300 }}
               value={dictionary}
-              onChange={value => this.setState({ dictionary: value })}
+              onChange={(value) => this.setState({ dictionary: value })}
             />
             <p>Saving will normalize and deduplicate the dictionary.</p>
             <Button
@@ -170,8 +174,8 @@ const UserDictionaryOptions = inject("store")(
           </>
         );
       }
-    }
-  )
+    },
+  ),
 );
 
 const DictionaryOptions = inject("store")(
@@ -185,18 +189,18 @@ const DictionaryOptions = inject("store")(
         label="Type"
         inline
         value={store.readTrainer.useUserDictionary.toString()}
-        onChange={value =>
+        onChange={(value) =>
           store.readTrainer.setUseUserDictionary(value === "true")
         }
         controls={[
           {
             label: "Built in",
-            value: "false"
+            value: "false",
           },
           {
             label: "User supplied",
-            value: "true"
-          }
+            value: "true",
+          },
         ]}
       />
       {store.readTrainer.useUserDictionary ? (
@@ -205,7 +209,7 @@ const DictionaryOptions = inject("store")(
         <BuiltInDictionaryOptions />
       )}
     </div>
-  ))
+  )),
 );
 
 // TODO: this should probably use md-bottom-navigation-offset instead

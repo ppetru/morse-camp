@@ -1,11 +1,10 @@
 import "react-app-polyfill/stable";
 import "raf/polyfill";
 import React from "react";
-import ReactDOM from "react-dom";
-import { useStrict } from "mobx";
+import { createRoot } from "react-dom/client";
+import { configure } from "mobx";
 import { Provider } from "mobx-react";
 import WebFontLoader from "webfontloader";
-import { createBrowserHistory } from "history";
 import ReactGA from "react-ga";
 
 import "./index.scss";
@@ -21,16 +20,16 @@ ReactGA.initialize("G-65SKQ2JDP7");
 
 WebFontLoader.load({
   google: {
-    families: ["Roboto:300,400,500,700", "Material Icons"]
-  }
+    families: ["Roboto:300,400,500,700", "Material Icons"],
+  },
 });
 
-useStrict(true);
+configure({ enforceActions: "always" });
 
 const requiredFeatures = {
   "Web Audio API": modernizr.webaudio,
   "Web Storage API": modernizr.localstorage,
-  "CSS Flexible Box Layout": modernizr.flexbox
+  "CSS Flexible Box Layout": modernizr.flexbox,
 };
 let rootElement;
 let missingFeatures = [];
@@ -46,16 +45,15 @@ if (missingFeatures.length === 0) {
   const transport = new LocalTransport();
   const store = new RootStore(transport);
   const player = new MorsePlayer(store.morse, audioContext);
-  const history = createBrowserHistory();
   rootElement = (
     <Provider store={store} morsePlayer={player}>
-      <App history={history} />
+      <App />
     </Provider>
   );
 
   registerServiceWorker(
     store.appStore.notifyUpdate,
-    store.appStore.notifyCached
+    store.appStore.notifyCached,
   );
 
   window.transport = transport;
@@ -65,4 +63,6 @@ if (missingFeatures.length === 0) {
   rootElement = <UnsupportedBrowser missingFeatures={missingFeatures} />;
 }
 
-ReactDOM.render(rootElement, document.getElementById("root"));
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(rootElement);

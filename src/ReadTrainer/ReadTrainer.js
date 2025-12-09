@@ -7,7 +7,7 @@ import { dictionary } from "../Words";
 import {
   trimDictionary,
   computeWordWeights,
-  generateText
+  generateText,
 } from "../TextGenerator";
 import { makeLogger } from "../analytics";
 
@@ -21,7 +21,7 @@ const event = makeLogger("ReadTrainer");
 const PlayLoop = inject("store")(
   class PlayLoop extends Component {
     state = {
-      text: ""
+      text: "",
     };
 
     pickText = (previousText = "") => {
@@ -36,7 +36,7 @@ const PlayLoop = inject("store")(
         // whenever the user changes the active dictionary.
         dict = trimDictionary(
           dictionary.wordFrequency,
-          store.activeDictionarySize
+          store.activeDictionarySize,
         );
       }
 
@@ -85,7 +85,7 @@ const PlayLoop = inject("store")(
       const { text } = this.state;
       return <PlayText text={text} onResult={this.onResult} />;
     }
-  }
+  },
 );
 
 const TextSettings = inject("store")(
@@ -140,14 +140,17 @@ const TextSettings = inject("store")(
         </Button>
       </div>
     </div>
-  ))
+  )),
 );
 
-const ReadTrainerPlayer = inject("store", "morsePlayer")(
+const ReadTrainerPlayer = inject(
+  "store",
+  "morsePlayer",
+)(
   observer(
     class ReadTrainerPlayer extends Component {
       state = {
-        active: false
+        active: false,
       };
 
       start = () => {
@@ -202,29 +205,29 @@ const ReadTrainerPlayer = inject("store", "morsePlayer")(
           </div>
         );
       }
-    }
-  )
+    },
+  ),
 );
 
 const links = [
   {
     label: "Train",
-    icon: <FontIcon>play_arrow</FontIcon>
+    icon: <FontIcon>play_arrow</FontIcon>,
   },
   {
     label: "Configuration",
-    icon: <FontIcon>tune</FontIcon>
+    icon: <FontIcon>tune</FontIcon>,
   },
   {
     label: "Instructions",
-    icon: <FontIcon>help</FontIcon>
-  }
+    icon: <FontIcon>help</FontIcon>,
+  },
 ];
 
 class ReadTrainer extends PureComponent {
   state = { children: <ReadTrainerPlayer /> };
 
-  handleNavChange = activeIndex => {
+  handleNavChange = (activeIndex) => {
     let children;
     switch (activeIndex) {
       case 1:

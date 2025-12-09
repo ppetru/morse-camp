@@ -1,6 +1,6 @@
 import ReactGA from "react-ga";
 
-const pageview = url => {
+const pageview = (url) => {
   if (process.env.NODE_ENV === "production") {
     ReactGA.pageview(url);
   }
@@ -14,12 +14,12 @@ const logEvent = (category, action, label, value, nonInteraction) => {
       action: action,
       label: label,
       value: value,
-      nonInteraction: nonInteraction
+      nonInteraction: nonInteraction,
     });
   }
 };
 
-const makeLogger = category => (action, label, value, nonInteraction) =>
+const makeLogger = (category) => (action, label, value, nonInteraction) =>
   logEvent(category, action, label, value, nonInteraction);
 
 export { pageview, makeLogger };

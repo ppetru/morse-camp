@@ -28,3 +28,6 @@ src/**/*.css
 
 firebase-debug.log
 .firebase
+
+# Nix/direnv
+.direnv/

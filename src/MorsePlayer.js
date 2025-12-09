@@ -27,16 +27,16 @@ class MorsePlayer {
     Y: "-.--",
     Z: "--..",
 
-    "0": "-----",
-    "1": ".----",
-    "2": "..---",
-    "3": "...--",
-    "4": "....-",
-    "5": ".....",
-    "6": "-....",
-    "7": "--...",
-    "8": "---..",
-    "9": "----.",
+    0: "-----",
+    1: ".----",
+    2: "..---",
+    3: "...--",
+    4: "....-",
+    5: ".....",
+    6: "-....",
+    7: "--...",
+    8: "---..",
+    9: "----.",
 
     ".": ".-.-.-",
     ",": "--..--",
@@ -49,7 +49,7 @@ class MorsePlayer {
     "<BT>": "-...-",
     "<CL>": "-.-..-..",
     "<KN>": "-.--.",
-    "<SK>": "...-.-"
+    "<SK>": "...-.-",
   };
 
   randomFrequency = -1;
@@ -99,15 +99,15 @@ class MorsePlayer {
     return 2 / this.store.frequency;
   }
 
-  soundOn = time => {
+  soundOn = (time) => {
     this.gain.gain.setTargetAtTime(
       this.store.volume / 100.0,
       time,
-      this.timeConstant
+      this.timeConstant,
     );
   };
 
-  soundOff = time => {
+  soundOff = (time) => {
     this.gain.gain.setTargetAtTime(0.0, time, this.timeConstant);
   };
 
@@ -138,11 +138,11 @@ class MorsePlayer {
     this.randomFrequency =
       Math.floor(
         Math.random() *
-          (this.store.upperBoundFrequency - this.store.lowerBoundFrequency)
+          (this.store.upperBoundFrequency - this.store.lowerBoundFrequency),
       ) + this.store.lowerBoundFrequency;
   };
 
-  playString = s => {
+  playString = (s) => {
     if (this.playing) {
       return;
     }
@@ -199,7 +199,7 @@ class MorsePlayer {
       this.oscillator.frequency.value = this.store.frequency;
     }
 
-    this.oscillator.addEventListener("ended", event => {
+    this.oscillator.addEventListener("ended", (event) => {
       this.playing = false;
       this.store.stoppedPlaying();
     });
