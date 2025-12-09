@@ -1,5 +1,5 @@
-import MorseStore from "./MorseStore";
-import FakeTransport from "../FakeTransport";
+import MorseStore from "./MorseStore.js";
+import FakeTransport from "../FakeTransport.js";
 
 it("saves and restores settings", () => {
   const transport = new FakeTransport();

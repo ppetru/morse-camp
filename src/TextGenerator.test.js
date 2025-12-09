@@ -1,4 +1,4 @@
-import { computeWordWeights, REPEAT_DELAY_MS } from "./TextGenerator";
+import { computeWordWeights, REPEAT_DELAY_MS } from "./TextGenerator.js";
 
 describe("Text generation", () => {
   describe("computeWordWeights", () => {

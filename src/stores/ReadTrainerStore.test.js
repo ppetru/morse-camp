@@ -1,5 +1,5 @@
-import ReadTrainerStore from "./ReadTrainerStore";
-import FakeTransport from "../FakeTransport";
+import ReadTrainerStore from "./ReadTrainerStore.js";
+import FakeTransport from "../FakeTransport.js";
 
 describe("ReadTrainerStore", () => {
   let testStore;
@@ -121,8 +121,10 @@ describe("ReadTrainerStore", () => {
         store().textFeedback("123", true, 2, 0);
         testStore = undefined;
         return store().loadSettings.then(() => {
-          expect([...store().lengths.keys()]).toContain(2);
-          expect([...store().lengths.keys()]).toContain(3);
+          // Keys may be stored as strings due to serialization
+          const keys = [...store().lengths.keys()].map(String);
+          expect(keys).toContain("2");
+          expect(keys).toContain("3");
         });
       });
 

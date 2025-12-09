@@ -1,14 +1,14 @@
 import ReactGA from "react-ga";
 
 const pageview = (url) => {
-  if (process.env.NODE_ENV === "production") {
+  if (import.meta.env.PROD) {
     ReactGA.pageview(url);
   }
 };
 
 // category and action are required
 const logEvent = (category, action, label, value, nonInteraction) => {
-  if (process.env.NODE_ENV === "production") {
+  if (import.meta.env.PROD) {
     ReactGA.event({
       category: category,
       action: action,

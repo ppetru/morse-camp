@@ -1,7 +1,7 @@
-import { autorun, makeAutoObservable, observable } from "mobx";
+import { autorun, makeObservable, observable, action, computed } from "mobx";
 
-import SettingsSaver from "./SettingsSaver";
-import { dictionary } from "../Words";
+import SettingsSaver from "./SettingsSaver.js";
+import { dictionary } from "../Words.js";
 
 // https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
 const ewma = (avg, newVal, alpha = 0.3) => {
@@ -31,17 +31,47 @@ class ReadTrainerStore extends SettingsSaver {
     this.rootStore = rootStore;
     this.transport = transport;
 
-    makeAutoObservable(this, {
-      rootStore: false,
-      transport: false,
-      WORD_PREFIX: false,
-      LENGTH_PREFIX: false,
-      loadWords: false,
-      wordPersister: false,
-      loadLengths: false,
-      lengthPersister: false,
-      loadSettings: false,
-      saveHandler: false,
+    makeObservable(this, {
+      minLength: observable,
+      maxLength: observable,
+      words: observable,
+      lengths: observable,
+      automaticallyRepeat: observable,
+      automaticallyIncreaseDifficulty: observable,
+      delay: observable,
+      maxRepeats: observable,
+      activeDictionarySize: observable,
+      maxDictionarySize: observable,
+      types: observable,
+      useUserDictionary: observable,
+      userDictionary: observable,
+      asJson: computed,
+      canUseUserDictionary: computed,
+      userDictionaryAsText: computed,
+      userDictionaryWithWordFreq: computed,
+      setFromJson: action,
+      includeCount: action,
+      setupActiveDictionary: action,
+      setMinLength: action,
+      setMaxLength: action,
+      setDelay: action,
+      setAutomaticallyRepeat: action,
+      setAutomaticallyIncreaseDifficulty: action,
+      setMaxRepeats: action,
+      setActiveDictionarySize: action,
+      setMaxDictionarySize: action,
+      setTypes: action,
+      setType: action,
+      setUseUserDictionary: action,
+      setUserDictionary: action,
+      setUserDictionaryFromText: action,
+      setWordData: action,
+      wordFeedback: action,
+      setLengthData: action,
+      lengthFeedback: action,
+      textFeedback: action,
+      resetLengthCount: action,
+      adjustLengths: action,
     });
 
     this.setupActiveDictionary();

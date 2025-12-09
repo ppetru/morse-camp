@@ -1,6 +1,6 @@
-import AppStore from "./AppStore";
-import ReadTrainerStore from "./ReadTrainerStore";
-import MorseStore from "./MorseStore";
+import AppStore from "./AppStore.js";
+import ReadTrainerStore from "./ReadTrainerStore.js";
+import MorseStore from "./MorseStore.js";
 
 class RootStore {
   constructor(transport) {

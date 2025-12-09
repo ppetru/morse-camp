@@ -1,5 +1,5 @@
-import { makeAutoObservable } from "mobx";
-import SettingsSaver from "./SettingsSaver";
+import { makeObservable, observable, action, computed } from "mobx";
+import SettingsSaver from "./SettingsSaver.js";
 
 class MorseStore extends SettingsSaver {
   volume = 80;
@@ -16,9 +16,26 @@ class MorseStore extends SettingsSaver {
     this.rootStore = rootStore;
     this.transport = transport;
 
-    makeAutoObservable(this, {
-      rootStore: false,
-      transport: false,
+    makeObservable(this, {
+      volume: observable,
+      playing: observable,
+      effectiveSpeed: observable,
+      characterSpeed: observable,
+      randomFrequency: observable,
+      frequency: observable,
+      upperBoundFrequency: observable,
+      lowerBoundFrequency: observable,
+      asJson: computed,
+      startedPlaying: action,
+      stoppedPlaying: action,
+      setFromJson: action,
+      setVolume: action,
+      setCharacterSpeed: action,
+      setEffectiveSpeed: action,
+      setRandomFrequency: action,
+      setFrequency: action,
+      setUpperBoundFrequency: action,
+      setLowerBoundFrequency: action,
     });
 
     this.setupSettings("MorsePlayer", noDebounce);
