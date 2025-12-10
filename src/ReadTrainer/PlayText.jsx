@@ -13,18 +13,11 @@ import LoopIcon from "@mui/icons-material/Loop";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 
-import { HotKeys } from "react-hotkeys";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import { makeLogger } from "../analytics.js";
 
 import "./ReadTrainer.scss";
-
-const keyMap = {
-  show: "space",
-  correct: "left",
-  incorrect: "right",
-  repeat: "r",
-};
 
 const event = makeLogger("ReadTrainer");
 
@@ -32,57 +25,55 @@ const PlayHiddenCard = inject("store")(
   observer(({ store, onShow, onRepeat }) => {
     const playCardRef = useRef(null);
 
+    useHotkeys("space", (e) => {
+      e.preventDefault();
+      onShow();
+    });
+    useHotkeys("r", (e) => {
+      e.preventDefault();
+      onRepeat();
+    });
+
     useEffect(() => {
       playCardRef.current?.focus();
     }, []);
 
     return (
-      <HotKeys keyMap={keyMap}>
-        <div>
-          <HotKeys
-            handlers={{
-              show: () => onShow(),
-              repeat: () => onRepeat(),
-            }}
-          >
-            <div tabIndex="-1" ref={playCardRef}>
-              <Card className="bottom-card">
-                <CardContent>
-                  <Typography variant="h6" component="div">
-                    Listen
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {store.morse.playing ? "Playing..." : "Waiting..."}
-                  </Typography>
-                  <Typography sx={{ mt: 2 }}>
-                    Decode the text and press 'Show' when ready
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: "center" }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={onShow}
-                    startIcon={<VisibilityIcon />}
-                  >
-                    Show
-                  </Button>
-                  {!store.readTrainer.automaticallyRepeat && (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      startIcon={<LoopIcon />}
-                      onClick={onRepeat}
-                    >
-                      Repeat
-                    </Button>
-                  )}
-                </CardActions>
-              </Card>
-            </div>
-          </HotKeys>
-        </div>
-      </HotKeys>
+      <div tabIndex="-1" ref={playCardRef}>
+        <Card className="bottom-card">
+          <CardContent>
+            <Typography variant="h6" component="div">
+              Listen
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {store.morse.playing ? "Playing..." : "Waiting..."}
+            </Typography>
+            <Typography sx={{ mt: 2 }}>
+              Decode the text and press 'Show' when ready
+            </Typography>
+          </CardContent>
+          <CardActions sx={{ justifyContent: "center" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onShow}
+              startIcon={<VisibilityIcon />}
+            >
+              Show
+            </Button>
+            {!store.readTrainer.automaticallyRepeat && (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<LoopIcon />}
+                onClick={onRepeat}
+              >
+                Repeat
+              </Button>
+            )}
+          </CardActions>
+        </Card>
+      </div>
     );
   }),
 );
@@ -96,58 +87,56 @@ const PlayVisibleCard = inject("store")(
   observer(({ store, text, onCorrect, onIncorrect }) => {
     const playCardRef = useRef(null);
 
+    useHotkeys("left", (e) => {
+      e.preventDefault();
+      onCorrect();
+    });
+    useHotkeys("right", (e) => {
+      e.preventDefault();
+      onIncorrect();
+    });
+
     useEffect(() => {
       playCardRef.current?.focus();
     }, []);
 
     return (
-      <HotKeys keyMap={keyMap}>
-        <div>
-          <HotKeys
-            handlers={{
-              correct: () => onCorrect(),
-              incorrect: () => onIncorrect(),
-            }}
-          >
-            <div tabIndex="-1" ref={playCardRef}>
-              <Card className="bottom-card">
-                <CardContent>
-                  <Typography variant="h6" component="div">
-                    Listen
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {store.morse.playing ? "Playing..." : "Waiting..."}
-                  </Typography>
-                  <Typography sx={{ mt: 2 }}>
-                    The text was:{" "}
-                    <Box component="span" sx={{ fontWeight: "bold" }}>
-                      {text}
-                    </Box>
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: "center" }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={onCorrect}
-                    startIcon={<ThumbUpIcon />}
-                  >
-                    Correct
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={onIncorrect}
-                    startIcon={<ThumbDownIcon />}
-                  >
-                    Incorrect
-                  </Button>
-                </CardActions>
-              </Card>
-            </div>
-          </HotKeys>
-        </div>
-      </HotKeys>
+      <div tabIndex="-1" ref={playCardRef}>
+        <Card className="bottom-card">
+          <CardContent>
+            <Typography variant="h6" component="div">
+              Listen
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {store.morse.playing ? "Playing..." : "Waiting..."}
+            </Typography>
+            <Typography sx={{ mt: 2 }}>
+              The text was:{" "}
+              <Box component="span" sx={{ fontWeight: "bold" }}>
+                {text}
+              </Box>
+            </Typography>
+          </CardContent>
+          <CardActions sx={{ justifyContent: "center" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onCorrect}
+              startIcon={<ThumbUpIcon />}
+            >
+              Correct
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onIncorrect}
+              startIcon={<ThumbDownIcon />}
+            >
+              Incorrect
+            </Button>
+          </CardActions>
+        </Card>
+      </div>
     );
   }),
 );

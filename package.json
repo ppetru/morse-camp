@@ -15,7 +15,7 @@
     "react-dom": "^18.2.0",
     "react-ga": "^3.3.1",
     "react-helmet": "^5.2.0",
-    "react-hotkeys": "^1.1.4",
+    "react-hotkeys-hook": "^5.2.1",
     "react-router-dom": "^6.21.0",
     "seedrandom": "^2.4.3",
     "webfontloader": "^1.6.28",
@@ -37,9 +37,9 @@
     "vite": "^5.0.10",
     "vite-plugin-pwa": "^0.17.4",
     "vitest": "^1.1.0",
+    "web-audio-test-api": "^0.5.2",
     "workbox-build": "^7.0.0",
-    "workbox-window": "^7.0.0",
-    "web-audio-test-api": "^0.5.2"
+    "workbox-window": "^7.0.0"
   },
   "scripts": {
     "start": "vite",
