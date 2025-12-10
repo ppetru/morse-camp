@@ -21,8 +21,7 @@ const UnsupportedBrowser = ({ missingFeatures }) => (
         <li>Opera</li>
       </ul>
       If your web browser supports the features above, we apologize for the
-      error. Please <a href="https://blog.morse.camp/contact">contact us</a> to
-      let us know and we'll try to fix it. Thank you.
+      error.
     </div>
   </div>
 );

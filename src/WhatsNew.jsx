@@ -16,6 +16,7 @@ const WhatsNew = () => (
         TODO: DATE
       </Typography>
       <Box component="ul" sx={{ pl: 3 }}>
+        <li>Moved to morsecamp.net (the morse.camp domain expired).</li>
         <li>Modernized the technology stack (Vite, React 18, Material-UI).</li>
         <li>Various bug fixes and improvements.</li>
       </Box>

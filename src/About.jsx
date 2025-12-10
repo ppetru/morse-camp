@@ -76,7 +76,8 @@ const About = () => (
         >
           morse-camp@groups.io
         </Link>
-        , or by email at <Link href="mailto:op@morse.camp">op@morse.camp</Link>.
+        , or by email at{" "}
+        <Link href="mailto:op@morsecamp.net">op@morsecamp.net</Link>.
       </Typography>
       <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 3 }}>
         Code contributors
