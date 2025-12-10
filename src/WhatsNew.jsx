@@ -13,7 +13,7 @@ const WhatsNew = () => (
     </Typography>
     <Box sx={{ maxWidth: 600 }}>
       <Typography variant="h6" component="h2" gutterBottom sx={{ mt: 2 }}>
-        TODO: DATE
+        December 10, 2025
       </Typography>
       <Box component="ul" sx={{ pl: 3 }}>
         <li>Moved to morsecamp.net (the morse.camp domain expired).</li>

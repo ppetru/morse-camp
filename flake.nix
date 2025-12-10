@@ -16,12 +16,14 @@
           buildInputs = with pkgs; [
             nodejs_20
             yarn
+            firebase-tools
           ];
 
           shellHook = ''
             echo "Morse Camp dev environment"
             echo "Node: $(node --version)"
             echo "Yarn: $(yarn --version)"
+            echo "Firebase: $(firebase --version)"
           '';
         };
       }
