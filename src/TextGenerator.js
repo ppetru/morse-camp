@@ -1,7 +1,4 @@
-import "seedrandom";
 import weighted from "weighted";
-
-Math.seedrandom();
 
 const REPEAT_DELAY_MS = 60 * 1000;
 const ELAPSED_WEIGHT = 1 / 10000;
