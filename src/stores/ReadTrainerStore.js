@@ -82,7 +82,7 @@ class ReadTrainerStore extends SettingsSaver {
     );
     this.wordPersister = autorun(() => {
       for (const [k, v] of this.words.entries()) {
-        this.transport.setIfDifferent(this.WORD_PREFIX + k, v);
+        this.transport.setIfDifferent(this.WORD_PREFIX + k, { ...v });
       }
     });
 
@@ -92,7 +92,7 @@ class ReadTrainerStore extends SettingsSaver {
     );
     this.lengthPersister = autorun(() => {
       for (const [k, v] of this.lengths.entries()) {
-        this.transport.setIfDifferent(this.LENGTH_PREFIX + k, v);
+        this.transport.setIfDifferent(this.LENGTH_PREFIX + k, { ...v });
       }
     });
   }

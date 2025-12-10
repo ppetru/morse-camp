@@ -153,19 +153,21 @@ const PlayText = inject(
 )(
   observer(({ store, morsePlayer, text, onResult }) => {
     const [hidden, setHidden] = useState(true);
+    const hiddenRef = useRef(hidden);
+    hiddenRef.current = hidden; // Keep ref in sync with state
     const playCountRef = useRef(0);
     const replayCountRef = useRef(0);
     const autorunDisposerRef = useRef(null);
     const timeoutRef = useRef(null);
 
     const playText = useCallback(() => {
-      if (hidden) {
+      if (hiddenRef.current) {
         playCountRef.current++;
       } else {
         replayCountRef.current++;
       }
       morsePlayer.playString(text);
-    }, [morsePlayer, text, hidden]);
+    }, [morsePlayer, text]);
 
     const stop = useCallback(() => {
       if (autorunDisposerRef.current) {
@@ -192,7 +194,15 @@ const PlayText = inject(
           timeoutRef.current = setTimeout(playText, store.readTrainer.delay);
         }
       }
-    }, [store.morse.playing, store.readTrainer, morsePlayer, playText, stop]);
+    }, [
+      store.morse.playing,
+      store.readTrainer.automaticallyRepeat,
+      store.readTrainer.maxRepeats,
+      store.readTrainer.delay,
+      morsePlayer,
+      playText,
+      stop,
+    ]);
 
     const start = useCallback(() => {
       playCountRef.current = 0;
