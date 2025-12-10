@@ -1,6 +1,5 @@
 import "seedrandom";
-
-const weighted = require("weighted");
+import weighted from "weighted";
 
 Math.seedrandom();
 
