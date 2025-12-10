@@ -13,6 +13,13 @@ const WhatsNew = () => (
     </Typography>
     <Box sx={{ maxWidth: 600 }}>
       <Typography variant="h6" component="h2" gutterBottom sx={{ mt: 2 }}>
+        TODO: DATE
+      </Typography>
+      <Box component="ul" sx={{ pl: 3 }}>
+        <li>Modernized the technology stack (Vite, React 18, Material-UI).</li>
+        <li>Various bug fixes and improvements.</li>
+      </Box>
+      <Typography variant="h6" component="h2" gutterBottom sx={{ mt: 2 }}>
         June 2, 2023
       </Typography>
       <Box component="ul" sx={{ pl: 3 }}>
