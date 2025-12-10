@@ -1,6 +1,18 @@
-import React, { Component, PureComponent } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
-import { BottomNavigation, Button, FontIcon } from "react-md";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import StopIcon from "@mui/icons-material/Stop";
+import TuneIcon from "@mui/icons-material/Tune";
+import HelpIcon from "@mui/icons-material/Help";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { Helmet } from "react-helmet";
 
 import { dictionary } from "../Words.js";
@@ -19,127 +31,138 @@ import "./ReadTrainer.scss";
 const event = makeLogger("ReadTrainer");
 
 const PlayLoop = inject("store")(
-  class PlayLoop extends Component {
-    state = {
-      text: "",
-    };
+  observer(({ store }) => {
+    const [text, setText] = useState("");
+    const readTrainerStore = store.readTrainer;
 
-    pickText = (previousText = "") => {
-      const store = this.props.store.readTrainer;
-
-      let dict;
-      if (store.canUseUserDictionary) {
-        dict = store.userDictionaryWithWordFreq;
-      } else {
-        // If there are performance issues on slower devices, we may want to consider caching
-        // the trimmed dictionary. It is relatively expensive. It will need to be invalidated
-        // whenever the user changes the active dictionary.
-        dict = trimDictionary(
-          dictionary.wordFrequency,
-          store.activeDictionarySize,
-        );
-      }
-
-      const candidates = computeWordWeights(dict, store.words, Date.now());
-
-      var text;
-      var safecount = 10;
-      while (text === undefined && safecount-- > 0) {
-        text = generateText(candidates, store.minLength, store.maxLength);
-
-        // With small dictionaries we may need to bump up the max size to find
-        // one or more words.
-        if (text === undefined) {
-          store.setMaxLength(store.maxLength + 1);
+    const pickText = useCallback(
+      (previousText = "") => {
+        let dict;
+        if (readTrainerStore.canUseUserDictionary) {
+          dict = readTrainerStore.userDictionaryWithWordFreq;
+        } else {
+          // If there are performance issues on slower devices, we may want to consider caching
+          // the trimmed dictionary. It is relatively expensive. It will need to be invalidated
+          // whenever the user changes the active dictionary.
+          dict = trimDictionary(
+            dictionary.wordFrequency,
+            readTrainerStore.activeDictionarySize,
+          );
         }
-      }
-      if (text === undefined) {
-        text = "uhoh";
-      }
 
-      // When the same word is selected twice in a row (which can be caused
-      // by a limited number of entries in the dictionary), adding a space
-      // allows the word to be used immediately again.
-      // (this is a workaround necessary due to the way setState() is (ab)used
-      // -- it needs a new value for things to work)
-      if (previousText === text) {
-        text += " ";
-      }
-      this.setState({ text });
-    };
+        const candidates = computeWordWeights(
+          dict,
+          readTrainerStore.words,
+          Date.now(),
+        );
 
-    componentDidMount() {
-      this.pickText();
-    }
+        let newText;
+        let safecount = 10;
+        while (newText === undefined && safecount-- > 0) {
+          newText = generateText(
+            candidates,
+            readTrainerStore.minLength,
+            readTrainerStore.maxLength,
+          );
 
-    onResult = (success, count) => {
-      const store = this.props.store.readTrainer;
-      store.textFeedback(this.state.text, success, count, Date.now());
-      if (store.automaticallyIncreaseDifficulty) {
-        store.adjustLengths();
-      }
-      this.pickText(this.state.text);
-    };
+          // With small dictionaries we may need to bump up the max size to find
+          // one or more words.
+          if (newText === undefined) {
+            readTrainerStore.setMaxLength(readTrainerStore.maxLength + 1);
+          }
+        }
+        if (newText === undefined) {
+          newText = "uhoh";
+        }
 
-    render() {
-      const { text } = this.state;
-      return <PlayText text={text} onResult={this.onResult} />;
-    }
-  },
+        // When the same word is selected twice in a row (which can be caused
+        // by a limited number of entries in the dictionary), adding a space
+        // allows the word to be used immediately again.
+        // (this is a workaround necessary due to the way setState() is (ab)used
+        // -- it needs a new value for things to work)
+        if (previousText === newText) {
+          newText += " ";
+        }
+        setText(newText);
+      },
+      [readTrainerStore],
+    );
+
+    useEffect(() => {
+      pickText();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const onResult = useCallback(
+      (success, count) => {
+        readTrainerStore.textFeedback(text, success, count, Date.now());
+        if (readTrainerStore.automaticallyIncreaseDifficulty) {
+          readTrainerStore.adjustLengths();
+        }
+        pickText(text);
+      },
+      [readTrainerStore, text, pickText],
+    );
+
+    return <PlayText text={text} onResult={onResult} />;
+  }),
 );
 
 const TextSettings = inject("store")(
   observer(({ store }) => (
-    <div className="horizontal-container">
-      <div className="horizontal-box">
-        <span>Min:</span>
-        <Button
-          primary
-          icon
+    <Box sx={{ display: "flex", justifyContent: "center", gap: 4, my: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography>Min:</Typography>
+        <IconButton
+          color="primary"
+          size="small"
           onClick={() => {
             store.readTrainer.setMinLength(store.readTrainer.minLength - 1);
             store.readTrainer.resetLengthCount(store.readTrainer.minLength);
           }}
         >
-          arrow_downward
-        </Button>
-        <span>{store.readTrainer.minLength}</span>
-        <Button
-          primary
-          icon
+          <ArrowDownwardIcon />
+        </IconButton>
+        <Typography sx={{ minWidth: 24, textAlign: "center" }}>
+          {store.readTrainer.minLength}
+        </Typography>
+        <IconButton
+          color="primary"
+          size="small"
           onClick={() => {
             store.readTrainer.setMinLength(store.readTrainer.minLength + 1);
             store.readTrainer.resetLengthCount(store.readTrainer.minLength);
           }}
         >
-          arrow_upward
-        </Button>
-      </div>
-      <div className="horizontal-box">
-        <span>Max:</span>
-        <Button
-          primary
-          icon
+          <ArrowUpwardIcon />
+        </IconButton>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography>Max:</Typography>
+        <IconButton
+          color="primary"
+          size="small"
           onClick={() => {
             store.readTrainer.setMaxLength(store.readTrainer.maxLength - 1);
             store.readTrainer.resetLengthCount(store.readTrainer.maxLength);
           }}
         >
-          arrow_downward
-        </Button>
-        <span>{store.readTrainer.maxLength}</span>
-        <Button
-          primary
-          icon
+          <ArrowDownwardIcon />
+        </IconButton>
+        <Typography sx={{ minWidth: 24, textAlign: "center" }}>
+          {store.readTrainer.maxLength}
+        </Typography>
+        <IconButton
+          color="primary"
+          size="small"
           onClick={() => {
             store.readTrainer.setMaxLength(store.readTrainer.maxLength + 1);
             store.readTrainer.resetLengthCount(store.readTrainer.maxLength);
           }}
         >
-          arrow_upward
-        </Button>
-      </div>
-    </div>
+          <ArrowUpwardIcon />
+        </IconButton>
+      </Box>
+    </Box>
   )),
 );
 
@@ -147,124 +170,111 @@ const ReadTrainerPlayer = inject(
   "store",
   "morsePlayer",
 )(
-  observer(
-    class ReadTrainerPlayer extends Component {
-      state = {
-        active: false,
-      };
+  observer(({ store, morsePlayer }) => {
+    const [active, setActive] = useState(false);
 
-      start = () => {
-        event("start", this.props.store.morse.speed);
-        this.setState({ active: true });
-      };
+    const start = useCallback(() => {
+      event("start", store.morse.speed);
+      setActive(true);
+    }, [store.morse.speed]);
 
-      stop = () => {
-        event("stop");
-        this.props.morsePlayer.forceStop();
-        this.setState({ active: false });
-      };
+    const stop = useCallback(() => {
+      event("stop");
+      morsePlayer.forceStop();
+      setActive(false);
+    }, [morsePlayer]);
 
-      render() {
-        const { active } = this.state;
-
-        var button;
-        if (active) {
-          button = (
-            <Button
-              raised
-              primary
-              onClick={this.stop}
-              iconEl={<FontIcon>stop</FontIcon>}
-            >
-              Stop
-            </Button>
-          );
-        } else {
-          button = (
-            <Button
-              raised
-              primary
-              onClick={this.start}
-              iconEl={<FontIcon>play_arrow</FontIcon>}
-            >
-              Start
-            </Button>
-          );
-        }
-
-        return (
-          <div className="vcontainer">
-            <div className="top-card">
-              <h2>Text length</h2>
-              <TextSettings />
-              <div className="horizontal-container center-justify">
-                {button}
-              </div>
-            </div>
-            {active && <PlayLoop />}
-          </div>
-        );
-      }
-    },
-  ),
-);
-
-const links = [
-  {
-    label: "Train",
-    icon: <FontIcon>play_arrow</FontIcon>,
-  },
-  {
-    label: "Configuration",
-    icon: <FontIcon>tune</FontIcon>,
-  },
-  {
-    label: "Instructions",
-    icon: <FontIcon>help</FontIcon>,
-  },
-];
-
-class ReadTrainer extends PureComponent {
-  state = { children: <ReadTrainerPlayer /> };
-
-  handleNavChange = (activeIndex) => {
-    let children;
-    switch (activeIndex) {
-      case 1:
-        children = <Configuration key="config" />;
-        event("configuration");
-        break;
-      case 2:
-        children = <HelpScreen key="help" />;
-        event("help");
-        break;
-      default:
-        children = <ReadTrainerPlayer key="trainer" />;
-        event("play_tab");
-    }
-
-    this.setState({ children });
-  };
-
-  render() {
-    const { children } = this.state;
+    const button = active ? (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={stop}
+        startIcon={<StopIcon />}
+      >
+        Stop
+      </Button>
+    ) : (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={start}
+        startIcon={<PlayArrowIcon />}
+      >
+        Start
+      </Button>
+    );
 
     return (
       <div className="vcontainer">
-        <Helmet>
-          <title>Read Trainer</title>
-        </Helmet>
-        <main className="vcontainer md-bottom-navigation-offset">
-          {children}
-        </main>
-        <BottomNavigation
-          links={links}
-          dynamic={false}
-          onNavChange={this.handleNavChange}
-        />
+        <div className="top-card">
+          <Typography variant="h5" component="h2" gutterBottom>
+            Text length
+          </Typography>
+          <TextSettings />
+          <Box sx={{ display: "flex", justifyContent: "center" }}>{button}</Box>
+        </div>
+        {active && <PlayLoop />}
       </div>
     );
+  }),
+);
+
+const ReadTrainer = () => {
+  const [navValue, setNavValue] = useState(0);
+
+  const handleNavChange = (_, newValue) => {
+    setNavValue(newValue);
+    switch (newValue) {
+      case 1:
+        event("configuration");
+        break;
+      case 2:
+        event("help");
+        break;
+      default:
+        event("play_tab");
+    }
+  };
+
+  let content;
+  switch (navValue) {
+    case 1:
+      content = <Configuration key="config" />;
+      break;
+    case 2:
+      content = <HelpScreen key="help" />;
+      break;
+    default:
+      content = <ReadTrainerPlayer key="trainer" />;
   }
-}
+
+  return (
+    <Box
+      className="vcontainer"
+      sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+    >
+      <Helmet>
+        <title>Read Trainer</title>
+      </Helmet>
+      <Box
+        component="main"
+        className="vcontainer"
+        sx={{ flex: 1, pb: 7, overflow: "auto" }}
+      >
+        {content}
+      </Box>
+      <Paper
+        sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+        elevation={3}
+      >
+        <BottomNavigation value={navValue} onChange={handleNavChange}>
+          <BottomNavigationAction label="Train" icon={<PlayArrowIcon />} />
+          <BottomNavigationAction label="Configuration" icon={<TuneIcon />} />
+          <BottomNavigationAction label="Instructions" icon={<HelpIcon />} />
+        </BottomNavigation>
+      </Paper>
+    </Box>
+  );
+};
 
 export default ReadTrainer;

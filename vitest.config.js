@@ -9,4 +9,11 @@ export default defineConfig({
     setupFiles: "./src/setupTests.js",
     css: true,
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: "modern-compiler",
+      },
+    },
+  },
 });

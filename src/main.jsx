@@ -1,12 +1,14 @@
-import "raf/polyfill";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { configure } from "mobx";
 import { Provider } from "mobx-react";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import WebFontLoader from "webfontloader";
 import ReactGA from "react-ga";
 
 import "./index.scss";
+import theme from "./theme.js";
 import App from "./App.jsx";
 import MorsePlayer from "./MorsePlayer.js";
 import RootStore from "./stores/RootStore.js";
@@ -45,9 +47,12 @@ if (missingFeatures.length === 0) {
   const store = new RootStore(transport);
   const player = new MorsePlayer(store.morse, audioContext);
   rootElement = (
-    <Provider store={store} morsePlayer={player}>
-      <App />
-    </Provider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Provider store={store} morsePlayer={player}>
+        <App />
+      </Provider>
+    </ThemeProvider>
   );
 
   // Register service worker with update prompt

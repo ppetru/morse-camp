@@ -1,5 +1,19 @@
-import React, { PureComponent } from "react";
-import { Button, DialogContainer, FontIcon, Slider, Switch } from "react-md";
+import React, { useState, useCallback } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Slider from "@mui/material/Slider";
+import Switch from "@mui/material/Switch";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FastForwardIcon from "@mui/icons-material/FastForward";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { inject, observer } from "mobx-react";
 import { Helmet } from "react-helmet";
 
@@ -8,138 +22,140 @@ import TestButton from "./TestButton.jsx";
 
 const event = makeLogger("Settings");
 
+const SliderWithInput = ({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  step = 1,
+  icon,
+}) => (
+  <Box sx={{ mb: 3 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+      {icon}
+      <Typography>{label}</Typography>
+    </Box>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <Slider
+        value={value}
+        onChange={(_, newValue) => onChange(newValue)}
+        min={min}
+        max={max}
+        step={step}
+        sx={{ flex: 1 }}
+      />
+      <TextField
+        value={value}
+        onChange={(e) => {
+          const val = parseInt(e.target.value, 10);
+          if (!isNaN(val)) onChange(val);
+        }}
+        type="number"
+        size="small"
+        inputProps={{ min, max, step }}
+        sx={{ width: 80 }}
+      />
+    </Box>
+  </Box>
+);
+
 const ClearStorage = inject("store")(
-  class ClearStorage extends PureComponent {
-    state = {
-      visible: false,
-      pageX: null,
-      pageY: null,
-    };
+  observer(({ store }) => {
+    const [visible, setVisible] = useState(false);
 
-    show = (e) => {
-      let { pageX, pageY } = e;
-      if (e.changedTouches) {
-        pageX = e.changedTouches[0].pageX;
-        pageY = e.changedTouches[0].pageY;
-      }
+    const show = useCallback(() => {
+      setVisible(true);
+    }, []);
 
-      this.setState({ visible: true, pageX, pageY });
-    };
+    const hide = useCallback(() => {
+      setVisible(false);
+    }, []);
 
-    hide = () => {
-      this.setState({ visible: false });
-    };
-
-    delete = () => {
+    const handleDelete = useCallback(() => {
       event("clear storage");
-      const { store } = this.props;
       store.transport.clear().then(() => {
         store.readTrainer.setupActiveDictionary();
         store.appStore.addToast("Storage cleared");
         window.location.reload();
       });
+      hide();
+    }, [store, hide]);
 
-      this.hide();
-    };
-
-    render() {
-      const { visible, pageX, pageY } = this.state;
-      const actions = [
-        {
-          onClick: this.hide,
-          primary: true,
-          children: "No, nevermind",
-        },
-        {
-          onClick: this.delete,
-          primary: false,
-          children: "Yes, delete everything",
-        },
-      ];
-
-      return (
-        <div>
-          <Button
-            raised
-            onClick={this.show}
-            aria-controls="clear-storage-dialog"
-            iconEl={<FontIcon>delete</FontIcon>}
-          >
-            Clear storage
-          </Button>
-          <DialogContainer
-            id="clear-storage-dialog"
-            visible={visible}
-            pageX={pageX}
-            pageY={pageY}
-            modal
-            onHide={this.hide}
-            aria-labelledby="clear-storage-title"
-            actions={actions}
-          >
-            <p>Reset all settings and progress data?</p>
-          </DialogContainer>
-        </div>
-      );
-    }
-  },
+    return (
+      <div>
+        <Button variant="contained" onClick={show} startIcon={<DeleteIcon />}>
+          Clear storage
+        </Button>
+        <Dialog open={visible} onClose={hide}>
+          <DialogContent>
+            <DialogContentText>
+              Reset all settings and progress data?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={hide} color="primary">
+              No, nevermind
+            </Button>
+            <Button onClick={handleDelete}>Yes, delete everything</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }),
 );
 
 const FrequencyOptions = inject("store")(
   observer(({ store }) => (
     <div>
-      <h3>Tone Frequency (Hz)</h3>
-      <Switch
-        id="randomFrequency-switch"
-        name="randomFrequency"
+      <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+        Tone Frequency (Hz)
+      </Typography>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={store.morse.randomFrequency}
+            onChange={(e) => store.morse.setRandomFrequency(e.target.checked)}
+          />
+        }
         label="Random"
-        onChange={(checked) => store.morse.setRandomFrequency(checked)}
-        checked={store.morse.randomFrequency}
       />
 
       {store.morse.randomFrequency ? (
         <div>
-          <Slider
-            id="upperBoundFrequency"
+          <SliderWithInput
             label="Upper Bound"
-            editable
-            max={1200}
-            min={200}
-            step={10}
             value={store.morse.upperBoundFrequency}
             onChange={(value) => {
               store.morse.setUpperBoundFrequency(value);
               const lowerBound = value - 400 < 100 ? 101 : value - 400;
               store.morse.setLowerBoundFrequency(lowerBound);
             }}
-            leftIcon={<FontIcon>build</FontIcon>}
-          />
-          <Slider
-            id="lowerBoundFrequency"
-            label="Lower Bound"
-            editable
-            max={store.morse.upperBoundFrequency}
-            min={100}
+            min={200}
+            max={1200}
             step={10}
+            icon={<MusicNoteIcon />}
+          />
+          <SliderWithInput
+            label="Lower Bound"
             value={store.morse.lowerBoundFrequency}
             onChange={(value) => store.morse.setLowerBoundFrequency(value)}
-            leftIcon={<FontIcon>build</FontIcon>}
+            min={100}
+            max={store.morse.upperBoundFrequency}
+            step={10}
+            icon={<MusicNoteIcon />}
           />
         </div>
       ) : (
-        <div>
-          <Slider
-            id="frequency"
-            label="Value"
-            editable
-            max={1000}
-            min={200}
-            step={10}
-            value={store.morse.frequency}
-            onChange={(value) => store.morse.setFrequency(value)}
-            leftIcon={<FontIcon>audiotrack</FontIcon>}
-          />
-        </div>
+        <SliderWithInput
+          label="Value"
+          value={store.morse.frequency}
+          onChange={(value) => store.morse.setFrequency(value)}
+          min={200}
+          max={1000}
+          step={10}
+          icon={<MusicNoteIcon />}
+        />
       )}
     </div>
   )),
@@ -149,59 +165,55 @@ const Settings = inject(
   "store",
   "morsePlayer",
 )(
-  observer(({ store, morsePlayer }) => (
+  observer(({ store }) => (
     <div>
       <Helmet>
         <title>Settings</title>
       </Helmet>
-      <h1>Settings</h1>
-      <div>
-        <h2>Morse player</h2>
-        <div>
-          <Slider
-            id="speed"
-            label="Character Speed (WPM)"
-            editable
-            max={80}
-            min={10}
-            value={store.morse.characterSpeed}
-            onChange={(value) => {
-              store.morse.setCharacterSpeed(value);
-              store.morse.setEffectiveSpeed(value);
-            }}
-            leftIcon={<FontIcon>fast_forward</FontIcon>}
-          />
-          <Slider
-            id="speed"
-            label="Effective Speed (WPM)"
-            editable
-            max={store.morse.characterSpeed}
-            min={10}
-            value={store.morse.effectiveSpeed}
-            onChange={(value) => store.morse.setEffectiveSpeed(value)}
-            leftIcon={<FontIcon>fast_forward</FontIcon>}
-          />
-          <Slider
-            id="volume"
-            label="Volume (%)"
-            editable
-            max={100}
-            min={0}
-            value={store.morse.volume}
-            onChange={(value) => store.morse.setVolume(value)}
-            leftIcon={<FontIcon>build</FontIcon>}
-          />
-          <br />
-          <FrequencyOptions />
+      <Typography variant="h4" component="h1" gutterBottom>
+        Settings
+      </Typography>
+      <Box sx={{ maxWidth: 600 }}>
+        <Typography variant="h5" component="h2" gutterBottom>
+          Morse player
+        </Typography>
+        <SliderWithInput
+          label="Character Speed (WPM)"
+          value={store.morse.characterSpeed}
+          onChange={(value) => {
+            store.morse.setCharacterSpeed(value);
+            store.morse.setEffectiveSpeed(value);
+          }}
+          min={10}
+          max={80}
+          icon={<FastForwardIcon />}
+        />
+        <SliderWithInput
+          label="Effective Speed (WPM)"
+          value={store.morse.effectiveSpeed}
+          onChange={(value) => store.morse.setEffectiveSpeed(value)}
+          min={10}
+          max={store.morse.characterSpeed}
+          icon={<FastForwardIcon />}
+        />
+        <SliderWithInput
+          label="Volume (%)"
+          value={store.morse.volume}
+          onChange={(value) => store.morse.setVolume(value)}
+          min={0}
+          max={100}
+          icon={<VolumeUpIcon />}
+        />
+        <FrequencyOptions />
+        <Box sx={{ mt: 2 }}>
           <TestButton repeatCount={1} />
-        </div>
-        <br />
-        <br />
-        <h2>Internals</h2>
-        <div>
-          <ClearStorage />
-        </div>
-      </div>
+        </Box>
+
+        <Typography variant="h5" component="h2" sx={{ mt: 4 }} gutterBottom>
+          Internals
+        </Typography>
+        <ClearStorage />
+      </Box>
     </div>
   )),
 );

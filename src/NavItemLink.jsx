@@ -1,7 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link, useMatch } from "react-router-dom";
-import { FontIcon, ListItem } from "react-md";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Icon from "@mui/material/Icon";
 
 /**
  * Navigation item that highlights when its route is active.
@@ -11,19 +15,17 @@ const NavItemLink = ({ label, to, icon }) => {
   // In v6, routes are exact by default. Use end: true for exact matching on "/"
   const match = useMatch({ path: to, end: to === "/" });
 
-  let leftIcon;
-  if (icon) {
-    leftIcon = <FontIcon>{icon}</FontIcon>;
-  }
-
   return (
-    <ListItem
-      component={Link}
-      active={!!match}
-      to={to}
-      primaryText={label}
-      leftIcon={leftIcon}
-    />
+    <ListItem disablePadding>
+      <ListItemButton component={Link} to={to} selected={!!match}>
+        {icon && (
+          <ListItemIcon>
+            <Icon>{icon}</Icon>
+          </ListItemIcon>
+        )}
+        <ListItemText primary={label} />
+      </ListItemButton>
+    </ListItem>
   );
 };
 

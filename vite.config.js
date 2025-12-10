@@ -22,16 +22,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // Suppress deprecation warnings from react-md's old Sass
-        silenceDeprecations: [
-          "legacy-js-api",
-          "import",
-          "global-builtin",
-          "slash-div",
-          "if-function",
-          "elseif",
-        ],
-        quietDeps: true,
+        api: "modern-compiler",
       },
     },
   },

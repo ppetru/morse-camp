@@ -1,4 +1,3 @@
-import "raf/polyfill";
 import { vi } from "vitest";
 
 window.matchMedia = vi.fn((query) => ({

@@ -1,22 +1,11 @@
-@import "globals";
-
-@include react-md-everything;
+@use "globals" as *;
 
 body,
 html {
-  background-color: $md-grey-800;
+  background-color: $background-color;
   color: #fff;
 }
 
 a {
-  color: #9ccc65;
-}
-
-// leave more room for slides with big numbers
-.md-slider-container .md-text-field-container {
-  // TODO: this overwrites the react-md style (default as of this writing is
-  // 4px left margin and 0 right padding). It would be better to extend it
-  // instead and just override the left margin, but I don't know how to do it.
-  margin-left: 10px;
-  padding-right: 0;
+  color: $primary-color;
 }

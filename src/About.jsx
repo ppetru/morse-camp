@@ -1,81 +1,92 @@
 import React from "react";
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 import { Helmet } from "react-helmet";
 
 import "./About.scss";
 
 const About = () => (
-  <div>
+  <Box>
     <Helmet>
       <title>About</title>
     </Helmet>
-    <h1>About</h1>
-    <div className="md-text-container md-text-justify">
-      <p>
+    <Typography variant="h4" component="h1" gutterBottom>
+      About
+    </Typography>
+    <Box sx={{ maxWidth: 600, textAlign: "justify" }}>
+      <Typography paragraph>
         Morse Camp trains you to have fluent conversations in Morse code. You
         can use it offline without installing anything, and it works on mobile
         phones as well as on desktop computers.
-      </p>
-      <p>
+      </Typography>
+      <Typography paragraph>
         Prior knowledge of the Morse code is assumed. If you're starting from
         scratch, check out the excellent trainer at{" "}
-        <a target="_blank" rel="noopener noreferrer" href="https://lcwo.net">
+        <Link href="https://lcwo.net" target="_blank" rel="noopener noreferrer">
           LCWO.net
-        </a>
+        </Link>
         .
-      </p>
-      <p>
+      </Typography>
+      <Typography paragraph>
         Morse Camp is{" "}
-        <a
+        <Link
           href="https://www.fsf.org/about/what-is-free-software"
           target="_blank"
           rel="noopener noreferrer"
         >
           Free Software
-        </a>
+        </Link>
         . You can check out the{" "}
-        <a
+        <Link
           href="https://github.com/ppetru/morse-camp"
           target="_blank"
           rel="noopener noreferrer"
         >
           source code
-        </a>{" "}
+        </Link>{" "}
         and make changes yourself.
-      </p>
-      <h2>Mobile usage</h2>
-      <p>
+      </Typography>
+      <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 3 }}>
+        Mobile usage
+      </Typography>
+      <Typography paragraph>
         To make it easier to come back, select the "Add to home screen" (or
         equivalent) option from your browser menu. The resulting home screen
         icon will then open the app in fullscreen mode and work without an
         internet connection.
-      </p>
-      <h2>Feedback</h2>
-      <p>
+      </Typography>
+      <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 3 }}>
+        Feedback
+      </Typography>
+      <Typography paragraph>
         Your feedback and suggestions would be much appreciated at{" "}
-        <a
+        <Link
           href="https://github.com/ppetru/morse-camp/issues"
           target="_blank"
           rel="noopener noreferrer"
         >
           Github
-        </a>
+        </Link>
         , the discussion group at{" "}
-        <a
+        <Link
+          href="https://groups.io/g/morse-camp"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://groups.io/g/morse-camp"
         >
           morse-camp@groups.io
-        </a>
-        , or by email at <a href="mailto:op@morse.camp">op@morse.camp</a>.
-      </p>
-      <h2>Code contributors</h2>
-      <ul>
+        </Link>
+        , or by email at <Link href="mailto:op@morse.camp">op@morse.camp</Link>.
+      </Typography>
+      <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 3 }}>
+        Code contributors
+      </Typography>
+      <Box component="ul" sx={{ pl: 3 }}>
         <li>Kurt Zoglmann, AD0WE</li>
         <li>Petru Paler, CT7AZH (ex HB9GKP)</li>
-      </ul>
-    </div>
-  </div>
+      </Box>
+    </Box>
+  </Box>
 );
 
 export default About;

@@ -1,15 +1,17 @@
-import React, { Component } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { autorun } from "mobx";
 import { inject, observer } from "mobx-react";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardText,
-  CardTitle,
-  FontIcon,
-} from "react-md";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import LoopIcon from "@mui/icons-material/Loop";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 
 import { HotKeys } from "react-hotkeys";
 
@@ -27,140 +29,129 @@ const keyMap = {
 const event = makeLogger("ReadTrainer");
 
 const PlayHiddenCard = inject("store")(
-  observer(
-    class PlayHiddenCard extends Component {
-      constructor(props) {
-        super(props);
-        this.playCardRef = React.createRef();
-      }
-      componentDidMount() {
-        this.playCardRef.current.focus();
-      }
+  observer(({ store, onShow, onRepeat }) => {
+    const playCardRef = useRef(null);
 
-      render() {
-        return (
-          <HotKeys keyMap={keyMap}>
-            <div>
-              <HotKeys
-                handlers={{
-                  show: (event) => this.props.onShow(),
-                  repeat: (event) => this.props.onRepeat(),
-                }}
-              >
-                <div tabIndex="-1" ref={this.playCardRef}>
-                  <Card className="bottom-card">
-                    <CardTitle
-                      title="Listen"
-                      subtitle={
-                        this.props.store.morse.playing
-                          ? "Playing..."
-                          : "Waiting..."
-                      }
-                    />
-                    <CardText>
-                      <p>Decode the text and press 'Show' when ready</p>
-                    </CardText>
-                    <CardActions centered>
-                      <Button
-                        raised
-                        primary
-                        onClick={this.props.onShow}
-                        iconEl={<FontIcon>visibility</FontIcon>}
-                      >
-                        Show
-                      </Button>
-                      {this.props.store.readTrainer.automaticallyRepeat ? (
-                        <div />
-                      ) : (
-                        <Button
-                          raised
-                          primary
-                          iconEl={<FontIcon>loop</FontIcon>}
-                          onClick={this.props.onRepeat}
-                        >
-                          Repeat
-                        </Button>
-                      )}
-                    </CardActions>
-                  </Card>
-                </div>
-              </HotKeys>
+    useEffect(() => {
+      playCardRef.current?.focus();
+    }, []);
+
+    return (
+      <HotKeys keyMap={keyMap}>
+        <div>
+          <HotKeys
+            handlers={{
+              show: () => onShow(),
+              repeat: () => onRepeat(),
+            }}
+          >
+            <div tabIndex="-1" ref={playCardRef}>
+              <Card className="bottom-card">
+                <CardContent>
+                  <Typography variant="h6" component="div">
+                    Listen
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {store.morse.playing ? "Playing..." : "Waiting..."}
+                  </Typography>
+                  <Typography sx={{ mt: 2 }}>
+                    Decode the text and press 'Show' when ready
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ justifyContent: "center" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={onShow}
+                    startIcon={<VisibilityIcon />}
+                  >
+                    Show
+                  </Button>
+                  {!store.readTrainer.automaticallyRepeat && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<LoopIcon />}
+                      onClick={onRepeat}
+                    >
+                      Repeat
+                    </Button>
+                  )}
+                </CardActions>
+              </Card>
             </div>
           </HotKeys>
-        );
-      }
-    },
-  ),
+        </div>
+      </HotKeys>
+    );
+  }),
 );
+
 PlayHiddenCard.propTypes = {
   onShow: PropTypes.func.isRequired,
   onRepeat: PropTypes.func.isRequired,
 };
 
 const PlayVisibleCard = inject("store")(
-  observer(
-    class PlayVisibleCard extends Component {
-      constructor(props) {
-        super(props);
-        this.playCardRef = React.createRef();
-      }
-      componentDidMount() {
-        this.playCardRef.current.focus();
-      }
+  observer(({ store, text, onCorrect, onIncorrect }) => {
+    const playCardRef = useRef(null);
 
-      render() {
-        return (
-          <HotKeys keyMap={keyMap}>
-            <div>
-              <HotKeys
-                handlers={{
-                  correct: (event) => this.props.onCorrect(),
-                  incorrect: (event) => this.props.onIncorrect(),
-                }}
-              >
-                <div tabIndex="-1" ref={this.playCardRef}>
-                  <Card className="bottom-card">
-                    <CardTitle
-                      title="Listen"
-                      subtitle={
-                        this.props.store.morse.playing
-                          ? "Playing..."
-                          : "Waiting..."
-                      }
-                    />
-                    <CardText>
-                      <p>
-                        The text was: <b>{this.props.text}</b>
-                      </p>
-                    </CardText>
-                    <CardActions centered>
-                      <Button
-                        raised
-                        primary
-                        onClick={this.props.onCorrect}
-                        iconEl={<FontIcon>thumb_up</FontIcon>}
-                      >
-                        Correct
-                      </Button>
-                      <Button
-                        raised
-                        primary
-                        onClick={this.props.onIncorrect}
-                        iconEl={<FontIcon>thumb_down</FontIcon>}
-                      >
-                        Incorrect
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </div>
-              </HotKeys>
+    useEffect(() => {
+      playCardRef.current?.focus();
+    }, []);
+
+    return (
+      <HotKeys keyMap={keyMap}>
+        <div>
+          <HotKeys
+            handlers={{
+              correct: () => onCorrect(),
+              incorrect: () => onIncorrect(),
+            }}
+          >
+            <div tabIndex="-1" ref={playCardRef}>
+              <Card className="bottom-card">
+                <CardContent>
+                  <Typography variant="h6" component="div">
+                    Listen
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {store.morse.playing ? "Playing..." : "Waiting..."}
+                  </Typography>
+                  <Typography sx={{ mt: 2 }}>
+                    The text was:{" "}
+                    <Box component="span" sx={{ fontWeight: "bold" }}>
+                      {text}
+                    </Box>
+                  </Typography>
+                </CardContent>
+                <CardActions sx={{ justifyContent: "center" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={onCorrect}
+                    startIcon={<ThumbUpIcon />}
+                  >
+                    Correct
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={onIncorrect}
+                    startIcon={<ThumbDownIcon />}
+                  >
+                    Incorrect
+                  </Button>
+                </CardActions>
+              </Card>
             </div>
           </HotKeys>
-        );
-      }
-    },
-  ),
+        </div>
+      </HotKeys>
+    );
+  }),
 );
+
 PlayVisibleCard.propTypes = {
   text: PropTypes.string.isRequired,
   onCorrect: PropTypes.func.isRequired,
@@ -171,106 +162,104 @@ const PlayText = inject(
   "store",
   "morsePlayer",
 )(
-  observer(
-    class PlayText extends Component {
-      state = {
-        hidden: true,
-      };
+  observer(({ store, morsePlayer, text, onResult }) => {
+    const [hidden, setHidden] = useState(true);
+    const playCountRef = useRef(0);
+    const replayCountRef = useRef(0);
+    const autorunDisposerRef = useRef(null);
+    const timeoutRef = useRef(null);
 
-      playText = () => {
-        const { morsePlayer, text } = this.props;
-        const { hidden } = this.state;
+    const playText = useCallback(() => {
+      if (hidden) {
+        playCountRef.current++;
+      } else {
+        replayCountRef.current++;
+      }
+      morsePlayer.playString(text);
+    }, [morsePlayer, text, hidden]);
 
-        if (hidden) {
-          this.playCount++;
+    const stop = useCallback(() => {
+      if (autorunDisposerRef.current) {
+        autorunDisposerRef.current();
+        autorunDisposerRef.current = null;
+      }
+      clearTimeout(timeoutRef.current);
+      morsePlayer.forceStop();
+    }, [morsePlayer]);
+
+    const playLoop = useCallback(() => {
+      if (!store.morse.playing) {
+        if (playCountRef.current === 0) {
+          morsePlayer.resetRandomFrequency();
+          playText();
+        } else if (!store.readTrainer.automaticallyRepeat) {
+          stop();
+        } else if (
+          playCountRef.current >= store.readTrainer.maxRepeats ||
+          replayCountRef.current >= store.readTrainer.maxRepeats
+        ) {
+          stop();
         } else {
-          this.replayCount++;
-        }
-        morsePlayer.playString(text);
-      };
-
-      playLoop = () => {
-        if (!this.props.store.morse.playing) {
-          if (this.playCount === 0) {
-            this.props.morsePlayer.resetRandomFrequency();
-            this.playText();
-          } else if (!this.props.store.readTrainer.automaticallyRepeat) {
-            this.stop();
-          } else if (
-            this.playCount >= this.props.store.readTrainer.maxRepeats ||
-            this.replayCount >= this.props.store.readTrainer.maxRepeats
-          ) {
-            this.stop();
-          } else {
-            this.timeout = setTimeout(
-              this.playText,
-              this.props.store.readTrainer.delay,
-            );
-          }
-        }
-      };
-
-      start = () => {
-        this.playCount = 0;
-        this.replayCount = 0;
-        this.autorun = autorun(this.playLoop);
-      };
-
-      stop = () => {
-        this.autorun();
-        clearTimeout(this.timeout);
-        this.props.morsePlayer.forceStop();
-      };
-
-      componentDidMount() {
-        this.start();
-      }
-
-      componentWillUnmount() {
-        this.stop();
-      }
-
-      componentDidUpdate(prevProps, prevState) {
-        if (prevProps.text !== this.props.text) {
-          this.stop();
-          this.setState({ hidden: true }, () => {
-            this.start();
-          });
+          timeoutRef.current = setTimeout(playText, store.readTrainer.delay);
         }
       }
+    }, [store.morse.playing, store.readTrainer, morsePlayer, playText, stop]);
 
-      onResult = (success) => {
-        this.stop();
+    const start = useCallback(() => {
+      playCountRef.current = 0;
+      replayCountRef.current = 0;
+      autorunDisposerRef.current = autorun(playLoop);
+    }, [playLoop]);
+
+    // Start playback on mount
+    useEffect(() => {
+      start();
+      return () => {
+        stop();
+      };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Handle text changes
+    useEffect(() => {
+      stop();
+      setHidden(true);
+      // Use setTimeout to ensure state is updated before starting
+      const restartTimeout = setTimeout(() => {
+        start();
+      }, 0);
+      return () => clearTimeout(restartTimeout);
+    }, [text]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const handleResult = useCallback(
+      (success) => {
+        stop();
         if (success) {
-          event("success", this.props.text.length, this.replayCount);
+          event("success", text.length, replayCountRef.current);
         } else {
-          event("fail", this.props.text.length, this.replayCount);
+          event("fail", text.length, replayCountRef.current);
         }
-        this.props.onResult(success, this.playCount);
-      };
+        onResult(success, playCountRef.current);
+      },
+      [stop, text, onResult],
+    );
 
-      onShow = () => {
-        event("show", this.props.text.length, this.playCount);
-        this.setState({ hidden: false });
-      };
+    const handleShow = useCallback(() => {
+      event("show", text.length, playCountRef.current);
+      setHidden(false);
+    }, [text]);
 
-      render() {
-        if (this.state.hidden) {
-          return (
-            <PlayHiddenCard onShow={this.onShow} onRepeat={this.playText} />
-          );
-        } else {
-          return (
-            <PlayVisibleCard
-              text={this.props.text}
-              onCorrect={() => this.onResult(true)}
-              onIncorrect={() => this.onResult(false)}
-            />
-          );
-        }
-      }
-    },
-  ),
+    if (hidden) {
+      return <PlayHiddenCard onShow={handleShow} onRepeat={playText} />;
+    } else {
+      return (
+        <PlayVisibleCard
+          text={text}
+          onCorrect={() => handleResult(true)}
+          onIncorrect={() => handleResult(false)}
+        />
+      );
+    }
+  }),
 );
 
 PlayText.propTypes = {

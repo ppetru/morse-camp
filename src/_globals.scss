@@ -1,11 +1,8 @@
-// Can't use the nice '~react-md/src/scss/react-md' since this isn't being bundled with webpack
-@import "../node_modules/react-md/src/scss/react-md";
+// Global SCSS variables and mixins
+// react-md has been replaced with MUI
 
-// Variable overrides
-
-$md-light-theme: false;
-// Disable warning, see https://react-md.mlaursen.com/sassdoc/#sliders-variable-md-slider-warn-md
-$md-slider-warn-md: false;
-
-$md-primary-color: $md-light-green-400;
-$md-secondary-color: $md-orange-a-200;
+// Color definitions (matching MUI theme)
+$primary-color: #9ccc65 !default; // light green
+$secondary-color: #ff5722 !default; // deep orange
+$background-color: #303030 !default;
+$paper-color: #424242 !default;
