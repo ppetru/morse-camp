@@ -15,7 +15,7 @@ import FastForwardIcon from "@mui/icons-material/FastForward";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { inject, observer } from "mobx-react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 import { makeLogger } from "./analytics.js";
 import TestButton from "./TestButton.jsx";

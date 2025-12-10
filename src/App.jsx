@@ -10,7 +10,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 import "./App.scss";
 import NavItemLink from "./NavItemLink.jsx";
@@ -177,9 +177,11 @@ const AppContent = inject("store")(
 );
 
 const App = () => (
-  <BrowserRouter>
-    <AppContent />
-  </BrowserRouter>
+  <HelmetProvider>
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  </HelmetProvider>
 );
 
 export default App;

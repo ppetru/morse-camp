@@ -13,7 +13,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import HelpIcon from "@mui/icons-material/Help";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 import { dictionary } from "../Words.js";
 import {

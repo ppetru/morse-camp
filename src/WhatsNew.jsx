@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const WhatsNew = () => (
   <Box>
